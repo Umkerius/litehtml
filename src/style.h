@@ -8,16 +8,16 @@ namespace litehtml
 	{
 	public:
 		tstring	m_value;
-		bool			m_important;
+		bool    m_important;
 
 		property_value()
 		{
 			m_important = false;
 		}
-		property_value(const tchar_t* val, bool imp)
+		property_value(tstring_view val, bool imp)
 		{
-			m_important = imp;
-			m_value		= val;
+            m_value = val.to_string();
+            m_important = imp;
 		}
 		property_value(const property_value& val)
 		{
@@ -53,24 +53,24 @@ namespace litehtml
 			m_properties = val.m_properties;
 		}
 
-		void add(const tchar_t* txt, const tchar_t* baseurl)
+		void add(tstring_view txt, tstring_view baseurl)
 		{
 			parse(txt, baseurl);
 		}
 
-		void add_property(tstring_view name, const tchar_t* val, const tchar_t* baseurl, bool important);
+		void add_property(tstring_view name, tstring_view val, tstring_view baseurl, bool important);
 
-		const tchar_t* get_property(const tchar_t* name) const
+		tstring_view get_property(tstring_view name) const
 		{
-			if(name)
+			if(!name.empty())
 			{
-				props_map::const_iterator f = m_properties.find(name);
+				props_map::const_iterator f = m_properties.find(name.to_string());
 				if(f != m_properties.end())
 				{
 					return f->second.m_value.c_str();
 				}
 			}
-			return 0;
+            return tstring_view();
 		}
 
 		void combine(const litehtml::style& src);
@@ -80,10 +80,10 @@ namespace litehtml
 		}
 
 	private:
-		void parse_property(const tstring_view& txt, const tchar_t* baseurl);
-		void parse(const tchar_t* txt, const tchar_t* baseurl);
+		void parse_property(const tstring_view& txt, tstring_view baseurl);
+		void parse(tstring_view txt, tstring_view baseurl);
 		void parse_short_border(const tstring_view& prefix, const tstring_view& val, bool important);
-		void parse_short_background(const tstring_view& val, const tchar_t* baseurl, bool important);
+		void parse_short_background(const tstring_view& val, tstring_view baseurl, bool important);
 		void parse_short_font(const tstring_view& val, bool important);
 		void add_parsed_property(const tstring_view& name, const tstring_view& val, bool important);
 		void remove_property(const tstring_view& name, bool important);

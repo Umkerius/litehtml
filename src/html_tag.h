@@ -117,9 +117,9 @@ namespace litehtml
 		virtual bool				appendChild(const element::ptr &el) override;
 		virtual bool				removeChild(const element::ptr &el) override;
 		virtual void				clearRecursive() override;
-		virtual const tchar_t*		get_tagName() const override;
-		virtual void				set_tagName(const tchar_t* tag) override;
-		virtual void				set_data(const tchar_t* data) override;
+		virtual tstring_view		get_tagName() const override;
+		virtual void				set_tagName(tstring_view tag) override;
+		virtual void				set_data(tstring_view data) override;
 		virtual element_float		get_float() const override;
 		virtual vertical_align		get_vertical_align() const override;
 		virtual css_length			get_css_left() const override;
@@ -136,8 +136,8 @@ namespace litehtml
 		virtual element_position	get_element_position(css_offsets* offsets = 0) const override;
 		virtual overflow			get_overflow() const override;
 
-		virtual void				set_attr(const tchar_t* name, const tchar_t* val) override;
-		virtual const tchar_t*		get_attr(const tchar_t* name, const tchar_t* def = 0) override;
+		virtual void				set_attr(tstring_view name, tstring_view val) override;
+		virtual tstring_view		get_attr(tstring_view name, tstring_view def = 0) override;
 		virtual void				apply_stylesheet(const litehtml::css& stylesheet) override;
 		virtual void				refresh_styles() override;
 
@@ -151,10 +151,10 @@ namespace litehtml
 		virtual bool				on_lbutton_up() override;
 		virtual void				on_click() override;
 		virtual bool				find_styles_changes(position::vector& redraw_boxes, int x, int y) override;
-		virtual const tchar_t*		get_cursor() override;
+		virtual tstring_view		get_cursor() override;
 		virtual void				init_font() override;
-		virtual bool				set_pseudo_class(const tchar_t* pclass, bool add) override;
-		virtual bool				set_class(const tchar_t* pclass, bool add) override;
+		virtual bool				set_pseudo_class(tstring_view pclass, bool add) override;
+		virtual bool				set_class(tstring_view pclass, bool add) override;
 		virtual bool				is_replaced() const override;
 		virtual int					line_height() const override;
 		virtual white_space			get_white_space() const override;
@@ -164,7 +164,7 @@ namespace litehtml
 		virtual void				draw(uint_ptr hdc, int x, int y, const position* clip) override;
 		virtual void				draw_background(uint_ptr hdc, int x, int y, const position* clip) override;
 
-		virtual const tchar_t*		get_style_property(const tchar_t* name, bool inherited, const tchar_t* def = 0) override;
+		virtual tstring_view		get_style_property(tstring_view name, bool inherited, tstring_view def = 0) override;
 		virtual uint_ptr			get_font(font_metrics* fm = 0) override;
 		virtual int					get_font_size() const override;
 

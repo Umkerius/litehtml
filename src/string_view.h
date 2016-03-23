@@ -30,7 +30,6 @@ public:
     CharT front() const { return c_str()[0]; }
     CharT back() const { return c_str()[size() - 1]; }
 
-    const CharT* c_str() const { return begin(); }
     const CharT* data() const { return begin(); }
     std::basic_string<CharT> to_string() const { return std::basic_string<CharT>(c_str(), size()); }
 
@@ -70,6 +69,13 @@ public:
     int compare(string_view<CharT> another);
 
 private:
+    //c_str is not recommended for use
+    //it usually used for call C function which expects null-terminated string
+    //with string_view you cant be sure that c_str return pointer to null-terminating string
+    //if you need an access to internal string, you should use data or begin
+    //they do the same as c_str, but if you use it consciously, you are already warned
+    const CharT* c_str() const { return begin(); }
+
     const CharT* m_str = nullptr;
     size_type m_size = 0;
 };
@@ -351,8 +357,12 @@ int string_view<CharT>::compare(string_view<CharT> another)
     else if (size() > another.size())
         return 1;
 
+    //check if pointers are equal (sizes already equal)
+    if (c_str() == another.c_str())
+        return 0;
+
     // strings have the same size
-    return std::char_traits<CharT>::compare(c_str(), another.c_str(), size());
+    return std::char_traits<CharT>::compare(data(), another.data(), size());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -363,14 +373,7 @@ int string_view<CharT>::compare(string_view<CharT> another)
 template <typename CharT>
 bool operator==(string_view<CharT> lhs, string_view<CharT> rhs)
 {
-    if (lhs.size() != rhs.size())
-        return false;
-
-    if (lhs.c_str() == rhs.c_str())
-        return true;
-
-    int cmp = std::char_traits<CharT>::compare(lhs.c_str(), rhs.c_str(), lhs.size());
-    return cmp == 0;
+    return lhs.compare(rhs) == 0;
 }
 
 template <typename CharT>
@@ -447,8 +450,8 @@ std::basic_string<CharT> operator+(string_view<CharT> lhs, string_view<CharT> rh
     std::basic_string<CharT> result;
     result.reserve(lhs.size() + rhs.size());
 
-    result.append(lhs.c_str(), lhs.size());
-    result.append(rhs.c_str(), rhs.size());
+    result.append(lhs.data(), lhs.size());
+    result.append(rhs.data(), rhs.size());
 
     return result;
 }

@@ -2,12 +2,9 @@
 #include "el_text.h"
 #include "document.h"
 
-litehtml::el_text::el_text(const tchar_t* text, const std::shared_ptr<litehtml::document>& doc) : element(doc)
+litehtml::el_text::el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc) : element(doc)
 {
-	if(text)
-	{
-		m_text = text;
-	}
+    m_text = text.to_string();
 	m_text_transform	= text_transform_none;
 	m_use_transformed	= false;
 	m_draw_spaces		= true;
@@ -15,7 +12,6 @@ litehtml::el_text::el_text(const tchar_t* text, const std::shared_ptr<litehtml::
 
 litehtml::el_text::~el_text()
 {
-
 }
 
 void litehtml::el_text::get_content_size( size& sz, int max_width )
@@ -28,7 +24,7 @@ void litehtml::el_text::get_text( tstring& text )
 	text += m_text;
 }
 
-const litehtml::tchar_t* litehtml::el_text::get_style_property( const tchar_t* name, bool inherited, const tchar_t* def /*= 0*/ )
+litehtml::tstring_view litehtml::el_text::get_style_property( tstring_view name, bool inherited, tstring_view def /*= 0*/ )
 {
 	if(inherited)
 	{

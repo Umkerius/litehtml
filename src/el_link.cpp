@@ -22,16 +22,16 @@ void litehtml::el_link::parse_attributes()
     tstring_view rel = get_attr(_t("rel"));
 	if(rel == _t("stylesheet"))
 	{
-		const tchar_t* media	= get_attr(_t("media"));
-		const tchar_t* href		= get_attr(_t("href"));
-		if(href && href[0])
+		tstring_view media = get_attr(_t("media"));
+		tstring_view href = get_attr(_t("href"));
+		if(!href.empty())
 		{
             tstring css_text;
             tstring css_baseurl;
             doc->container()->import_css(css_text, href, css_baseurl);
 			if(!css_text.empty())
 			{
-				doc->add_stylesheet(css_text.c_str(), css_baseurl.c_str(), media);
+				doc->add_stylesheet(css_text, css_baseurl, media);
 				processed = true;
 			}
 		}

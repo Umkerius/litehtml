@@ -13,9 +13,9 @@ litehtml::el_anchor::~el_anchor()
 
 void litehtml::el_anchor::on_click()
 {
-	const tchar_t* href = get_attr(_t("href"));
+	tstring_view href = get_attr(_t("href"));
 
-	if(href)
+	if(!href.empty())
 	{
 		get_document()->container()->on_anchor_click(href, shared_from_this());
 	}
@@ -23,7 +23,7 @@ void litehtml::el_anchor::on_click()
 
 void litehtml::el_anchor::apply_stylesheet( const litehtml::css& stylesheet )
 {
-	if( get_attr(_t("href")) )
+	if(!get_attr(_t("href")).empty())
 	{
 		m_pseudo_classes.push_back(_t("link"));
 	}

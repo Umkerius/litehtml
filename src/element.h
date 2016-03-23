@@ -69,7 +69,7 @@ namespace litehtml
 		margins						get_borders()				const;
 
 		bool						in_normal_flow()			const;
-		litehtml::web_color			get_color(const tchar_t* prop_name, bool inherited, const litehtml::web_color& def_color = litehtml::web_color());
+		litehtml::web_color			get_color(tstring_view prop_name, bool inherited, const litehtml::web_color& def_color = litehtml::web_color());
 		bool						is_inline_box()				const;
 		position					get_placement()				const;
 		bool						collapse_top_margin()		const;
@@ -108,9 +108,9 @@ namespace litehtml
 		virtual bool				removeChild(const ptr &el);
 		virtual void				clearRecursive();
 
-		virtual const tchar_t*		get_tagName() const;
-		virtual void				set_tagName(const tchar_t* tag);
-		virtual void				set_data(const tchar_t* data);
+		virtual tstring_view		get_tagName() const;
+		virtual void				set_tagName(tstring_view tag);
+		virtual void				set_data(tstring_view data);
 		virtual element_float		get_float() const;
 		virtual vertical_align		get_vertical_align() const;
 		virtual element_clear		get_clear() const;
@@ -127,8 +127,8 @@ namespace litehtml
 		virtual void				set_css_width(css_length& w);
 		virtual css_length			get_css_height() const;
 
-		virtual void				set_attr(const tchar_t* name, const tchar_t* val);
-		virtual const tchar_t*		get_attr(const tchar_t* name, const tchar_t* def = 0);
+		virtual void				set_attr(tstring_view name, tstring_view val);
+		virtual tstring_view		get_attr(tstring_view name, tstring_view def = 0);
 		virtual void				apply_stylesheet(const litehtml::css& stylesheet);
 		virtual void				refresh_styles();
 		virtual bool				is_white_space() const;
@@ -141,11 +141,11 @@ namespace litehtml
 		virtual bool				on_lbutton_up();
 		virtual void				on_click();
 		virtual bool				find_styles_changes(position::vector& redraw_boxes, int x, int y);
-		virtual const tchar_t*		get_cursor();
+		virtual tstring_view		get_cursor();
 		virtual void				init_font();
 		virtual bool				is_point_inside(int x, int y);
-		virtual bool				set_pseudo_class(const tchar_t* pclass, bool add);
-		virtual bool				set_class(const tchar_t* pclass, bool add);
+		virtual bool				set_pseudo_class(tstring_view pclass, bool add);
+		virtual bool				set_class(tstring_view pclass, bool add);
 		virtual bool				is_replaced() const;
 		virtual int					line_height() const;
 		virtual white_space			get_white_space() const;
@@ -156,7 +156,7 @@ namespace litehtml
 		virtual void				parse_styles(bool is_reparse = false);
 		virtual void				draw(uint_ptr hdc, int x, int y, const position* clip);
 		virtual void				draw_background( uint_ptr hdc, int x, int y, const position* clip );
-		virtual const tchar_t*		get_style_property(const tchar_t* name, bool inherited, const tchar_t* def = 0);
+		virtual tstring_view		get_style_property(tstring_view name, bool inherited, tstring_view def = 0);
 		virtual uint_ptr			get_font(font_metrics* fm = 0);
 		virtual int					get_font_size() const;
 		virtual void				get_text(tstring& text);

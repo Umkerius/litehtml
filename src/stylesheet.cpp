@@ -4,7 +4,7 @@
 #include "document.h"
 
 
-void litehtml::css::parse_stylesheet(tstring_view str, const tchar_t* baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
+void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
 {
 	// remove comments
     tstring_view stylesheet;
@@ -144,7 +144,7 @@ void litehtml::css::sort_selectors()
 	);
 }
 
-void litehtml::css::parse_atrule(const tstring_view& text, const tchar_t* baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
+void litehtml::css::parse_atrule(const tstring_view& text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
 {
 	if(text.substr(0, 7) == _t("@import"))
 	{
@@ -174,10 +174,7 @@ void litehtml::css::parse_atrule(const tstring_view& text, const tchar_t* baseur
 				{
 					tstring css_text;
 					tstring css_baseurl;
-					if(baseurl)
-					{
-						css_baseurl = baseurl;
-					}
+                    css_baseurl = baseurl.to_string();
 					doc_cont->import_css(css_text, url, css_baseurl);
 					if(!css_text.empty())
 					{

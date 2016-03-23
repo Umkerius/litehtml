@@ -12,6 +12,6 @@ namespace litehtml
 
 		virtual void			parse_attributes() override;
 		virtual bool			appendChild(const ptr &el) override;
-		virtual const tchar_t*	get_tagName() const override;
+		virtual tstring_view	get_tagName() const override;
 	};
 }

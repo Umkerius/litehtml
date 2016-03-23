@@ -30,7 +30,7 @@ bool litehtml::el_style::appendChild(const ptr &el)
 	return true;
 }
 
-const litehtml::tchar_t* litehtml::el_style::get_tagName() const
+litehtml::tstring_view litehtml::el_style::get_tagName() const
 {
 	return _t("style");
 }

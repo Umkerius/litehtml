@@ -731,5 +731,5 @@ namespace litehtml
 	};
 
 	// List of the Void Elements (can't have any contents)
-	const litehtml::tchar_t* const void_elements = _t("area;base;br;col;command;embed;hr;img;input;keygen;link;meta;param;source;track;wbr");
+	litehtml::tstring_view const void_elements = _t("area;base;br;col;command;embed;hr;img;input;keygen;link;meta;param;source;track;wbr");
 }

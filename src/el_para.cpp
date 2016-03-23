@@ -13,8 +13,8 @@ litehtml::el_para::~el_para()
 
 void litehtml::el_para::parse_attributes()
 {
-	const tchar_t* str = get_attr(_t("align"));
-	if(str)
+	tstring_view str = get_attr(_t("align"));
+	if(!str.empty())
 	{
 		m_style.add_property(_t("text-align"), str, 0, false);
 	}

@@ -45,15 +45,15 @@ litehtml::document::~document()
 	}
 }
 
-litehtml::document::ptr litehtml::document::createFromString( const tchar_t* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles)
+litehtml::document::ptr litehtml::document::createFromString(tstring_view str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles)
 {
-	return createFromUTF8(litehtml_to_utf8(str), objPainter, ctx, user_styles);
+    return createFromUTF8(litehtml_to_utf8(str.data()), objPainter, ctx, user_styles);
 }
 
 litehtml::document::ptr litehtml::document::createFromUTF8(const char* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles)
 {
 	// parse document into GumboOutput
-	GumboOutput* output = gumbo_parse((const char*) str);
+	GumboOutput* output = gumbo_parse(str);
 
 	// Create litehtml::document
 	litehtml::document::ptr doc = std::make_shared<litehtml::document>(objPainter, ctx);
@@ -126,11 +126,11 @@ litehtml::document::ptr litehtml::document::createFromUTF8(const char* str, lite
 	return doc;
 }
 
-litehtml::uint_ptr litehtml::document::add_font( const tchar_t* name, int size, const tchar_t* weight, const tchar_t* style, const tchar_t* decoration, font_metrics* fm )
+litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
 	uint_ptr ret = 0;
 
-	if( !name || (name && !t_strcasecmp(name, _t("inherit"))) )
+    if (name.empty() || (lcase_copy(name) == _t("inherit")))
 	{
 		name = m_container->get_default_font_name();
 	}
@@ -140,18 +140,15 @@ litehtml::uint_ptr litehtml::document::add_font( const tchar_t* name, int size, 
 		size = container()->get_default_font_size();
 	}
 
-	tchar_t strSize[20];
-	t_itoa(size, strSize, 20, 10);
-
-	tstring key = name;
+	tstring key = name.to_string();
 	key += _t(":");
-	key += strSize;
+    key += t_num_to_string(size);
 	key += _t(":");
-	key += weight;
+	key += weight.to_string();
 	key += _t(":");
-	key += style;
+    key += style.to_string();
 	key += _t(":");
-	key += decoration;
+    key += decoration.to_string();
 
 	if(m_fonts.find(key) == m_fonts.end())
 	{
@@ -176,7 +173,7 @@ litehtml::uint_ptr litehtml::document::add_font( const tchar_t* name, int size, 
 			}
 		} else
 		{
-			fw = t_atoi(weight);
+			fw = std::stoi(weight.to_string());
 			if(fw < 100)
 			{
 				fw = 400;
@@ -185,19 +182,23 @@ litehtml::uint_ptr litehtml::document::add_font( const tchar_t* name, int size, 
 
 		unsigned int decor = 0;
 
-		if(decoration)
+		if(!decoration.empty())
 		{
             string_view_vector tokens;
 			split_string(decoration, tokens, _t(" "));
-			for(string_view_vector::iterator i = tokens.begin(); i != tokens.end(); i++)
+			for(auto token : tokens)
 			{
-				if(!t_strcasecmp(i->c_str(), _t("underline")))
-				{
+                tstring lcase_token = lcase_copy(token);
+
+                if (lcase_token == _t("underline"))
+                {
 					decor |= font_decoration_underline;
-				} else if(!t_strcasecmp(i->c_str(), _t("line-through")))
+                }
+                else if (lcase_token == _t("line-through"))
 				{
 					decor |= font_decoration_linethrough;
-				} else if(!t_strcasecmp(i->c_str(), _t("overline")))
+                }
+                else if (lcase_token == _t("overline"))
 				{
 					decor |= font_decoration_overline;
 				}
@@ -217,9 +218,9 @@ litehtml::uint_ptr litehtml::document::add_font( const tchar_t* name, int size, 
 	return ret;
 }
 
-litehtml::uint_ptr litehtml::document::get_font( const tchar_t* name, int size, const tchar_t* weight, const tchar_t* style, const tchar_t* decoration, font_metrics* fm )
+litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
-	if( !name || (name && !t_strcasecmp(name, _t("inherit"))) )
+	if(name.empty() || (lcase_copy(name) == _t("inherit")))
 	{
 		name = m_container->get_default_font_name();
 	}
@@ -229,18 +230,15 @@ litehtml::uint_ptr litehtml::document::get_font( const tchar_t* name, int size, 
 		size = container()->get_default_font_size();
 	}
 
-	tchar_t strSize[20];
-	t_itoa(size, strSize, 20, 10);
-
-	tstring key = name;
+	tstring key = name.to_string();
 	key += _t(":");
-	key += strSize;
+    key += t_num_to_string(size);
 	key += _t(":");
-	key += weight;
+    key += weight.to_string();
 	key += _t(":");
-	key += style;
+    key += style.to_string();
 	key += _t(":");
-	key += decoration;
+    key += decoration.to_string();
 
 	fonts_map::iterator el = m_fonts.find(key);
 
@@ -289,9 +287,10 @@ void litehtml::document::draw( uint_ptr hdc, int x, int y, const position* clip 
 	}
 }
 
-int litehtml::document::cvt_units( const tchar_t* str, int fontSize, bool* is_percent/*= 0*/ ) const
+int litehtml::document::cvt_units(tstring_view str, int fontSize, bool* is_percent/*= 0*/ ) const
 {
-	if(!str)	return 0;
+	if(str.empty()) 
+        return 0;
 	
 	css_length val;
 	val.fromString(str);
@@ -302,7 +301,7 @@ int litehtml::document::cvt_units( const tchar_t* str, int fontSize, bool* is_pe
 	return cvt_units(val, fontSize);
 }
 
-int litehtml::document::cvt_units( css_length& val, int fontSize, int size ) const
+int litehtml::document::cvt_units(css_length& val, int fontSize, int size) const
 {
 	if(val.is_predefined())
 	{
@@ -363,9 +362,9 @@ int litehtml::document::height() const
 	return m_size.height;
 }
 
-void litehtml::document::add_stylesheet( const tchar_t* str, const tchar_t* baseurl, const tchar_t* media )
+void litehtml::document::add_stylesheet(tstring_view str, tstring_view baseurl, tstring_view media)
 {
-	if(str && str[0])
+	if(!str.empty())
 	{
 		m_css.push_back(css_text(str, baseurl, media));
 	}
@@ -394,7 +393,7 @@ bool litehtml::document::on_mouse_over( int x, int y, int client_x, int client_y
 		m_over_element = over_el;
 	}
 
-	const tchar_t* cursor = 0;
+	tstring_view cursor;
 
 	if(m_over_element)
 	{
@@ -405,7 +404,7 @@ bool litehtml::document::on_mouse_over( int x, int y, int client_x, int client_y
 		cursor = m_over_element->get_cursor();
 	}
 	
-	m_container->set_cursor(cursor ? cursor : _t("auto"));
+	m_container->set_cursor(!cursor.empty() ? cursor : _t("auto"));
 	
 	if(state_was_changed)
 	{
@@ -460,7 +459,7 @@ bool litehtml::document::on_lbutton_down( int x, int y, int client_x, int client
 		}
 	}
 
-	const tchar_t* cursor = 0;
+	tstring_view cursor;
 
 	if(m_over_element)
 	{
@@ -471,7 +470,7 @@ bool litehtml::document::on_lbutton_down( int x, int y, int client_x, int client
 		cursor = m_over_element->get_cursor();
 	}
 
-	m_container->set_cursor(cursor ? cursor : _t("auto"));
+	m_container->set_cursor(!cursor.empty() ? cursor : _t("auto"));
 
 	if(state_was_changed)
 	{
@@ -503,7 +502,7 @@ litehtml::element::ptr litehtml::document::create_element(tstring_view tag_name,
 	document::ptr this_doc = shared_from_this();
 	if(m_container)
 	{
-		newTag = m_container->create_element(tag_name.c_str(), attributes, this_doc);
+		newTag = m_container->create_element(tag_name, attributes, this_doc);
 	}
 	if(!newTag)
 	{
@@ -560,10 +559,10 @@ litehtml::element::ptr litehtml::document::create_element(tstring_view tag_name,
 
 	if(newTag)
 	{
-		newTag->set_tagName(tag_name.c_str());
+		newTag->set_tagName(tag_name);
         for (string_map::const_iterator iter = attributes.begin(); iter != attributes.end(); iter++)
 		{
-			newTag->set_attr(iter->first.c_str(), iter->second.c_str());
+			newTag->set_attr(iter->first, iter->second);
 		}
 	}
 
@@ -734,20 +733,20 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 	case GUMBO_NODE_CDATA:
 		{
 			element::ptr ret = std::make_shared<el_cdata>(shared_from_this());
-			ret->set_data(litehtml_from_utf8(node->v.text.text));
+			ret->set_data(tstring(litehtml_from_utf8(node->v.text.text)));
 			elements.push_back(ret);
 		}
 		break;
 	case GUMBO_NODE_COMMENT:
 		{
 			element::ptr ret = std::make_shared<el_comment>(shared_from_this());
-			ret->set_data(litehtml_from_utf8(node->v.text.text));
+            ret->set_data(tstring(litehtml_from_utf8(node->v.text.text)));
 			elements.push_back(ret);
 		}
 		break;
 	case GUMBO_NODE_WHITESPACE:
 		{
-			tstring_view str = litehtml_from_utf8(node->v.text.text);
+			tstring str = litehtml_from_utf8(node->v.text.text);
 			for (size_t i = 0; i < str.length(); i++)
 			{
 				elements.push_back(std::make_shared<el_space>(str.substr(i, 1).c_str(), shared_from_this()));
@@ -796,7 +795,7 @@ void litehtml::document::fix_tables_layout()
 	}
 }
 
-void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display disp, const tchar_t* disp_str)
+void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display disp, tstring_view disp_str)
 {
 	elements_vector tmp;
 	elements_vector::iterator first_iter = el_ptr->m_children.begin();
@@ -855,7 +854,7 @@ void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display 
 	}
 }
 
-void litehtml::document::fix_table_parent(element::ptr& el_ptr, style_display disp, const tchar_t* disp_str)
+void litehtml::document::fix_table_parent(element::ptr& el_ptr, style_display disp, tstring_view disp_str)
 {
 	element::ptr parent = el_ptr->parent();
 

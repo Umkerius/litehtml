@@ -166,15 +166,15 @@ int litehtml::el_image::render( int x, int y, int max_width, bool second_pass )
 
 void litehtml::el_image::parse_attributes()
 {
-	m_src = get_attr(_t("src"), _t(""));
+	m_src = get_attr(_t("src"), _t("")).to_string();
 
-	const tchar_t* attr_height = get_attr(_t("height"));
-	if(attr_height)
+	tstring_view attr_height = get_attr(_t("height"));
+	if(!attr_height.empty())
 	{
 		m_style.add_property(_t("height"), attr_height, 0, false);
 	}
-	const tchar_t* attr_width = get_attr(_t("width"));
-	if(attr_width)
+	tstring_view attr_width = get_attr(_t("width"));
+	if(!attr_width.empty())
 	{
 		m_style.add_property(_t("width"), attr_width, 0, false);
 	}

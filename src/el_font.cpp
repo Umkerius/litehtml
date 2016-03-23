@@ -14,22 +14,22 @@ litehtml::el_font::~el_font()
 
 void litehtml::el_font::parse_attributes()
 {
-	const tchar_t* str = get_attr(_t("color"));
-	if(str)
+	tstring_view str = get_attr(_t("color"));
+	if(!str.empty())
 	{
 		m_style.add_property(_t("color"), str, 0, false);
 	}
 
 	str = get_attr(_t("face"));
-	if(str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("font-face"), str, 0, false);
 	}
 
 	str = get_attr(_t("size"));
-	if(str)
+    if (!str.empty())
 	{
-		int sz = t_atoi(str);
+		int sz = std::stoi(str.to_string());
 		if(sz <= 1)
 		{
 			m_style.add_property(_t("font-size"), _t("x-small"), 0, false);

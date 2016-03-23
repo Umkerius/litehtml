@@ -3,7 +3,7 @@
 #include "stylesheet.h"
 
 
-void litehtml::context::load_master_stylesheet( const tchar_t* str )
+void litehtml::context::load_master_stylesheet( tstring_view str )
 {
 	media_query_list::ptr media;
 

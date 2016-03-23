@@ -186,7 +186,7 @@ bool litehtml::css_selector::parse( const tstring_view& text )
     tstring joined_tokens;
 	for(auto i = tokens.begin(); i != tokens.end(); i++)
 	{
-        joined_tokens.append(i->c_str(), i->size());
+        joined_tokens.append(i->data(), i->size());
 	}
 
     left = trim(joined_tokens);

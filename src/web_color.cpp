@@ -2,7 +2,13 @@
 #include "web_color.h"
 #include <string.h>
 
-litehtml::def_color litehtml::g_def_colors[] = 
+struct def_color
+{
+    litehtml::tstring_view name;
+    litehtml::tstring_view rgb;
+};
+
+def_color g_def_colors[] = 
 {
 	{_t("transparent"),_t("rgba(0, 0, 0, 0)")},
 	{_t("AliceBlue"),_t("#F0F8FF")},
@@ -150,7 +156,7 @@ litehtml::def_color litehtml::g_def_colors[] =
 	{_t("WhiteSmoke"),_t("#F5F5F5")},
 	{_t("Yellow"),_t("#FFFF00")},
 	{_t("YellowGreen"),_t("#9ACD32")},
-	{0,0}
+	{nullptr,nullptr}
 };
 
 
@@ -160,6 +166,7 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 	{
 		return web_color(0, 0, 0);
 	}
+
 	if(str[0] == _t('#'))
 	{
 		tstring red;
@@ -182,13 +189,13 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 			blue	+= str[5];
 			blue	+= str[6];
 		}
-		tchar_t* sss = 0;
 		web_color clr;
-		clr.red		= (byte) t_strtol(red.c_str(),	&sss, 16);
-		clr.green	= (byte) t_strtol(green.c_str(),	&sss, 16);
-		clr.blue	= (byte) t_strtol(blue.c_str(),	&sss, 16);
+		clr.red		= byte(std::stol(red,	nullptr, 16));
+		clr.green	= byte(std::stol(green,	nullptr, 16));
+		clr.blue	= byte(std::stol(blue,	nullptr, 16));
 		return clr;
-	} else if(!t_strncmp(str.c_str(), _t("rgb"), 3))
+	} 
+    else if(!t_strncmp(str.c_str(), _t("rgb"), 3))
 	{
         tstring_view::size_type pos = str.find_first_of(_t("("));
         if (pos != tstring_view::npos)
@@ -206,16 +213,16 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 
 		web_color clr;
 
-		if(tokens.size() >= 1)	clr.red		= (byte) t_atoi(tokens[0].c_str());
-		if(tokens.size() >= 2)	clr.green	= (byte) t_atoi(tokens[1].c_str());
-		if(tokens.size() >= 3)	clr.blue	= (byte) t_atoi(tokens[2].c_str());
-		if(tokens.size() >= 4)	clr.alpha	= (byte) (t_strtod(tokens[3].c_str(), 0) * 255.0);
+        if (tokens.size() >= 1)	clr.red   = byte(std::stoi(tokens[0].to_string()));
+        if (tokens.size() >= 2)	clr.green = byte(std::stoi(tokens[1].to_string()));
+        if (tokens.size() >= 3)	clr.blue  = byte(std::stoi(tokens[2].to_string()));
+		if(tokens.size() >= 4)	clr.alpha = byte(std::stod(tokens[3].to_string()) * 255.0);
 
 		return clr;
 	} else
 	{
-		const tchar_t* rgb = resolve_name(str.c_str());
-		if(rgb)
+		tstring_view rgb = resolve_name(str);
+		if(!rgb.empty())
 		{
 			return from_string(rgb);
 		}
@@ -223,27 +230,27 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 	return web_color(0, 0, 0);
 }
 
-const litehtml::tchar_t* litehtml::web_color::resolve_name( const tchar_t* name )
+litehtml::tstring_view litehtml::web_color::resolve_name(tstring_view name)
 {
-	for(int i=0; g_def_colors[i].name; i++)
+    tstring lcase_name = lcase_copy(name);
+
+	for(size_t i = 0; !g_def_colors[i].name.empty(); ++i)
 	{
-		if(!t_strcasecmp(name, g_def_colors[i].name))
+        if (lcase_name == lcase_copy(g_def_colors[i].name))
 		{
 			return g_def_colors[i].rgb;
 		}
 	}
-	return 0;
+
+    return tstring_view();
 }
 
-bool litehtml::web_color::is_color( const tchar_t* str )
+bool litehtml::web_color::is_color(tstring_view str)
 {
-	if(!t_strncasecmp(str, _t("rgb"), 3) || str[0] == _t('#'))
+    if ((lcase_copy(str.substr(0, 3)) == _t("rgb")) || str[0] == _t('#'))
 	{
 		return true;
 	}
-	if(resolve_name(str))
-	{
-		return true;
-	}
-	return false;
+
+    return !resolve_name(str).empty();
 }

@@ -21,7 +21,7 @@ namespace litehtml
 	struct list_marker
 	{
 		tstring			image;
-		const tchar_t*	baseurl;
+		tstring_view	baseurl;
 		list_style_type	marker_type;
 		web_color		color;
 		position		pos;
@@ -31,32 +31,32 @@ namespace litehtml
 	class document_container
 	{
 	public:
-		virtual litehtml::uint_ptr	create_font(const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm) = 0;
+		virtual litehtml::uint_ptr	create_font(litehtml::tstring_view faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm) = 0;
 		virtual void				delete_font(litehtml::uint_ptr hFont) = 0;
-		virtual int					text_width(const litehtml::tchar_t* text, litehtml::uint_ptr hFont) = 0;
-		virtual void				draw_text(litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) = 0;
+		virtual int					text_width(litehtml::tstring_view text, litehtml::uint_ptr hFont) = 0;
+		virtual void				draw_text(litehtml::uint_ptr hdc, litehtml::tstring_view text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) = 0;
 		virtual int					pt_to_px(int pt) = 0;
 		virtual int					get_default_font_size() const = 0;
-		virtual const litehtml::tchar_t*	get_default_font_name() const = 0;
+		virtual litehtml::tstring_view	get_default_font_name() const = 0;
 		virtual void				draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker) = 0;
-		virtual void				load_image(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, bool redraw_on_ready) = 0;
-		virtual void				get_image_size(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, litehtml::size& sz) = 0;
+		virtual void				load_image(litehtml::tstring_view src, litehtml::tstring_view baseurl, bool redraw_on_ready) = 0;
+		virtual void				get_image_size(litehtml::tstring_view src, litehtml::tstring_view baseurl, litehtml::size& sz) = 0;
 		virtual void				draw_background(litehtml::uint_ptr hdc, const litehtml::background_paint& bg) = 0;
 		virtual void				draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root) = 0;
 
-		virtual	void				set_caption(const litehtml::tchar_t* caption) = 0;
-		virtual	void				set_base_url(const litehtml::tchar_t* base_url) = 0;
+		virtual	void				set_caption(litehtml::tstring_view caption) = 0;
+		virtual	void				set_base_url(litehtml::tstring_view base_url) = 0;
 		virtual void				link(const std::shared_ptr<litehtml::document>& doc, const litehtml::element::ptr& el) = 0;
-		virtual void				on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el) = 0;
-		virtual	void				set_cursor(const litehtml::tchar_t* cursor) = 0;
+		virtual void				on_anchor_click(litehtml::tstring_view url, const litehtml::element::ptr& el) = 0;
+		virtual	void				set_cursor(litehtml::tstring_view cursor) = 0;
 		virtual	void				transform_text(litehtml::tstring& text, litehtml::text_transform tt) = 0;
 		virtual void				import_css(litehtml::tstring& text, litehtml::tstring_view url, litehtml::tstring& baseurl) = 0;
 		virtual void				set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius, bool valid_x, bool valid_y) = 0;
 		virtual void				del_clip() = 0;
 		virtual void				get_client_rect(litehtml::position& client) const = 0;
-		virtual std::shared_ptr<litehtml::element>	create_element(const litehtml::tchar_t *tag_name,
-																	 const litehtml::string_map &attributes,
-																	 const std::shared_ptr<litehtml::document> &doc) = 0;
+		virtual std::shared_ptr<litehtml::element>	create_element(litehtml::tstring_view tag_name,
+																   const litehtml::string_map &attributes,
+																   const std::shared_ptr<litehtml::document> &doc) = 0;
 
 		virtual void				get_media_features(litehtml::media_features& media) const = 0;
 		virtual void				get_language(litehtml::tstring& language, litehtml::tstring& culture) const = 0;

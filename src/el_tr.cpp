@@ -14,18 +14,18 @@ litehtml::el_tr::~el_tr()
 
 void litehtml::el_tr::parse_attributes()
 {
-	const tchar_t* str = get_attr(_t("align"));
-	if(str)
+	tstring_view str = get_attr(_t("align"));
+	if(!str.empty())
 	{
 		m_style.add_property(_t("text-align"), str, 0, false);
 	}
 	str = get_attr(_t("valign"));
-	if(str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("vertical-align"), str, 0, false);
 	}
 	str = get_attr(_t("bgcolor"));
-	if (str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("background-color"), str, 0, false);
 	}

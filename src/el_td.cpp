@@ -14,33 +14,31 @@ litehtml::el_td::~el_td()
 
 void litehtml::el_td::parse_attributes()
 {
-	const tchar_t* str = get_attr(_t("width"));
-	if(str)
+	tstring_view str = get_attr(_t("width"));
+	if(!str.empty())
 	{
 		m_style.add_property(_t("width"), str, 0, false);
 	}
 	str = get_attr(_t("background"));
-	if(str)
+    if (!str.empty())
 	{
-		tstring url = _t("url('");
-		url += str;
-		url += _t("')");
-		m_style.add_property(_t("background-image"), url.c_str(), 0, false);
+        tstring url = tstring_view(_t("url('")) + str + _t("')"); // UTODO: remove this shit
+		m_style.add_property(_t("background-image"), url, 0, false);
 	}
 	str = get_attr(_t("align"));
-	if(str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("text-align"), str, 0, false);
 	}
 
 	str = get_attr(_t("bgcolor"));
-	if (str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("background-color"), str, 0, false);
 	}
 
 	str = get_attr(_t("valign"));
-	if(str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("vertical-align"), str, 0, false);
 	}

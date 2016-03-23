@@ -61,8 +61,8 @@ litehtml::media_query::ptr litehtml::media_query::create_from_string(const tstri
 							{
                                 tstring_view val1 = trim(expr_tokens[1].substr(0, slash_pos));
 								tstring_view val2 = trim(expr_tokens[1].substr(slash_pos + 1));
-								expr.val = t_atoi(val1.c_str());
-								expr.val2 = t_atoi(val2.c_str());
+								expr.val = std::stoi(val1.to_string());
+                                expr.val2 = std::stoi(val2.to_string());
 							} else
 							{
 								css_length length;

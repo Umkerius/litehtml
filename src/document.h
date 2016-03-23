@@ -8,41 +8,15 @@ namespace litehtml
 {
 	struct css_text
 	{
-		typedef std::vector<css_text>	vector;
+		typedef std::vector<css_text> vector;
 
 		tstring	text;
 		tstring	baseurl;
 		tstring	media;
 		
-		css_text()
-		{
-		}
-
-		css_text(const tchar_t* txt, const tchar_t* url, const tchar_t* media_str)
-		{
-			text	= txt ? txt : _t("");
-			baseurl	= url ? url : _t("");
-			media	= media_str ? media_str : _t("");
-		}
-
-		css_text(const css_text& val)
-		{
-			text	= val.text;
-			baseurl	= val.baseurl;
-			media	= val.media;
-		}
-	};
-
-	struct stop_tags_t
-	{
-		const litehtml::tchar_t*	tags;
-		const litehtml::tchar_t*	stop_parent;
-	};
-
-	struct ommited_end_tags_t
-	{
-		const litehtml::tchar_t*	tag;
-		const litehtml::tchar_t*	followed_tags;
+        css_text() = default;
+		css_text(tstring_view txt, tstring_view url, tstring_view media_str)
+            : text(txt.to_string()), baseurl(url.to_string()), media(media_str.to_string()) {}
 	};
 
 	class html_tag;
@@ -73,15 +47,15 @@ namespace litehtml
 		virtual ~document();
 
 		litehtml::document_container*	container()	{ return m_container; }
-		uint_ptr						get_font(const tchar_t* name, int size, const tchar_t* weight, const tchar_t* style, const tchar_t* decoration, font_metrics* fm);
+		uint_ptr						get_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm);
 		int								render(int max_width, render_type rt = render_all);
 		void							draw(uint_ptr hdc, int x, int y, const position* clip);
 		web_color						get_def_color()	{ return m_def_color; }
-		int								cvt_units(const tchar_t* str, int fontSize, bool* is_percent = 0) const;
+		int								cvt_units(tstring_view str, int fontSize, bool* is_percent = 0) const;
 		int								cvt_units(css_length& val, int fontSize, int size = 0) const;
 		int								width() const;
 		int								height() const;
-		void							add_stylesheet(const tchar_t* str, const tchar_t* baseurl, const tchar_t* media);
+		void							add_stylesheet(tstring_view str, tstring_view baseurl, tstring_view media);
 		bool							on_mouse_over(int x, int y, int client_x, int client_y, position::vector& redraw_boxes);
 		bool							on_lbutton_down(int x, int y, int client_x, int client_y, position::vector& redraw_boxes);
 		bool							on_lbutton_up(int x, int y, int client_x, int client_y, position::vector& redraw_boxes);
@@ -96,17 +70,17 @@ namespace litehtml
 		bool                            match_lang(const tstring_view & lang);
 		void							add_tabular(const element::ptr& el);
 
-		static litehtml::document::ptr createFromString(const tchar_t* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
+		static litehtml::document::ptr createFromString(tstring_view str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
 		static litehtml::document::ptr createFromUTF8(const char* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
 	
 	private:
-		litehtml::uint_ptr	add_font(const tchar_t* name, int size, const tchar_t* weight, const tchar_t* style, const tchar_t* decoration, font_metrics* fm);
+		litehtml::uint_ptr	add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm);
 
 		void create_node(GumboNode* node, elements_vector& elements);
 		bool update_media_lists(const media_features& features);
 		void fix_tables_layout();
-		void fix_table_children(element::ptr& el_ptr, style_display disp, const tchar_t* disp_str);
-		void fix_table_parent(element::ptr& el_ptr, style_display disp, const tchar_t* disp_str);
+		void fix_table_children(element::ptr& el_ptr, style_display disp, tstring_view disp_str);
+		void fix_table_parent(element::ptr& el_ptr, style_display disp, tstring_view disp_str);
 	};
 
 	inline element::ptr document::root()

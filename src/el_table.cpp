@@ -63,14 +63,14 @@ void litehtml::el_table::parse_styles(bool is_reparse)
 
 void litehtml::el_table::parse_attributes()
 {
-	const tchar_t* str = get_attr(_t("width"));
-	if(str)
+	tstring_view str = get_attr(_t("width"));
+	if(!str.empty())
 	{
 		m_style.add_property(_t("width"), str, 0, false);
 	}
 
 	str = get_attr(_t("align"));
-	if(str)
+    if (!str.empty())
 	{
 		int align = value_index(str, _t("left;center;right"));
 		switch(align)
@@ -87,22 +87,20 @@ void litehtml::el_table::parse_attributes()
 	}
 
 	str = get_attr(_t("cellspacing"));
-	if(str)
+    if (!str.empty())
 	{
-		tstring val = str;
-		val += _t(" ");
-		val += str;
-		m_style.add_property(_t("border-spacing"), val.c_str(), 0, false);
+		tstring val = str + _t(" ") + str;
+		m_style.add_property(_t("border-spacing"), val, 0, false);
 	}
 	
 	str = get_attr(_t("border"));
-	if(str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("border-width"), str, 0, false);
 	}
 
 	str = get_attr(_t("bgcolor"));
-	if (str)
+    if (!str.empty())
 	{
 		m_style.add_property(_t("background-color"), str, 0, false);
 	}
