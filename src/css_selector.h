@@ -148,11 +148,11 @@ namespace litehtml
 	class css_element_selector
 	{
 	public:
-		tstring							m_tag;
+		tstring					m_tag;
 		css_attribute_selector::vector	m_attrs;
 	public:
 
-		void parse(const tstring& txt);
+		void parse(const tstring_view& txt);
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -208,7 +208,7 @@ namespace litehtml
 			m_media_query	= val.m_media_query;
 		}
 
-		bool parse(const tstring& text);
+		bool parse(const tstring_view& text);
 		void calc_specificity();
 		bool is_media_valid() const;
 		void add_media_to_doc(document* doc) const;

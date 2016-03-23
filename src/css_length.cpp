@@ -1,7 +1,7 @@
 #include "html.h"
 #include "css_length.h"
 
-void litehtml::css_length::fromString( const tstring& str, const tstring& predefs, int defValue )
+void litehtml::css_length::fromString( const tstring_view& str, const tstring_view& predefs, int defValue )
 {
 	// TODO: Make support for calc
 	if(str.substr(0, 4) == _t("calc"))
@@ -21,9 +21,9 @@ void litehtml::css_length::fromString( const tstring& str, const tstring& predef
 		m_is_predefined = false;
 
 		tstring num;
-		tstring un;
+        tstring un;
 		bool is_unit = false;
-		for(tstring::const_iterator chr = str.begin(); chr != str.end(); chr++)
+		for(tstring_view::const_iterator chr = str.begin(); chr != str.end(); chr++)
 		{
 			if(!is_unit)
 			{

@@ -154,18 +154,18 @@ litehtml::def_color litehtml::g_def_colors[] =
 };
 
 
-litehtml::web_color litehtml::web_color::from_string( const tchar_t* str )
+litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 {
-	if(!str)
+	if(str.empty())
 	{
 		return web_color(0, 0, 0);
 	}
 	if(str[0] == _t('#'))
 	{
-		tstring red		= _t("");
-		tstring green		= _t("");
-		tstring blue		= _t("");
-		if(t_strlen(str + 1) == 3)
+		tstring red;
+        tstring green;
+        tstring blue;
+		if(str.size() + 1 == 3)
 		{
 			red		+= str[1];
 			red		+= str[1];
@@ -173,7 +173,7 @@ litehtml::web_color litehtml::web_color::from_string( const tchar_t* str )
 			green	+= str[2];
 			blue	+= str[3];
 			blue	+= str[3];
-		} else if(t_strlen(str + 1) == 6)
+		} else if(str.size() + 1 == 6)
 		{
 			red		+= str[1];
 			red		+= str[2];
@@ -188,23 +188,21 @@ litehtml::web_color litehtml::web_color::from_string( const tchar_t* str )
 		clr.green	= (byte) t_strtol(green.c_str(),	&sss, 16);
 		clr.blue	= (byte) t_strtol(blue.c_str(),	&sss, 16);
 		return clr;
-	} else if(!t_strncmp(str, _t("rgb"), 3))
+	} else if(!t_strncmp(str.c_str(), _t("rgb"), 3))
 	{
-		tstring s = str;
-
-		tstring::size_type pos = s.find_first_of(_t("("));
-		if(pos != tstring::npos)
+        tstring_view::size_type pos = str.find_first_of(_t("("));
+        if (pos != tstring_view::npos)
 		{
-			s.erase(s.begin(), s.begin() + pos + 1);
+            str.remove_prefix(pos + 1);
 		}
-		pos = s.find_last_of(_t(")"));
-		if(pos != tstring::npos)
+        pos = str.find_last_of(_t(")"));
+        if (pos != tstring_view::npos)
 		{
-			s.erase(s.begin() + pos, s.end());
+            str.remove_suffix(str.size() - pos);
 		}
 
-		std::vector<tstring> tokens;
-		split_string(s, tokens, _t(", \t"));
+		string_view_vector tokens;
+        split_string(str, tokens, _t(", \t"));
 
 		web_color clr;
 
@@ -216,7 +214,7 @@ litehtml::web_color litehtml::web_color::from_string( const tchar_t* str )
 		return clr;
 	} else
 	{
-		const tchar_t* rgb = resolve_name(str);
+		const tchar_t* rgb = resolve_name(str.c_str());
 		if(rgb)
 		{
 			return from_string(rgb);

@@ -58,7 +58,7 @@ namespace litehtml
 			parse(txt, baseurl);
 		}
 
-		void add_property(const tchar_t* name, const tchar_t* val, const tchar_t* baseurl, bool important);
+		void add_property(tstring_view name, const tchar_t* val, const tchar_t* baseurl, bool important);
 
 		const tchar_t* get_property(const tchar_t* name) const
 		{
@@ -80,12 +80,12 @@ namespace litehtml
 		}
 
 	private:
-		void parse_property(const tstring& txt, const tchar_t* baseurl);
+		void parse_property(const tstring_view& txt, const tchar_t* baseurl);
 		void parse(const tchar_t* txt, const tchar_t* baseurl);
-		void parse_short_border(const tstring& prefix, const tstring& val, bool important);
-		void parse_short_background(const tstring& val, const tchar_t* baseurl, bool important);
-		void parse_short_font(const tstring& val, bool important);
-		void add_parsed_property(const tstring& name, const tstring& val, bool important);
-		void remove_property(const tstring& name, bool important);
+		void parse_short_border(const tstring_view& prefix, const tstring_view& val, bool important);
+		void parse_short_background(const tstring_view& val, const tchar_t* baseurl, bool important);
+		void parse_short_font(const tstring_view& val, bool important);
+		void add_parsed_property(const tstring_view& name, const tstring_view& val, bool important);
+		void remove_property(const tstring_view& name, bool important);
 	};
 }

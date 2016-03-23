@@ -2,20 +2,24 @@
 #include "css_selector.h"
 #include "document.h"
 
-void litehtml::css_element_selector::parse( const tstring& txt )
+void litehtml::css_element_selector::parse( const tstring_view& txt )
 {
-	tstring::size_type el_end = txt.find_first_of(_t(".#[:"));
-	m_tag = txt.substr(0, el_end);
-	litehtml::lcase(m_tag);
-	while(el_end != tstring::npos)
+	tstring_view::size_type el_end = txt.find_first_of(_t(".#[:"));
+	m_tag = litehtml::lcase_copy(txt.substr(0, el_end));
+
+	while(el_end != tstring_view::npos)
 	{
 		if(txt[el_end] == _t('.'))
 		{
 			css_attribute_selector attribute;
 
-			tstring::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 1);
-			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1);
-			split_string( attribute.val, attribute.class_val, _t(" ") );
+			tstring_view::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 1);
+			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
+
+            string_view_vector class_val;
+            split_string(attribute.val, class_val, _t(" "));
+            attribute.class_val = std::move(to_string_vector(class_val));
+
 			attribute.condition	= select_equal;
 			attribute.attribute	= _t("class");
 			m_attrs.push_back(attribute);
@@ -26,20 +30,19 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 
 			if(txt[el_end + 1] == _t(':'))
 			{
-				tstring::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 2);
-				attribute.val		= txt.substr(el_end + 2, pos - el_end - 2);
+				tstring_view::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 2);
+				attribute.val		= litehtml::lcase_copy(txt.substr(el_end + 2, pos - el_end - 2));
 				attribute.condition	= select_pseudo_element;
-				litehtml::lcase(attribute.val);
 				attribute.attribute	= _t("pseudo-el");
 				m_attrs.push_back(attribute);
 				el_end = pos;
 			} else
 			{
-				tstring::size_type pos = txt.find_first_of(_t(".#[:("), el_end + 1);
-				if(pos != tstring::npos && txt.at(pos) == _t('('))
+				tstring_view::size_type pos = txt.find_first_of(_t(".#[:("), el_end + 1);
+				if(pos != tstring_view::npos && txt.at(pos) == _t('('))
 				{
 					pos = find_close_bracket(txt, pos);
-					if(pos != tstring::npos)
+					if(pos != tstring_view::npos)
 					{
 						pos++;
 					} else
@@ -48,12 +51,12 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 						iii++;
 					}
 				}
-				if(pos != tstring::npos)
+				if(pos != tstring_view::npos)
 				{
-					attribute.val		= txt.substr(el_end + 1, pos - el_end - 1);
+					attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
 				} else
 				{
-					attribute.val		= txt.substr(el_end + 1);
+					attribute.val		= txt.substr(el_end + 1).to_string();
 				}
 				litehtml::lcase(attribute.val);
 				if(attribute.val == _t("after") || attribute.val == _t("before"))
@@ -71,8 +74,8 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 		{
 			css_attribute_selector attribute;
 
-			tstring::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 1);
-			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1);
+			tstring_view::size_type pos = txt.find_first_of(_t(".#[:"), el_end + 1);
+			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
 			attribute.condition	= select_equal;
 			attribute.attribute	= _t("id");
 			m_attrs.push_back(attribute);
@@ -81,11 +84,10 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 		{
 			css_attribute_selector attribute;
 
-			tstring::size_type pos = txt.find_first_of(_t("]~=|$*^"), el_end + 1);
-			tstring attr = txt.substr(el_end + 1, pos - el_end - 1);
-			trim(attr);
+			tstring_view::size_type pos = txt.find_first_of(_t("]~=|$*^"), el_end + 1);
+            tstring attr = trim(txt.substr(el_end + 1, pos - el_end - 1)).to_string();
 			litehtml::lcase(attr);
-			if(pos != tstring::npos)
+			if(pos != tstring_view::npos)
 			{
 				if(txt[pos] == _t(']'))
 				{
@@ -120,22 +122,21 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 					pos += 1;
 				}
 				pos = txt.find_first_not_of(_t(" \t"), pos);
-				if(pos != tstring::npos)
+				if(pos != tstring_view::npos)
 				{
 					if(txt[pos] == _t('"'))
 					{
-						tstring::size_type pos2 = txt.find_first_of(_t("\""), pos + 1);
-						attribute.val = txt.substr(pos + 1, pos2 == tstring::npos ? pos2 : (pos2 - pos - 1));
-						pos = pos2 == tstring::npos ? pos2 : (pos2 + 1);
+						tstring_view::size_type pos2 = txt.find_first_of(_t("\""), pos + 1);
+						attribute.val = txt.substr(pos + 1, pos2 == tstring_view::npos ? pos2 : (pos2 - pos - 1)).to_string();
+						pos = pos2 == tstring_view::npos ? pos2 : (pos2 + 1);
 					} else if(txt[pos] == _t(']'))
 					{
 						pos ++;
 					} else
 					{
-						tstring::size_type pos2 = txt.find_first_of(_t("]"), pos + 1);
-						attribute.val = txt.substr(pos, pos2 == tstring::npos ? pos2 : (pos2 - pos));
-						trim(attribute.val);
-						pos = pos2 == tstring::npos ? pos2 : (pos2 + 1);
+						tstring_view::size_type pos2 = txt.find_first_of(_t("]"), pos + 1);
+                        attribute.val = trim(txt.substr(pos, pos2 == tstring_view::npos ? pos2 : (pos2 - pos))).to_string();
+						pos = pos2 == tstring_view::npos ? pos2 : (pos2 + 1);
 					}
 				}
 			} else
@@ -154,13 +155,13 @@ void litehtml::css_element_selector::parse( const tstring& txt )
 }
 
 
-bool litehtml::css_selector::parse( const tstring& text )
+bool litehtml::css_selector::parse( const tstring_view& text )
 {
 	if(text.empty())
 	{
 		return false;
 	}
-	string_vector tokens;
+	string_view_vector tokens;
 	split_string(text, tokens, _t(""), _t(" \t>+~"), _t("(["));
 
 	if(tokens.empty())
@@ -168,8 +169,8 @@ bool litehtml::css_selector::parse( const tstring& text )
 		return false;
 	}
 
-	tstring left;
-	tstring right = tokens.back();
+	tstring_view left;
+	tstring_view right = tokens.back();
 	tchar_t combinator = 0;
 
 	tokens.pop_back();
@@ -182,13 +183,14 @@ bool litehtml::css_selector::parse( const tstring& text )
 		tokens.pop_back();
 	}
 
-	for(string_vector::const_iterator i = tokens.begin(); i != tokens.end(); i++)
+    tstring joined_tokens;
+	for(auto i = tokens.begin(); i != tokens.end(); i++)
 	{
-		left += *i;
+        joined_tokens.append(i->c_str(), i->size());
 	}
 
-	trim(left);
-	trim(right);
+    left = trim(joined_tokens);
+    right = trim(right);
 
 	if(right.empty())
 	{

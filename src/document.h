@@ -86,14 +86,14 @@ namespace litehtml
 		bool							on_lbutton_down(int x, int y, int client_x, int client_y, position::vector& redraw_boxes);
 		bool							on_lbutton_up(int x, int y, int client_x, int client_y, position::vector& redraw_boxes);
 		bool							on_mouse_leave(position::vector& redraw_boxes);
-		litehtml::element::ptr			create_element(const tchar_t* tag_name, const string_map& attributes);
+        litehtml::element::ptr			create_element(tstring_view tag_name, const string_map& attributes);
 		element::ptr					root();
 		void							get_fixed_boxes(position::vector& fixed_boxes);
 		void							add_fixed_box(const position& pos);
 		void							add_media_list(media_query_list::ptr list);
 		bool							media_changed();
 		bool							lang_changed();
-		bool                            match_lang(const tstring & lang);
+		bool                            match_lang(const tstring_view & lang);
 		void							add_tabular(const element::ptr& el);
 
 		static litehtml::document::ptr createFromString(const tchar_t* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
@@ -117,7 +117,7 @@ namespace litehtml
 	{
 		m_tabular_elements.push_back(el);
 	}
-	inline bool document::match_lang(const tstring & lang)
+	inline bool document::match_lang(const tstring_view & lang)
 	{
 		return lang == m_lang || lang == m_culture;
 	}

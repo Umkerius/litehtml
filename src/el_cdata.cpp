@@ -11,7 +11,7 @@ litehtml::el_cdata::~el_cdata()
 
 }
 
-void litehtml::el_cdata::get_text( tstring& text )
+void litehtml::el_cdata::get_text(tstring& text)
 {
 	text += m_text;
 }

@@ -50,7 +50,7 @@ namespace litehtml
 		virtual void				on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el) = 0;
 		virtual	void				set_cursor(const litehtml::tchar_t* cursor) = 0;
 		virtual	void				transform_text(litehtml::tstring& text, litehtml::text_transform tt) = 0;
-		virtual void				import_css(litehtml::tstring& text, const litehtml::tstring& url, litehtml::tstring& baseurl) = 0;
+		virtual void				import_css(litehtml::tstring& text, litehtml::tstring_view url, litehtml::tstring& baseurl) = 0;
 		virtual void				set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius, bool valid_x, bool valid_y) = 0;
 		virtual void				del_clip() = 0;
 		virtual void				get_client_rect(litehtml::position& client) const = 0;
@@ -59,16 +59,34 @@ namespace litehtml
 																	 const std::shared_ptr<litehtml::document> &doc) = 0;
 
 		virtual void				get_media_features(litehtml::media_features& media) const = 0;
-		virtual void				get_language(litehtml::tstring& language, litehtml::tstring & culture) const = 0;
+		virtual void				get_language(litehtml::tstring& language, litehtml::tstring& culture) const = 0;
 	};
 
-	void trim(tstring &s);
+    tstring_view trim(tstring_view s);
 	void lcase(tstring &s);
-	int	 value_index(const tstring& val, const tstring& strings, int defValue = -1, tchar_t delim = _t(';'));
-	bool value_in_list(const tstring& val, const tstring& strings, tchar_t delim = _t(';'));
-	tstring::size_type find_close_bracket(const tstring &s, tstring::size_type off, tchar_t open_b = _t('('), tchar_t close_b = _t(')'));
-	void split_string(const tstring& str, string_vector& tokens, const tstring& delims, const tstring& delims_preserve = _t(""), const tstring& quote = _t("\""));
-	void join_string(tstring& str, const string_vector& tokens, const tstring& delims);
+    tstring lcase_copy(tstring_view s);
+
+    int	 value_index(tstring_view val, tstring_view strings, int defValue = -1, tchar_t delim = _t(';'));
+	bool value_in_list(tstring_view val, tstring_view strings, tchar_t delim = _t(';'));
+	tstring_view::size_type find_close_bracket(tstring_view s, tstring_view::size_type off, tchar_t open_b = _t('('), tchar_t close_b = _t(')'));
+	void split_string(tstring_view str, string_view_vector& tokens, tstring_view delims, tstring_view delims_preserve = _t(""), tstring_view quote = _t("\""));
+
+    template <typename StringT>
+    void join_string(tstring& str, const std::vector<StringT>& tokens, tstring_view delims)
+    {
+        str.clear();
+
+        for (size_t i = 0; i < tokens.size(); ++i)
+        {
+            if (i != 0)
+            {
+                str.append(delims.c_str(), delims.size());
+            }
+            str += tokens[i];
+        }
+    }
+
+    string_vector to_string_vector(const string_view_vector& views);
 
 	inline int round_f(float val)
 	{

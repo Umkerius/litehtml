@@ -21,7 +21,10 @@ litehtml::el_table::~el_table()
 bool litehtml::el_table::appendChild(const litehtml::element::ptr& el)
 {
 	if(!el)	return false;
-	if(!t_strcmp(el->get_tagName(), _t("tbody")) || !t_strcmp(el->get_tagName(), _t("thead")) || !t_strcmp(el->get_tagName(), _t("tfoot")))
+
+    tstring_view tagName = el->get_tagName();
+
+    if (tagName == _t("tbody") || tagName == _t("thead") || tagName == _t("tfoot"))
 	{
 		return html_tag::appendChild(el);
 	}

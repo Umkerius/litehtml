@@ -175,10 +175,10 @@ namespace litehtml
 		virtual int					select(const css_selector& selector, bool apply_pseudo = true) override;
 		virtual int					select(const css_element_selector& selector, bool apply_pseudo = true) override;
 
-		virtual elements_vector		select_all(const tstring& selector) override;
+		virtual elements_vector		select_all(const tstring_view& selector) override;
 		virtual elements_vector		select_all(const css_selector& selector) override;
 
-		virtual element::ptr		select_one(const tstring& selector) override;
+		virtual element::ptr		select_one(const tstring_view& selector) override;
 		virtual element::ptr		select_one(const css_selector& selector) override;
 
 		virtual element::ptr		find_ancestor(const css_selector& selector, bool apply_pseudo = true, bool* is_pseudo = 0) override;
@@ -228,7 +228,7 @@ namespace litehtml
 		void						parse_background();
 		void						init_background_paint( position pos, background_paint &bg_paint, const background* bg );
 		void						draw_list_marker( uint_ptr hdc, const position &pos );
-		void						parse_nth_child_params( tstring param, int &num, int &off );
+		void						parse_nth_child_params( tstring_view param, int &num, int &off );
 		void						remove_before_after();
 		litehtml::element::ptr		get_element_before();
 		litehtml::element::ptr		get_element_after();
