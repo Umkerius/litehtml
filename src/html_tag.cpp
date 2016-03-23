@@ -753,7 +753,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(t_strncmp(attr_value.c_str(), i->val.c_str(), i->val.length()))
+			} else if(t_strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
 			{
 				return select_no_match;
 			}
@@ -762,10 +762,10 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(t_strncmp(attr_value.c_str(), i->val.c_str(), i->val.length()))
+			} else if(t_strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
 			{
-                const tchar_t* s = attr_value.c_str() + attr_value.length() - i->val.length() - 1;
-				if(s < attr_value.c_str())
+                const tchar_t* s = attr_value.data() + attr_value.length() - i->val.length() - 1;
+				if(s < attr_value.data())
 				{
 					return select_no_match;
 				}
@@ -4162,13 +4162,14 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 	if (ret_width < max_width && !second_pass && have_parent())
 	{
 		if (m_display == display_inline_block ||
-			m_css_width.is_predefined() &&
+			(m_css_width.is_predefined() &&
 			(m_float != float_none ||
 			m_display == display_table ||
 			m_el_position == element_position_absolute ||
 			m_el_position == element_position_fixed
 			)
 			)
+            )
 		{
 			render(x, y, ret_width, true);
 			m_pos.width = ret_width - (content_margins_left() + content_margins_right());
@@ -4479,7 +4480,6 @@ int litehtml::html_tag::render_table(int x, int y, int max_width, bool second_pa
 		min_height = (int)m_css_min_height.val();
 	}
 
-	int extra_row_height = 0;
 	int minimum_table_height = std::max(block_height, min_height);
 
 	m_grid->calc_rows_height(minimum_table_height - table_height_spacing, m_border_spacing_y);

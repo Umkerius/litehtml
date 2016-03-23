@@ -1,7 +1,4 @@
-//#pragma once
-
-#ifndef HUITA
-#define HUITA
+#pragma once
 
 #include <cassert>
 #include <numeric>
@@ -469,5 +466,3 @@ std::basic_string<CharT> operator+(string_view<CharT> lhs, const CharT* rhs)
 }
 
 } // namespace litehtml
-
-#endif HUITA

@@ -63,7 +63,7 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 		if(style_start != tstring_view::npos && style_end != tstring_view::npos)
 		{
 			style::ptr st = std::make_shared<style>();
-			st->add(stylesheet.substr(style_start + 1, style_end - style_start - 1).c_str(), baseurl);
+			st->add(stylesheet.substr(style_start + 1, style_end - style_start - 1), baseurl);
 
 			parse_selectors(stylesheet.substr(pos, style_start - pos), st, media);
 
@@ -219,7 +219,7 @@ void litehtml::css::parse_atrule(const tstring_view& text, tstring_view baseurl,
 				media_style = text.substr(b1 + 1);
 			}
 
-			parse_stylesheet(media_style.c_str(), baseurl, doc, new_media);
+			parse_stylesheet(media_style, baseurl, doc, new_media);
 		}
 	}
 }

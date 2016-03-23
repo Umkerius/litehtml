@@ -80,7 +80,7 @@ namespace litehtml
         {
             if (i != 0)
             {
-                str.append(delims.c_str(), delims.size());
+                str.append(delims.data(), delims.size());
             }
             str += tokens[i];
         }

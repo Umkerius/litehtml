@@ -158,7 +158,7 @@ void litehtml::style::add_property(tstring_view name, tstring_view val, tstring_
 		tstring str;
         for (auto tok : tokens)
 		{
-			idx = value_index(*tok, border_style_strings, -1);
+			idx = value_index(tok, border_style_strings, -1);
 			if(idx >= 0)
 			{
                 str = name + _t("-style");

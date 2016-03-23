@@ -195,7 +195,7 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 		clr.blue	= byte(std::stol(blue,	nullptr, 16));
 		return clr;
 	} 
-    else if(!t_strncmp(str.c_str(), _t("rgb"), 3))
+    else if(str.substr(0, 3) == _t("rgb"))
 	{
         tstring_view::size_type pos = str.find_first_of(_t("("));
         if (pos != tstring_view::npos)

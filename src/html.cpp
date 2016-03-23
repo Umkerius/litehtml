@@ -27,7 +27,7 @@ void litehtml::lcase(tstring &s)
 
 litehtml::tstring litehtml::lcase_copy(tstring_view s)
 {
-    tstring result(s.c_str(), s.size());
+    tstring result(s.data(), s.size());
     lcase(result);
 
     return result;
