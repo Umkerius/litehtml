@@ -2,7 +2,9 @@
 #include "style.h"
 #include "types.h"
 #include "context.h"
-#include "gumbo/gumbo.h"
+
+//forwarding declaration
+typedef struct GumboInternalNode GumboNode;
 
 namespace litehtml
 {
@@ -75,7 +77,7 @@ namespace litehtml
 	private:
 		litehtml::uint_ptr	add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm);
 
-		void create_node(GumboNode* node, elements_vector& elements);
+        void create_node(GumboNode* node, elements_vector& elements);
 		bool update_media_lists(const media_features& features);
 		void fix_tables_layout();
 		void fix_table_children(element::ptr& el_ptr, style_display disp, tstring_view disp_str);
