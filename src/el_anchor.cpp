@@ -13,7 +13,7 @@ litehtml::el_anchor::~el_anchor()
 
 void litehtml::el_anchor::on_click()
 {
-	tstring_view href = get_attr(_t("href"));
+	tstring_view href = get_attr(_Q("href"));
 
 	if(!href.empty())
 	{
@@ -23,9 +23,9 @@ void litehtml::el_anchor::on_click()
 
 void litehtml::el_anchor::apply_stylesheet( const litehtml::css& stylesheet )
 {
-	if(!get_attr(_t("href")).empty())
+	if(!get_attr(_Q("href")).empty())
 	{
-		m_pseudo_classes.push_back(_t("link"));
+		m_pseudo_classes.push_back("link");
 	}
 	html_tag::apply_stylesheet(stylesheet);
 }

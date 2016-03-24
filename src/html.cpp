@@ -4,13 +4,13 @@
 
 litehtml::tstring_view litehtml::trim(tstring_view str)
 {
-    tstring_view::size_type space_pos = str.find_first_not_of(_t(" \n\r\t"));
+    tstring_view::size_type space_pos = str.find_first_not_of(_Q(" \n\r\t"));
     if (space_pos != 0 && space_pos != tstring_view::npos)
         str.remove_prefix(space_pos);
     else if (space_pos == tstring_view::npos)
         return tstring_view();
 
-    space_pos = str.find_last_not_of(_t(" \n\r\t")) + 1;
+    space_pos = str.find_last_not_of(_Q(" \n\r\t")) + 1;
     if (space_pos != tstring_view::npos && space_pos != str.size())
         str.remove_suffix(str.size() - space_pos);
 
@@ -21,7 +21,7 @@ void litehtml::lcase(tstring &s)
 {
     for (auto& x : s)
     {
-        x = t_tolower(x);
+        x = tolower(x);
     }
 }
 
@@ -100,7 +100,7 @@ bool litehtml::value_in_list( tstring_view val, tstring_view strings, tchar_t de
 	return false;
 }
 
-void litehtml::split_string(tstring_view str, string_view_vector& tokens, tstring_view delims, tstring_view delims_preserve, tstring_view quote)
+void litehtml::split_string(tstring_view str, string_view_deque& tokens, tstring_view delims, tstring_view delims_preserve, tstring_view quote)
 {
 	if(str.empty() || (delims.empty() && delims_preserve.empty()))
 	{
@@ -117,15 +117,15 @@ void litehtml::split_string(tstring_view str, string_view_vector& tokens, tstrin
 	{
 		while( token_end != tstring_view::npos && quote.find_first_of(str[token_end]) != tstring_view::npos )
 		{
-			if(str[token_end] == _t('('))
+			if(str[token_end] == '(')
 			{
-				token_end = find_close_bracket(str, token_end, _t('('), _t(')'));
-			} else if(str[token_end] == _t('['))
+				token_end = find_close_bracket(str, token_end, '(', ')');
+			} else if(str[token_end] == '[')
 			{
-				token_end = find_close_bracket(str, token_end, _t('['), _t(']'));
-			} else if(str[token_end] == _t('{'))
+				token_end = find_close_bracket(str, token_end, '[', ']');
+			} else if(str[token_end] == '{')
 			{
-				token_end = find_close_bracket(str, token_end, _t('{'), _t('}'));
+				token_end = find_close_bracket(str, token_end, '{', '}');
 			} else
 			{
 				token_end = str.find_first_of(str[token_end], token_end + 1);
@@ -162,7 +162,7 @@ void litehtml::split_string(tstring_view str, string_view_vector& tokens, tstrin
 	}
 }
 
-litehtml::string_vector litehtml::to_string_vector(const litehtml::string_view_vector& views)
+litehtml::string_vector litehtml::to_string_vector(const litehtml::string_view_deque& views)
 {
     litehtml::string_vector result;
     result.reserve(views.size());

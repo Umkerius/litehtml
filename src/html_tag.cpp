@@ -88,11 +88,11 @@ void litehtml::html_tag::set_attr(tstring_view name, tstring_view val)
 		}
 		m_attrs[s_val] = val.to_string();
 
-		if( lcase_copy(name) == _t("class") )
+		if( lcase_copy(name) == _Q("class") )
 		{
 			m_class_values.clear();
-            string_view_vector class_values;
-            split_string(val, class_values, _t(" "));
+            string_view_deque class_values;
+            split_string(val, class_values, _Q(" "));
             m_class_values = to_string_vector(class_values);
 		}
 	}
@@ -295,7 +295,7 @@ litehtml::tstring_view litehtml::html_tag::get_style_property( tstring_view name
 	element::ptr el_parent = parent();
 	if (el_parent)
 	{
-		if ( (lcase_copy(ret) == _t("inherit")) || (ret.empty() && inherited) )
+		if ( (lcase_copy(ret) == _Q("inherit")) || (ret.empty() && inherited) )
 		{
 			ret = el_parent->get_style_property(name, inherited, def);
 		}
@@ -310,7 +310,7 @@ litehtml::tstring_view litehtml::html_tag::get_style_property( tstring_view name
 
 void litehtml::html_tag::parse_styles(bool is_reparse)
 {
-	tstring_view style = get_attr(_t("style"));
+	tstring_view style = get_attr(_Q("style"));
 	if(!style.empty())
 	{
 		m_style.add(style, NULL);
@@ -319,30 +319,30 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 	init_font();
 	document::ptr doc = get_document();
 
-	m_el_position	= (element_position)	value_index(get_style_property(_t("position"),		false,	_t("static")),		element_position_strings,	element_position_fixed);
-	m_text_align	= (text_align)			value_index(get_style_property(_t("text-align"),		true,	_t("left")),		text_align_strings,			text_align_left);
-	m_overflow		= (overflow)			value_index(get_style_property(_t("overflow"),		false,	_t("visible")),		overflow_strings,			overflow_visible);
-	m_white_space	= (white_space)			value_index(get_style_property(_t("white-space"),	true,	_t("normal")),		white_space_strings,		white_space_normal);
-	m_display		= (style_display)		value_index(get_style_property(_t("display"),		false,	_t("inline")),		style_display_strings,		display_inline);
-	m_visibility	= (visibility)			value_index(get_style_property(_t("visibility"),	true,	_t("visible")),		visibility_strings,			visibility_visible);
-	m_box_sizing	= (box_sizing)			value_index(get_style_property(_t("box-sizing"),		false,	_t("content-box")),	box_sizing_strings,			box_sizing_content_box);
+	m_el_position	= (element_position)	value_index(get_style_property(_Q("position"),		false,	_Q("static")),		element_position_strings,	element_position_fixed);
+	m_text_align	= (text_align)			value_index(get_style_property(_Q("text-align"),		true,	_Q("left")),		text_align_strings,			text_align_left);
+	m_overflow		= (overflow)			value_index(get_style_property(_Q("overflow"),		false,	_Q("visible")),		overflow_strings,			overflow_visible);
+	m_white_space	= (white_space)			value_index(get_style_property(_Q("white-space"),	true,	_Q("normal")),		white_space_strings,		white_space_normal);
+	m_display		= (style_display)		value_index(get_style_property(_Q("display"),		false,	_Q("inline")),		style_display_strings,		display_inline);
+	m_visibility	= (visibility)			value_index(get_style_property(_Q("visibility"),	true,	_Q("visible")),		visibility_strings,			visibility_visible);
+	m_box_sizing	= (box_sizing)			value_index(get_style_property(_Q("box-sizing"),		false,	_Q("content-box")),	box_sizing_strings,			box_sizing_content_box);
 
 	if(m_el_position != element_position_static)
 	{
-		tstring_view val = get_style_property(_t("z-index"), false, 0);
+		tstring_view val = get_style_property(_Q("z-index"), false, 0);
 		if(!val.empty())
 		{
 			m_z_index = std::stoi(val.to_string());
 		}
 	}
 
-	tstring_view va	= get_style_property(_t("vertical-align"), true,	_t("baseline"));
+	tstring_view va	= get_style_property(_Q("vertical-align"), true,	_Q("baseline"));
 	m_vertical_align = (vertical_align) value_index(va, vertical_align_strings, va_baseline);
 
-	tstring_view fl	= get_style_property(_t("float"), false,	_t("none"));
+	tstring_view fl	= get_style_property(_Q("float"), false,	_Q("none"));
 	m_float = (element_float) value_index(fl, element_float_strings, float_none);
 
-	m_clear = (element_clear) value_index(get_style_property(_t("clear"), false, _t("none")), element_clear_strings, clear_none);
+	m_clear = (element_clear) value_index(get_style_property(_Q("clear"), false, _Q("none")), element_clear_strings, clear_none);
 
 	if (m_float != float_none)
 	{
@@ -373,71 +373,71 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 		}
 	}
 
-	m_css_text_indent.fromString(	get_style_property(_t("text-indent"),	true,	_t("0")),	_t("0"));
+	m_css_text_indent.fromString(	get_style_property(_Q("text-indent"),	true,	_Q("0")),	_Q("0"));
 
-	m_css_width.fromString(			get_style_property(_t("width"),			false,	_t("auto")), _t("auto"));
-	m_css_height.fromString(		get_style_property(_t("height"),		false,	_t("auto")), _t("auto"));
+	m_css_width.fromString(			get_style_property(_Q("width"),			false,	_Q("auto")), _Q("auto"));
+	m_css_height.fromString(		get_style_property(_Q("height"),		false,	_Q("auto")), _Q("auto"));
 
 	doc->cvt_units(m_css_width, m_font_size);
 	doc->cvt_units(m_css_height, m_font_size);
 
-	m_css_min_width.fromString(		get_style_property(_t("min-width"),		false,	_t("0")));
-	m_css_min_height.fromString(	get_style_property(_t("min-height"),		false,	_t("0")));
+	m_css_min_width.fromString(		get_style_property(_Q("min-width"),		false,	_Q("0")));
+	m_css_min_height.fromString(	get_style_property(_Q("min-height"),		false,	_Q("0")));
 
-	m_css_max_width.fromString(		get_style_property(_t("max-width"),		false,	_t("none")),	_t("none"));
-	m_css_max_height.fromString(	get_style_property(_t("max-height"),		false,	_t("none")),	_t("none"));
+	m_css_max_width.fromString(		get_style_property(_Q("max-width"),		false,	_Q("none")),	_Q("none"));
+	m_css_max_height.fromString(	get_style_property(_Q("max-height"),		false,	_Q("none")),	_Q("none"));
 	
 	doc->cvt_units(m_css_min_width, m_font_size);
 	doc->cvt_units(m_css_min_height, m_font_size);
 
-	m_css_offsets.left.fromString(		get_style_property(_t("left"),				false,	_t("auto")), _t("auto"));
-	m_css_offsets.right.fromString(		get_style_property(_t("right"),				false,	_t("auto")), _t("auto"));
-	m_css_offsets.top.fromString(		get_style_property(_t("top"),				false,	_t("auto")), _t("auto"));
-	m_css_offsets.bottom.fromString(	get_style_property(_t("bottom"),			false,	_t("auto")), _t("auto"));
+	m_css_offsets.left.fromString(		get_style_property(_Q("left"),				false,	_Q("auto")), _Q("auto"));
+	m_css_offsets.right.fromString(		get_style_property(_Q("right"),				false,	_Q("auto")), _Q("auto"));
+	m_css_offsets.top.fromString(		get_style_property(_Q("top"),				false,	_Q("auto")), _Q("auto"));
+	m_css_offsets.bottom.fromString(	get_style_property(_Q("bottom"),			false,	_Q("auto")), _Q("auto"));
 
 	doc->cvt_units(m_css_offsets.left, m_font_size);
 	doc->cvt_units(m_css_offsets.right, m_font_size);
 	doc->cvt_units(m_css_offsets.top,		m_font_size);
 	doc->cvt_units(m_css_offsets.bottom,	m_font_size);
 
-	m_css_margins.left.fromString(		get_style_property(_t("margin-left"),		false,	_t("0")), _t("auto"));
-	m_css_margins.right.fromString(		get_style_property(_t("margin-right"),		false,	_t("0")), _t("auto"));
-	m_css_margins.top.fromString(		get_style_property(_t("margin-top"),			false,	_t("0")), _t("auto"));
-	m_css_margins.bottom.fromString(	get_style_property(_t("margin-bottom"),		false,	_t("0")), _t("auto"));
+	m_css_margins.left.fromString(		get_style_property(_Q("margin-left"),		false,	_Q("0")), _Q("auto"));
+	m_css_margins.right.fromString(		get_style_property(_Q("margin-right"),		false,	_Q("0")), _Q("auto"));
+	m_css_margins.top.fromString(		get_style_property(_Q("margin-top"),			false,	_Q("0")), _Q("auto"));
+	m_css_margins.bottom.fromString(	get_style_property(_Q("margin-bottom"),		false,	_Q("0")), _Q("auto"));
 
-	m_css_padding.left.fromString(		get_style_property(_t("padding-left"),		false,	_t("0")), _t(""));
-	m_css_padding.right.fromString(		get_style_property(_t("padding-right"),		false,	_t("0")), _t(""));
-	m_css_padding.top.fromString(		get_style_property(_t("padding-top"),		false,	_t("0")), _t(""));
-	m_css_padding.bottom.fromString(	get_style_property(_t("padding-bottom"),		false,	_t("0")), _t(""));
+	m_css_padding.left.fromString(		get_style_property(_Q("padding-left"),		false,	_Q("0")), _Q(""));
+	m_css_padding.right.fromString(		get_style_property(_Q("padding-right"),		false,	_Q("0")), _Q(""));
+	m_css_padding.top.fromString(		get_style_property(_Q("padding-top"),		false,	_Q("0")), _Q(""));
+	m_css_padding.bottom.fromString(	get_style_property(_Q("padding-bottom"),		false,	_Q("0")), _Q(""));
 
-	m_css_borders.left.width.fromString(	get_style_property(_t("border-left-width"),		false,	_t("medium")), border_width_strings);
-	m_css_borders.right.width.fromString(	get_style_property(_t("border-right-width"),		false,	_t("medium")), border_width_strings);
-	m_css_borders.top.width.fromString(		get_style_property(_t("border-top-width"),		false,	_t("medium")), border_width_strings);
-	m_css_borders.bottom.width.fromString(	get_style_property(_t("border-bottom-width"),	false,	_t("medium")), border_width_strings);
+	m_css_borders.left.width.fromString(	get_style_property(_Q("border-left-width"),		false,	_Q("medium")), border_width_strings);
+	m_css_borders.right.width.fromString(	get_style_property(_Q("border-right-width"),		false,	_Q("medium")), border_width_strings);
+	m_css_borders.top.width.fromString(		get_style_property(_Q("border-top-width"),		false,	_Q("medium")), border_width_strings);
+	m_css_borders.bottom.width.fromString(	get_style_property(_Q("border-bottom-width"),	false,	_Q("medium")), border_width_strings);
 
-	m_css_borders.left.color = web_color::from_string(get_style_property(_t("border-left-color"),	false,	_t("")));
-	m_css_borders.left.style = (border_style) value_index(get_style_property(_t("border-left-style"), false, _t("none")), border_style_strings, border_style_none);
+	m_css_borders.left.color = web_color::from_string(get_style_property(_Q("border-left-color"),	false,	_Q("")));
+	m_css_borders.left.style = (border_style) value_index(get_style_property(_Q("border-left-style"), false, _Q("none")), border_style_strings, border_style_none);
 
-	m_css_borders.right.color = web_color::from_string(get_style_property(_t("border-right-color"),	false,	_t("")));
-	m_css_borders.right.style = (border_style) value_index(get_style_property(_t("border-right-style"), false, _t("none")), border_style_strings, border_style_none);
+	m_css_borders.right.color = web_color::from_string(get_style_property(_Q("border-right-color"),	false,	_Q("")));
+	m_css_borders.right.style = (border_style) value_index(get_style_property(_Q("border-right-style"), false, _Q("none")), border_style_strings, border_style_none);
 
-	m_css_borders.top.color = web_color::from_string(get_style_property(_t("border-top-color"),	false,	_t("")));
-	m_css_borders.top.style = (border_style) value_index(get_style_property(_t("border-top-style"), false, _t("none")), border_style_strings, border_style_none);
+	m_css_borders.top.color = web_color::from_string(get_style_property(_Q("border-top-color"),	false,	_Q("")));
+	m_css_borders.top.style = (border_style) value_index(get_style_property(_Q("border-top-style"), false, _Q("none")), border_style_strings, border_style_none);
 
-	m_css_borders.bottom.color = web_color::from_string(get_style_property(_t("border-bottom-color"),	false,	_t("")));
-	m_css_borders.bottom.style = (border_style) value_index(get_style_property(_t("border-bottom-style"), false, _t("none")), border_style_strings, border_style_none);
+	m_css_borders.bottom.color = web_color::from_string(get_style_property(_Q("border-bottom-color"),	false,	_Q("")));
+	m_css_borders.bottom.style = (border_style) value_index(get_style_property(_Q("border-bottom-style"), false, _Q("none")), border_style_strings, border_style_none);
 
-	m_css_borders.radius.top_left_x.fromString(get_style_property(_t("border-top-left-radius-x"), false, _t("0")));
-	m_css_borders.radius.top_left_y.fromString(get_style_property(_t("border-top-left-radius-y"), false, _t("0")));
+	m_css_borders.radius.top_left_x.fromString(get_style_property(_Q("border-top-left-radius-x"), false, _Q("0")));
+	m_css_borders.radius.top_left_y.fromString(get_style_property(_Q("border-top-left-radius-y"), false, _Q("0")));
 
-	m_css_borders.radius.top_right_x.fromString(get_style_property(_t("border-top-right-radius-x"), false, _t("0")));
-	m_css_borders.radius.top_right_y.fromString(get_style_property(_t("border-top-right-radius-y"), false, _t("0")));
+	m_css_borders.radius.top_right_x.fromString(get_style_property(_Q("border-top-right-radius-x"), false, _Q("0")));
+	m_css_borders.radius.top_right_y.fromString(get_style_property(_Q("border-top-right-radius-y"), false, _Q("0")));
 
-	m_css_borders.radius.bottom_right_x.fromString(get_style_property(_t("border-bottom-right-radius-x"), false, _t("0")));
-	m_css_borders.radius.bottom_right_y.fromString(get_style_property(_t("border-bottom-right-radius-y"), false, _t("0")));
+	m_css_borders.radius.bottom_right_x.fromString(get_style_property(_Q("border-bottom-right-radius-x"), false, _Q("0")));
+	m_css_borders.radius.bottom_right_y.fromString(get_style_property(_Q("border-bottom-right-radius-y"), false, _Q("0")));
 
-	m_css_borders.radius.bottom_left_x.fromString(get_style_property(_t("border-bottom-left-radius-x"), false, _t("0")));
-	m_css_borders.radius.bottom_left_y.fromString(get_style_property(_t("border-bottom-left-radius-y"), false, _t("0")));
+	m_css_borders.radius.bottom_left_x.fromString(get_style_property(_Q("border-bottom-left-radius-x"), false, _Q("0")));
+	m_css_borders.radius.bottom_left_y.fromString(get_style_property(_Q("border-bottom-left-radius-y"), false, _Q("0")));
 
 	doc->cvt_units(m_css_borders.radius.bottom_left_x,			m_font_size);
 	doc->cvt_units(m_css_borders.radius.bottom_left_y,			m_font_size);
@@ -466,7 +466,7 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 	m_borders.bottom	= doc->cvt_units(m_css_borders.bottom.width,	m_font_size);
 
 	css_length line_height;
-	line_height.fromString(get_style_property(_t("line-height"),	true,	_t("normal")), _t("normal"));
+	line_height.fromString(get_style_property(_Q("line-height"),	true,	_Q("normal")), _Q("normal"));
 	if(line_height.is_predefined())
 	{
 		m_line_height = m_font_metrics.height;
@@ -484,19 +484,19 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 
 	if(m_display == display_list_item)
 	{
-		tstring_view list_type = get_style_property(_t("list-style-type"), true, _t("disc"));
+		tstring_view list_type = get_style_property(_Q("list-style-type"), true, _Q("disc"));
 		m_list_style_type = (list_style_type) value_index(list_type, list_style_type_strings, list_style_type_disc);
 
-		tstring_view list_pos = get_style_property(_t("list-style-position"), true, _t("outside"));
+		tstring_view list_pos = get_style_property(_Q("list-style-position"), true, _Q("outside"));
 		m_list_style_position = (list_style_position) value_index(list_pos, list_style_position_strings, list_style_position_outside);
 
-		tstring_view list_image = get_style_property(_t("list-style-image"), true, 0);
+		tstring_view list_image = get_style_property(_Q("list-style-image"), true, 0);
 		if(!list_image.empty())
 		{
 			tstring url;
 			css::parse_css_url(list_image, url);
 
-			tstring_view list_image_baseurl = get_style_property(_t("list-style-image-baseurl"), true, 0);
+			tstring_view list_image_baseurl = get_style_property(_Q("list-style-image-baseurl"), true, 0);
 			doc->container()->load_image(url.c_str(), list_image_baseurl, true);
 		}
 
@@ -679,7 +679,7 @@ int litehtml::html_tag::select(const css_selector& selector, bool apply_pseudo)
 
 int litehtml::html_tag::select(const css_element_selector& selector, bool apply_pseudo)
 {
-	if(!selector.m_tag.empty() && selector.m_tag != _t("*"))
+	if(!selector.m_tag.empty() && selector.m_tag != _Q("*"))
 	{
 		if(selector.m_tag != m_tag)
 		{
@@ -707,7 +707,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 				return select_no_match;
 			} else 
 			{
-				if(i->attribute == _t("class"))
+				if(i->attribute == _Q("class"))
 				{
 					const string_vector & tokens1 = m_class_values;
                     const string_vector & tokens2 = i->class_val;
@@ -753,7 +753,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(t_strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
+			} else if(strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
 			{
 				return select_no_match;
 			}
@@ -762,7 +762,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(t_strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
+			} else if(strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
 			{
                 const tchar_t* s = attr_value.data() + attr_value.length() - i->val.length() - 1;
 				if(s < attr_value.data())
@@ -776,10 +776,10 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 			}
 			break;
 		case select_pseudo_element:
-			if(i->val == _t("after"))
+			if(i->val == _Q("after"))
 			{
 				res |= select_match_with_after;
-			} else if(i->val == _t("before"))
+			} else if(i->val == _Q("before"))
 			{
 				res |= select_match_with_before;
 			} else
@@ -795,7 +795,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 				tstring_view selector_param;
 				tstring_view	selector_name;
 
-				tstring_view::size_type begin	= i->val.find_first_of(_t('('));
+				tstring_view::size_type begin	= i->val.find_first_of('(');
 				tstring_view::size_type end		= (begin == tstring_view::npos) ? tstring_view::npos : find_close_bracket(i->val, begin);
 				if(begin != tstring_view::npos && end != tstring_view::npos)
 				{
@@ -1427,53 +1427,53 @@ int litehtml::html_tag::find_next_line_top( int top, int width, int def_right )
 void litehtml::html_tag::parse_background()
 {
 	// parse background-color
-	m_bg.m_color		= get_color(_t("background-color"), false, web_color(0, 0, 0, 0));
+	m_bg.m_color		= get_color(_Q("background-color"), false, web_color(0, 0, 0, 0));
 
 	// parse background-position
-	tstring_view str = get_style_property(_t("background-position"), false, _t("0% 0%"));
+	tstring_view str = get_style_property(_Q("background-position"), false, _Q("0% 0%"));
 	if(!str.empty())
 	{
-		string_view_vector res;
-		split_string(str, res, _t(" \t"));
+		string_view_deque res;
+		split_string(str, res, _Q(" \t"));
 		if(res.size() > 0)
 		{
 			if(res.size() == 1)
 			{
-				if( value_in_list(res[0], _t("left;right;center")) )
+				if( value_in_list(res[0], _Q("left;right;center")) )
 				{
-					m_bg.m_position.x.fromString(res[0], _t("left;right;center"));
+					m_bg.m_position.x.fromString(res[0], _Q("left;right;center"));
 					m_bg.m_position.y.set_value(50, css_units_percentage);
-				} else if( value_in_list(res[0], _t("top;bottom;center")) )
+				} else if( value_in_list(res[0], _Q("top;bottom;center")) )
 				{
-					m_bg.m_position.y.fromString(res[0], _t("top;bottom;center"));
+					m_bg.m_position.y.fromString(res[0], _Q("top;bottom;center"));
 					m_bg.m_position.x.set_value(50, css_units_percentage);
 				} else
 				{
-					m_bg.m_position.x.fromString(res[0], _t("left;right;center"));
+					m_bg.m_position.x.fromString(res[0], _Q("left;right;center"));
 					m_bg.m_position.y.set_value(50, css_units_percentage);
 				}
 			} else
 			{
-				if(value_in_list(res[0], _t("left;right")))
+				if(value_in_list(res[0], _Q("left;right")))
 				{
-					m_bg.m_position.x.fromString(res[0], _t("left;right;center"));
-					m_bg.m_position.y.fromString(res[1], _t("top;bottom;center"));
-				} else if(value_in_list(res[0], _t("top;bottom")))
+					m_bg.m_position.x.fromString(res[0], _Q("left;right;center"));
+					m_bg.m_position.y.fromString(res[1], _Q("top;bottom;center"));
+				} else if(value_in_list(res[0], _Q("top;bottom")))
 				{
-					m_bg.m_position.x.fromString(res[1], _t("left;right;center"));
-					m_bg.m_position.y.fromString(res[0], _t("top;bottom;center"));
-				} else if(value_in_list(res[1], _t("left;right")))
+					m_bg.m_position.x.fromString(res[1], _Q("left;right;center"));
+					m_bg.m_position.y.fromString(res[0], _Q("top;bottom;center"));
+				} else if(value_in_list(res[1], _Q("left;right")))
 				{
-					m_bg.m_position.x.fromString(res[1], _t("left;right;center"));
-					m_bg.m_position.y.fromString(res[0], _t("top;bottom;center"));
-				}else if(value_in_list(res[1], _t("top;bottom")))
+					m_bg.m_position.x.fromString(res[1], _Q("left;right;center"));
+					m_bg.m_position.y.fromString(res[0], _Q("top;bottom;center"));
+				}else if(value_in_list(res[1], _Q("top;bottom")))
 				{
-					m_bg.m_position.x.fromString(res[0], _t("left;right;center"));
-					m_bg.m_position.y.fromString(res[1], _t("top;bottom;center"));
+					m_bg.m_position.x.fromString(res[0], _Q("left;right;center"));
+					m_bg.m_position.y.fromString(res[1], _Q("top;bottom;center"));
 				} else
 				{
-					m_bg.m_position.x.fromString(res[0], _t("left;right;center"));
-					m_bg.m_position.y.fromString(res[1], _t("top;bottom;center"));
+					m_bg.m_position.x.fromString(res[0], _Q("left;right;center"));
+					m_bg.m_position.y.fromString(res[1], _Q("top;bottom;center"));
 				}
 			}
 
@@ -1518,11 +1518,11 @@ void litehtml::html_tag::parse_background()
 		m_bg.m_position.x.set_value(0, css_units_percentage);
 	}
 
-	str = get_style_property(_t("background-size"), false, _t("auto"));
+	str = get_style_property(_Q("background-size"), false, _Q("auto"));
 	if(!str.empty())
 	{
-		string_view_vector res;
-		split_string(str, res, _t(" \t"));
+		string_view_deque res;
+		split_string(str, res, _Q(" \t"));
 		if(!res.empty())
 		{
 			m_bg.m_position.width.fromString(res[0], background_size_strings);
@@ -1549,31 +1549,31 @@ void litehtml::html_tag::parse_background()
 
 	// parse background_attachment
 	m_bg.m_attachment = (background_attachment) value_index(
-		get_style_property(_t("background-attachment"), false, _t("scroll")), 
+		get_style_property(_Q("background-attachment"), false, _Q("scroll")), 
 		background_attachment_strings, 
 		background_attachment_scroll);
 
 	// parse background_attachment
 	m_bg.m_repeat = (background_repeat) value_index(
-		get_style_property(_t("background-repeat"), false, _t("repeat")), 
+		get_style_property(_Q("background-repeat"), false, _Q("repeat")), 
 		background_repeat_strings, 
 		background_repeat_repeat);
 
 	// parse background_clip
 	m_bg.m_clip = (background_box) value_index(
-		get_style_property(_t("background-clip"), false, _t("border-box")), 
+		get_style_property(_Q("background-clip"), false, _Q("border-box")), 
 		background_box_strings, 
 		background_box_border);
 
 	// parse background_origin
 	m_bg.m_origin = (background_box) value_index(
-		get_style_property(_t("background-origin"), false, _t("padding-box")), 
+		get_style_property(_Q("background-origin"), false, _Q("padding-box")), 
 		background_box_strings, 
 		background_box_content);
 
 	// parse background-image
-	css::parse_css_url(get_style_property(_t("background-image"), false, _t("")), m_bg.m_image);
-	m_bg.m_baseurl = get_style_property(_t("background-image-baseurl"), false, _t("")).to_string();
+	css::parse_css_url(get_style_property(_Q("background-image"), false, _Q("")), m_bg.m_image);
+	m_bg.m_baseurl = get_style_property(_Q("background-image-baseurl"), false, _Q("")).to_string();
 
 	if(!m_bg.m_image.empty())
 	{
@@ -1755,7 +1755,7 @@ bool litehtml::html_tag::on_mouse_over()
 	element::ptr el = shared_from_this();
 	while(el)
 	{
-		if(el->set_pseudo_class(_t("hover"), true))
+		if(el->set_pseudo_class(_Q("hover"), true))
 		{
 			ret = true;
 		}
@@ -1844,11 +1844,11 @@ bool litehtml::html_tag::on_mouse_leave()
 	element::ptr el = shared_from_this();
 	while(el)
 	{
-		if(el->set_pseudo_class(_t("hover"), false))
+		if(el->set_pseudo_class(_Q("hover"), false))
 		{
 			ret = true;
 		}
-		if(el->set_pseudo_class(_t("active"), false))
+		if(el->set_pseudo_class(_Q("active"), false))
 		{
 			ret = true;
 		}
@@ -1865,7 +1865,7 @@ bool litehtml::html_tag::on_lbutton_down()
 	element::ptr el = shared_from_this();
     while (el)
     {
-        if (el->set_pseudo_class(_t("active"), true))
+        if (el->set_pseudo_class(_Q("active"), true))
         {
             ret = true;
         }
@@ -1882,7 +1882,7 @@ bool litehtml::html_tag::on_lbutton_up()
 	element::ptr el = shared_from_this();
     while (el)
     {
-        if (el->set_pseudo_class(_t("active"), false))
+        if (el->set_pseudo_class(_Q("active"), false))
         {
             ret = true;
         }
@@ -1908,7 +1908,7 @@ void litehtml::html_tag::on_click()
 
 litehtml::tstring_view litehtml::html_tag::get_cursor()
 {
-	return get_style_property(_t("cursor"), true, 0);
+	return get_style_property(_Q("cursor"), true, 0);
 }
 
 static const int font_size_table[8][7] =
@@ -1927,7 +1927,7 @@ static const int font_size_table[8][7] =
 void litehtml::html_tag::init_font()
 {
 	// initialize font size
-	tstring_view str = get_style_property(_t("font-size"), false, 0);
+	tstring_view str = get_style_property(_Q("font-size"), false, 0);
 
 	int parent_sz = 0;
 	int doc_font_size = get_document()->container()->get_default_font_size();
@@ -2005,10 +2005,10 @@ void litehtml::html_tag::init_font()
 	}
 
 	// initialize font
-	tstring_view name			= get_style_property(_t("font-family"),		true,	_t("inherit"));
-	tstring_view weight		= get_style_property(_t("font-weight"),		true,	_t("normal"));
-	tstring_view style		= get_style_property(_t("font-style"),		true,	_t("normal"));
-	tstring_view decoration	= get_style_property(_t("text-decoration"),	true,	_t("none"));
+	tstring_view name			= get_style_property(_Q("font-family"),		true,	_Q("inherit"));
+	tstring_view weight		= get_style_property(_Q("font-weight"),		true,	_Q("normal"));
+	tstring_view style		= get_style_property(_Q("font-style"),		true,	_Q("normal"));
+	tstring_view decoration	= get_style_property(_Q("text-decoration"),	true,	_Q("none"));
 
 	m_font = get_document()->get_font(name, m_font_size, weight, style, decoration, &m_font_metrics);
 }
@@ -2450,10 +2450,10 @@ bool litehtml::html_tag::set_pseudo_class( tstring_view pclass, bool add )
 
 bool litehtml::html_tag::set_class( tstring_view pclass, bool add )
 {
-	string_view_vector classes;
+	string_view_deque classes;
 	bool changed = false;
 
-	split_string( pclass, classes, _t(" ") );
+	split_string( pclass, classes, _Q(" ") );
 
 	if(add)
 	{
@@ -2482,8 +2482,8 @@ bool litehtml::html_tag::set_class( tstring_view pclass, bool add )
 	if( changed )
 	{
 		tstring class_string;
-		join_string(class_string, m_class_values, _t(" "));
-		set_attr(_t("class"), class_string.c_str());
+		join_string(class_string, m_class_values, _Q(" "));
+		set_attr(_Q("class"), class_string.c_str());
 
 		return true;
 	}
@@ -2934,12 +2934,12 @@ void litehtml::html_tag::draw_list_marker( uint_ptr hdc, const position &pos )
 {
 	list_marker lm;
 
-	tstring_view list_image = get_style_property(_t("list-style-image"), true, 0);
+	tstring_view list_image = get_style_property(_Q("list-style-image"), true, 0);
 	size img_size;
 	if(!list_image.empty())
 	{
 		css::parse_css_url(list_image, lm.image);
-		lm.baseurl = get_style_property(_t("list-style-image-baseurl"), true, 0);
+		lm.baseurl = get_style_property(_Q("list-style-image-baseurl"), true, 0);
 		get_document()->container()->get_image_size(lm.image, lm.baseurl, img_size);
 	} else
 	{
@@ -2973,7 +2973,7 @@ void litehtml::html_tag::draw_list_marker( uint_ptr hdc, const position &pos )
 		lm.pos.x -= sz_font;
 	}
 
-	lm.color = get_color(_t("color"), true, web_color(0, 0, 0));
+	lm.color = get_color(_Q("color"), true, web_color(0, 0, 0));
 	lm.marker_type = m_list_style_type;
 	get_document()->container()->draw_list_marker(hdc, lm);
 }
@@ -3286,7 +3286,7 @@ bool litehtml::html_tag::is_nth_child(const element::ptr& el, int num, int off, 
 	{
 		if(child->get_display() != display_inline_text)
 		{
-			if( (!of_type) || (of_type && (tstring_view(el->get_tagName()) == child->get_tagName())) ) // UTODO: fix this shit
+			if( (!of_type) || (of_type && (el->get_tagName() == child->get_tagName()))) 
 			{
 				if(el == child)
 				{
@@ -3345,18 +3345,18 @@ bool litehtml::html_tag::is_nth_last_child(const element::ptr& el, int num, int 
 
 void litehtml::html_tag::parse_nth_child_params( tstring_view param, int &num, int &off )
 {
-	if(param == _t("odd"))
+	if(param == _Q("odd"))
 	{
 		num = 2;
 		off = 1;
-	} else if(param == _t("even"))
+	} else if(param == _Q("even"))
 	{
 		num = 2;
 		off = 0;
 	} else
 	{
-		string_view_vector tokens;
-		split_string(param, tokens, _t(" n"), _t("n"));
+		string_view_deque tokens;
+		split_string(param, tokens, _Q(" n"), _Q("n"));
 
 		tstring s_num;
         tstring s_off;
@@ -3364,7 +3364,7 @@ void litehtml::html_tag::parse_nth_child_params( tstring_view param, int &num, i
         tstring s_int;
 		for(auto tok = tokens.begin(); tok != tokens.end(); tok++)
 		{
-			if((*tok) == _t("n"))
+			if((*tok) == _Q("n"))
 			{
 				s_num = s_int;
 				s_int.clear();
@@ -3502,7 +3502,7 @@ bool litehtml::html_tag::is_only_child(const element::ptr& el, bool of_type) con
 	{
 		if(child->get_display() != display_inline_text)
 		{
-			if( !of_type || (of_type && tstring_view(el->get_tagName()) == child->get_tagName()) )  // UTODO: fix this shit
+			if( !of_type || (of_type && el->get_tagName() == child->get_tagName()))
 			{
 				child_count++;
 			}
@@ -3560,14 +3560,14 @@ void litehtml::html_tag::remove_before_after()
 {
 	if(!m_children.empty())
 	{
-		if(tstring_view(m_children.front()->get_tagName()) == _t("::before"))  // UTODO: fix this shit
+		if(m_children.front()->get_tagName() == _Q("::before"))
 		{
 			m_children.erase(m_children.begin());
 		}
 	}
 	if(!m_children.empty())
 	{
-        if (tstring_view(m_children.back()->get_tagName()) == _t("::after")) // UTODO: fix this shit
+        if (m_children.back()->get_tagName() == _Q("::after"))
 		{
 			m_children.erase(m_children.end() - 1);
 		}
@@ -3578,7 +3578,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_before()
 {
 	if(!m_children.empty())
 	{
-		if(tstring_view(m_children.front()->get_tagName()) == _t("::before")) // UTODO: fix this shit
+		if(m_children.front()->get_tagName() == _Q("::before"))
 		{
 			return m_children.front();
 		}
@@ -3593,7 +3593,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_after()
 {
 	if(!m_children.empty())
 	{
-        if (tstring_view(m_children.back()->get_tagName()) == _t("::after")) // UTODO: fix this shit
+        if (m_children.back()->get_tagName() == _Q("::after"))
 		{
 			return m_children.back();
 		}
@@ -4113,14 +4113,14 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 
 	if (m_display == display_list_item)
 	{
-		tstring_view list_image = get_style_property(_t("list-style-image"), true, 0);
+		tstring_view list_image = get_style_property(_Q("list-style-image"), true, 0);
 		if (!list_image.empty())
 		{
 			tstring url;
 			css::parse_css_url(list_image, url);
 
 			size sz;
-			tstring_view list_image_baseurl = get_style_property(_t("list-style-image-baseurl"), true, 0);
+			tstring_view list_image_baseurl = get_style_property(_Q("list-style-image-baseurl"), true, 0);
 			get_document()->container()->get_image_size(url.c_str(), list_image_baseurl, sz);
 			if (min_height < sz.height)
 			{

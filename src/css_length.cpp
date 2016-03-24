@@ -4,7 +4,7 @@
 void litehtml::css_length::fromString( tstring_view str, tstring_view predefs, int defValue )
 {
 	// TODO: Make support for calc
-	if(str.substr(0, 4) == _t("calc"))
+	if(str.substr(0, 4) == _Q("calc"))
 	{
 		m_is_predefined = true;
 		m_predef		= 0;
@@ -27,7 +27,7 @@ void litehtml::css_length::fromString( tstring_view str, tstring_view predefs, i
 		{
 			if(!is_unit)
 			{
-				if(t_isdigit(*chr) || *chr == _t('.') || *chr == _t('+') || *chr == _t('-'))
+				if(isdigit(*chr) || *chr == '.' || *chr == '+' || *chr == '-')
 				{
 					num += *chr;
 				} else

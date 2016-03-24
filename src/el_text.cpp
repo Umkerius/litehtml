@@ -39,7 +39,7 @@ litehtml::tstring_view litehtml::el_text::get_style_property( tstring_view name,
 
 void litehtml::el_text::parse_styles(bool is_reparse)
 {
-	m_text_transform	= (text_transform)	value_index(get_style_property(_t("text-transform"), true,	_t("none")),	text_transform_strings,	text_transform_none);
+	m_text_transform	= (text_transform)	value_index(get_style_property(_Q("text-transform"), true,	_Q("none")),	text_transform_strings,	text_transform_none);
 	if(m_text_transform != text_transform_none)
 	{
 		m_transformed_text	= m_text;
@@ -49,18 +49,18 @@ void litehtml::el_text::parse_styles(bool is_reparse)
 
 	if(is_white_space())
 	{
-		m_transformed_text = _t(" ");
+		m_transformed_text = " ";
 		m_use_transformed = true;
 	} else
 	{
-		if(m_text == _t("\t"))
+		if(m_text == "\t")
 		{
-			m_transformed_text = _t("    ");
+			m_transformed_text = "    ";
 			m_use_transformed = true;
 		}
-		if(m_text == _t("\n") || m_text == _t("\r"))
+		if(m_text == "\n" || m_text == "\r")
 		{
-			m_transformed_text = _t("");
+            m_transformed_text.clear();
 			m_use_transformed = true;
 		}
 	}
@@ -113,7 +113,7 @@ void litehtml::el_text::draw( uint_ptr hdc, int x, int y, const position* clip )
 			document::ptr doc = get_document();
 
 			uint_ptr font = el_parent->get_font();
-			litehtml::web_color color = el_parent->get_color(_t("color"), true, doc->get_def_color());
+			litehtml::web_color color = el_parent->get_color(_Q("color"), true, doc->get_def_color());
 			doc->container()->draw_text(hdc, m_use_transformed ? m_transformed_text.c_str() : m_text.c_str(), font, color, pos);
 		}
 	}

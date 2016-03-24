@@ -19,11 +19,11 @@ void litehtml::el_link::parse_attributes()
 
 	document::ptr doc = get_document();
 
-    tstring_view rel = get_attr(_t("rel"));
-	if(rel == _t("stylesheet"))
+    tstring_view rel = get_attr(_Q("rel"));
+	if(rel == _Q("stylesheet"))
 	{
-		tstring_view media = get_attr(_t("media"));
-		tstring_view href = get_attr(_t("href"));
+		tstring_view media = get_attr(_Q("media"));
+		tstring_view href = get_attr(_Q("href"));
 		if(!href.empty())
 		{
             tstring css_text;

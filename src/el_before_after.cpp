@@ -8,10 +8,10 @@ litehtml::el_before_after_base::el_before_after_base(const std::shared_ptr<liteh
 {
 	if(before)
 	{
-		set_tagName(_t("::before"));
+		set_tagName(_Q("::before"));
 	} else
 	{
-		set_tagName(_t("::after"));
+		set_tagName(_Q("::after"));
 	}
 }
 
@@ -24,7 +24,7 @@ void litehtml::el_before_after_base::add_style(const litehtml::style& st)
 {
 	html_tag::add_style(st);
 
-	tstring_view content = get_style_property(_t("content"), false, _t(""));
+	tstring_view content = get_style_property(_Q("content"), false, _Q(""));
 	if(!content.empty())
 	{
 		int idx = value_index(content, content_property_string);
@@ -34,11 +34,11 @@ void litehtml::el_before_after_base::add_style(const litehtml::style& st)
 			tstring_view::size_type i = 0;
 			while(i < content.length() && i != tstring_view::npos)
 			{
-				if(content.at(i) == _t('"'))
+				if(content.at(i) == '"')
 				{
 					fnc.clear();
 					i++;
-					tstring_view::size_type pos = content.find(_t('"'), i);
+					tstring_view::size_type pos = content.find('"', i);
 					tstring_view txt;
 					if(pos == tstring_view::npos)
 					{
@@ -50,11 +50,11 @@ void litehtml::el_before_after_base::add_style(const litehtml::style& st)
 						i = pos + 1;
 					}
 					add_text(txt);
-				} else if(content.at(i) == _t('('))
+				} else if(content.at(i) == '(')
 				{
 					i++;
                     fnc = lcase_copy(trim(fnc));
-					tstring_view::size_type pos = content.find(_t(')'), i);
+					tstring_view::size_type pos = content.find(')', i);
 					tstring_view params;
 					if(pos == tstring_view::npos)
 					{
@@ -83,7 +83,7 @@ void litehtml::el_before_after_base::add_text( tstring_view txt )
     tstring esc;
     for (tstring::size_type i = 0; i < txt.length(); i++)
 	{
-		if( (txt.at(i) == _t(' ')) || (txt.at(i) == _t('\t')) || (txt.at(i) == _t('\\') && !esc.empty()) )
+		if( (txt.at(i) == ' ') || (txt.at(i) == '\t') || (txt.at(i) == '\\' && !esc.empty()) )
 		{
 			if(esc.empty())
 			{
@@ -99,14 +99,14 @@ void litehtml::el_before_after_base::add_text( tstring_view txt )
 			{
 				word += convert_escape(esc.c_str() + 1);
 				esc.clear();
-				if(txt.at(i) == _t('\\'))
+				if(txt.at(i) == '\\')
 				{
 					esc += txt.at(i);
 				}
 			}
 		} else
 		{
-			if(!esc.empty() || txt.at(i) == _t('\\'))
+			if(!esc.empty() || txt.at(i) == '\\')
 			{
 				esc += txt.at(i);
 			} else
@@ -129,7 +129,7 @@ void litehtml::el_before_after_base::add_text( tstring_view txt )
 
 void litehtml::el_before_after_base::add_function( tstring_view fnc, tstring_view params )
 {
-	int idx = value_index(fnc, _t("attr;counter;url"));
+	int idx = value_index(fnc, _Q("attr;counter;url"));
 	switch(idx)
 	{
 	// attr
@@ -156,14 +156,14 @@ void litehtml::el_before_after_base::add_function( tstring_view fnc, tstring_vie
             tstring_view p_url = trim(params);
 			if(!p_url.empty())
 			{
-				if(p_url.front() == _t('\'') || p_url.front() == _t('\"'))
+				if(p_url.front() == '\'' || p_url.front() == '\"')
 				{
                     p_url.remove_prefix(1);
 				}
 			}
 			if(!p_url.empty())
 			{
-				if(p_url.back() == _t('\'') || p_url.back() == _t('\"'))
+				if(p_url.back() == '\'' || p_url.back() == '\"')
 				{
                     p_url.remove_suffix(1);
 				}
@@ -171,9 +171,9 @@ void litehtml::el_before_after_base::add_function( tstring_view fnc, tstring_vie
 			if(!p_url.empty())
 			{
 				element::ptr el = std::make_shared<el_image>(get_document());
-				el->set_attr(_t("src"), p_url);
-				el->set_attr(_t("style"), _t("display:inline-block"));
-				el->set_tagName(_t("img"));
+				el->set_attr(_Q("src"), p_url);
+				el->set_attr(_Q("style"), _Q("display:inline-block"));
+				el->set_tagName(_Q("img"));
 				appendChild(el);
 				el->parse_attributes();
 			}

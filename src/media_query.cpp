@@ -20,24 +20,24 @@ litehtml::media_query::ptr litehtml::media_query::create_from_string(tstring_vie
 {
 	media_query::ptr query = std::make_shared<media_query>();
 
-	string_view_vector tokens;
-	split_string(str, tokens, _t(" \t\r\n"), _t(""), _t("("));
+	string_view_deque tokens;
+	split_string(str, tokens, _Q(" \t\r\n"), _Q(""), _Q("("));
 
 	for(auto tok = tokens.begin(); tok != tokens.end(); tok++)
 	{
-		if((*tok) == _t("not"))
+		if((*tok) == _Q("not"))
 		{
 			query->m_not = true;
-		} else if(tok->front() == _t('('))
+		} else if(tok->front() == '(')
 		{
 			tok->remove_prefix(1);
-			if(tok->back() == _t(')'))
+			if(tok->back() == ')')
 			{
                 tok->remove_suffix(1);
 			}
 			media_query_expression expr;
-			string_view_vector expr_tokens;
-			split_string((*tok), expr_tokens, _t(":"));
+			string_view_deque expr_tokens;
+			split_string((*tok), expr_tokens, _Q(":"));
 			if(!expr_tokens.empty())
 			{
                 expr_tokens[0] = trim(expr_tokens[0]);
@@ -56,7 +56,7 @@ litehtml::media_query::ptr litehtml::media_query::create_from_string(tstring_vie
 							expr.val = value_index(expr_tokens[1], media_orientation_strings, media_orientation_landscape);
 						} else
 						{
-							tstring_view::size_type slash_pos = expr_tokens[1].find(_t('/'));
+							tstring_view::size_type slash_pos = expr_tokens[1].find('/');
 							if( slash_pos != tstring_view::npos )
 							{
                                 tstring_view val1 = trim(expr_tokens[1].substr(0, slash_pos));
@@ -126,8 +126,8 @@ litehtml::media_query_list::ptr litehtml::media_query_list::create_from_string(t
 {
 	media_query_list::ptr list = std::make_shared<media_query_list>();
 
-	string_view_vector tokens;
-	split_string(str, tokens, _t(","));
+	string_view_deque tokens;
+	split_string(str, tokens, _Q(","));
 
 	for(auto tok = tokens.begin(); tok != tokens.end(); tok++)
 	{

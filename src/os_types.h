@@ -4,28 +4,11 @@
 
 namespace litehtml
 {
-#if defined( WIN32 )
-
-	#define _t(quote)			quote
-
-	#define t_strncmp			strncmp
-	#define t_strncasecmp		_strnicmp
-	#define t_tolower			tolower
-	#define t_isdigit			isdigit
-    #define t_num_to_string     std::to_string
-
-#else
-
-	#define _t(quote)			quote
-
-	#define t_strncmp			strncmp
-	#define t_strncasecmp		strncasecmp
-
-	#define t_tolower			tolower
-	#define t_isdigit			isdigit
-    #define t_num_to_string     std::to_string
-
-#endif
+    template <typename T, size_t N>
+    size_t array_size(T(&)[N])
+    {
+        return N;
+    }
 
     using tchar_t = char;
     using uint_ptr = uintptr_t;
@@ -33,3 +16,12 @@ namespace litehtml
     using tstring_view = string_view<tchar_t>;
     using tstring = std::basic_string<tchar_t>;
 }
+
+#if defined( WIN32 )
+#define t_strncasecmp _strnicmp
+#else
+#define t_strncasecmp strncasecmp
+#endif
+
+//small optimization: _Q("string") creates string_view with known size at runtime
+#define _Q(str) litehtml::tstring_view(str, litehtml::array_size(str) - 1)

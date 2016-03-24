@@ -55,7 +55,7 @@ namespace litehtml
 		virtual void				del_clip() = 0;
 		virtual void				get_client_rect(litehtml::position& client) const = 0;
 		virtual std::shared_ptr<litehtml::element>	create_element(litehtml::tstring_view tag_name,
-																   const litehtml::string_map &attributes,
+																   const litehtml::string_hash_map &attributes,
 																   const std::shared_ptr<litehtml::document> &doc) = 0;
 
 		virtual void				get_media_features(litehtml::media_features& media) const = 0;
@@ -66,10 +66,10 @@ namespace litehtml
 	void lcase(tstring &s);
     tstring lcase_copy(tstring_view s);
 
-    int	 value_index(tstring_view val, tstring_view strings, int defValue = -1, tchar_t delim = _t(';'));
-	bool value_in_list(tstring_view val, tstring_view strings, tchar_t delim = _t(';'));
-	tstring_view::size_type find_close_bracket(tstring_view s, tstring_view::size_type off, tchar_t open_b = _t('('), tchar_t close_b = _t(')'));
-	void split_string(tstring_view str, string_view_vector& tokens, tstring_view delims, tstring_view delims_preserve = _t(""), tstring_view quote = _t("\""));
+    int	 value_index(tstring_view val, tstring_view strings, int defValue = -1, tchar_t delim = ';');
+	bool value_in_list(tstring_view val, tstring_view strings, tchar_t delim = ';');
+	tstring_view::size_type find_close_bracket(tstring_view s, tstring_view::size_type off, tchar_t open_b = '(', tchar_t close_b = ')');
+    void split_string(tstring_view str, string_view_deque& tokens, tstring_view delims, tstring_view delims_preserve = _Q(""), tstring_view quote = _Q("\""));
 
     template <typename StringT>
     void join_string(tstring& str, const std::vector<StringT>& tokens, tstring_view delims)
@@ -86,7 +86,7 @@ namespace litehtml
         }
     }
 
-    string_vector to_string_vector(const string_view_vector& views);
+    string_vector to_string_vector(const string_view_deque& views);
 
 	inline int round_f(float val)
 	{

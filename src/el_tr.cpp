@@ -14,20 +14,20 @@ litehtml::el_tr::~el_tr()
 
 void litehtml::el_tr::parse_attributes()
 {
-	tstring_view str = get_attr(_t("align"));
+	tstring_view str = get_attr(_Q("align"));
 	if(!str.empty())
 	{
-		m_style.add_property(_t("text-align"), str, 0, false);
+		m_style.add_property(_Q("text-align"), str, 0, false);
 	}
-	str = get_attr(_t("valign"));
+	str = get_attr(_Q("valign"));
     if (!str.empty())
 	{
-		m_style.add_property(_t("vertical-align"), str, 0, false);
+		m_style.add_property(_Q("vertical-align"), str, 0, false);
 	}
-	str = get_attr(_t("bgcolor"));
+	str = get_attr(_Q("bgcolor"));
     if (!str.empty())
 	{
-		m_style.add_property(_t("background-color"), str, 0, false);
+		m_style.add_property(_Q("background-color"), str, 0, false);
 	}
 	html_tag::parse_attributes();
 }

@@ -30,7 +30,7 @@ bool litehtml::el_space::is_break() const
 		ws == white_space_pre_line ||
 		ws == white_space_pre_wrap)
 	{
-		if(m_text == _t("\n"))
+		if(m_text == _Q("\n"))
 		{
 			return true;
 		}

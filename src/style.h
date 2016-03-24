@@ -42,7 +42,7 @@ namespace litehtml
 		typedef std::vector<style::ptr>		vector;
 	private:
 		props_map			m_properties;
-		static string_map	m_valid_values;
+		static string_hash_map	m_valid_values;
 	public:
 		style();
 		style(const style& val);

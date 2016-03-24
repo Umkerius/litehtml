@@ -43,7 +43,7 @@ namespace litehtml
 		string_vector			m_class_values;
 		tstring					m_tag;
 		litehtml::style			m_style;
-		string_map				m_attrs;
+		string_hash_map				m_attrs;
 		vertical_align			m_vertical_align;
 		text_align				m_text_align;
 		style_display			m_display;

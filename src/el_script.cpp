@@ -26,5 +26,5 @@ bool litehtml::el_script::appendChild(const ptr &el)
 
 litehtml::tstring_view litehtml::el_script::get_tagName() const
 {
-	return _t("script");
+	return _Q("script");
 }

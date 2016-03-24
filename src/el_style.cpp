@@ -21,7 +21,7 @@ void litehtml::el_style::parse_attributes()
 	{
 		el->get_text(text);
 	}
-	get_document()->add_stylesheet( text.c_str(), 0, get_attr(_t("media")) );
+	get_document()->add_stylesheet( text.c_str(), 0, get_attr(_Q("media")) );
 }
 
 bool litehtml::el_style::appendChild(const ptr &el)
@@ -32,5 +32,5 @@ bool litehtml::el_style::appendChild(const ptr &el)
 
 litehtml::tstring_view litehtml::el_style::get_tagName() const
 {
-	return _t("style");
+	return _Q("style");
 }

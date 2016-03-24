@@ -9,16 +9,16 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 	// remove comments
     tstring_view stylesheet;
     tstring stylesheet_commentless; //if style has comments, remove it and store modified string
-    tstring_view::size_type c_start = str.find(_t("/*"));
+    tstring_view::size_type c_start = str.find(_Q("/*"));
 
     if (c_start != tstring::npos)
     {
         stylesheet_commentless = str.to_string();
         while (c_start != tstring::npos)
         {
-            tstring::size_type c_end = stylesheet_commentless.find(_t("*/"), c_start + 2);
+            tstring::size_type c_end = stylesheet_commentless.find("*/", c_start + 2);
             stylesheet_commentless.erase(c_start, c_end - c_start + 2);
-            c_start = stylesheet_commentless.find(_t("/*"));
+            c_start = stylesheet_commentless.find("/*");
         }
 
         stylesheet = stylesheet_commentless;
@@ -28,16 +28,16 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
         stylesheet = str;
     }
 
-	tstring_view::size_type pos = stylesheet.find_first_not_of(_t(" \n\r\t"));
+	tstring_view::size_type pos = stylesheet.find_first_not_of(_Q(" \n\r\t"));
 	while(pos != tstring_view::npos)
 	{
-		while(pos != tstring_view::npos && stylesheet[pos] == _t('@'))
+		while(pos != tstring_view::npos && stylesheet[pos] == '@')
 		{
 			tstring_view::size_type sPos = pos;
-			pos = stylesheet.find_first_of(_t("{"), pos);
-			if(pos != tstring_view::npos && stylesheet[pos] == _t('{'))
+			pos = stylesheet.find_first_of(_Q("{"), pos);
+			if(pos != tstring_view::npos && stylesheet[pos] == '{')
 			{
-				pos = find_close_bracket(stylesheet, pos, _t('{'), _t('}'));
+				pos = find_close_bracket(stylesheet, pos, '{', '}');
 			}
 			if(pos != tstring_view::npos)
 			{
@@ -49,7 +49,7 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 
 			if(pos != tstring_view::npos)
 			{
-				pos = stylesheet.find_first_not_of(_t(" \n\r\t"), pos + 1);
+				pos = stylesheet.find_first_not_of(_Q(" \n\r\t"), pos + 1);
 			}
 		}
 
@@ -58,8 +58,8 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 			break;
 		}
 
-		tstring_view::size_type style_start = stylesheet.find(_t("{"), pos);
-		tstring_view::size_type style_end	= stylesheet.find(_t("}"), pos);
+		tstring_view::size_type style_start = stylesheet.find(_Q("{"), pos);
+		tstring_view::size_type style_end	= stylesheet.find(_Q("}"), pos);
 		if(style_start != tstring_view::npos && style_end != tstring_view::npos)
 		{
 			style::ptr st = std::make_shared<style>();
@@ -80,29 +80,29 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 
 		if(pos != tstring_view::npos)
 		{
-			pos = stylesheet.find_first_not_of(_t(" \n\r\t"), pos);
+			pos = stylesheet.find_first_not_of(_Q(" \n\r\t"), pos);
 		}
 	}
 }
 
 void litehtml::css::parse_css_url(tstring_view str, tstring& url)
 {
-	url = _t("");
-	size_t pos1 = str.find(_t('('));
-	size_t pos2 = str.find(_t(')'));
+    url.clear();
+	size_t pos1 = str.find('(');
+	size_t pos2 = str.find(')');
 	if(pos1 != tstring_view::npos && pos2 != tstring_view::npos)
 	{
 		url = str.substr(pos1 + 1, pos2 - pos1 - 1).to_string();
 		if(url.length())
 		{
-			if(url[0] == _t('\'') || url[0] == _t('"'))
+			if(url[0] == '\'' || url[0] == '"')
 			{
 				url.erase(0, 1);
 			}
 		}
 		if(url.length())
 		{
-			if(url[url.length() - 1] == _t('\'') || url[url.length() - 1] == _t('"'))
+			if(url[url.length() - 1] == '\'' || url[url.length() - 1] == '"')
 			{
 				url.erase(url.length() - 1, 1);
 			}
@@ -113,8 +113,8 @@ void litehtml::css::parse_css_url(tstring_view str, tstring& url)
 bool litehtml::css::parse_selectors( tstring_view txt, const litehtml::style::ptr& styles, const media_query_list::ptr& media )
 {
     tstring_view selector = trim(txt);
-	string_view_vector tokens;
-	split_string(selector, tokens, _t(","));
+	string_view_deque tokens;
+	split_string(selector, tokens, _Q(","));
 
 	bool added_something = false;
 
@@ -145,18 +145,18 @@ void litehtml::css::sort_selectors()
 
 void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
 {
-	if(text.substr(0, 7) == _t("@import"))
+	if(text.substr(0, 7) == _Q("@import"))
 	{
 		int sPos = 7;
 		tstring_view iStr;
 		iStr = text.substr(sPos);
-		if(iStr.back() == _t(';'))
+		if(iStr.back() == ';')
 		{
             iStr.remove_suffix(1);
 		}
         iStr = trim(iStr);
-        string_view_vector tokens;
-		split_string(iStr, tokens, _t(" "), _t(""), _t("(\""));
+        string_view_deque tokens;
+		split_string(iStr, tokens, _Q(" "), _Q(""), _Q("(\""));
 		if(!tokens.empty())
 		{
 			tstring url;
@@ -185,7 +185,7 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 							{
 								if(iter != tokens.begin())
 								{
-									media_str += _t(" ");
+									media_str += " ";
 								}
 								media_str += iter->to_string();
 							}
@@ -200,10 +200,10 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 				}
 			}
 		}
-	} else if(text.substr(0, 6) == _t("@media"))
+	} else if(text.substr(0, 6) == _Q("@media"))
 	{
-		tstring_view::size_type b1 = text.find_first_of(_t('{'));
-        tstring_view::size_type b2 = text.find_last_of(_t('}'));
+		tstring_view::size_type b1 = text.find_first_of('{');
+        tstring_view::size_type b2 = text.find_last_of('}');
 		if(b1 != tstring_view::npos)
 		{
             tstring_view media_type = trim(text.substr(6, b1 - 6));
