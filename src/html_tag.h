@@ -175,10 +175,10 @@ namespace litehtml
 		virtual int					select(const css_selector& selector, bool apply_pseudo = true) override;
 		virtual int					select(const css_element_selector& selector, bool apply_pseudo = true) override;
 
-		virtual elements_vector		select_all(const tstring_view& selector) override;
+		virtual elements_vector		select_all(tstring_view selector) override;
 		virtual elements_vector		select_all(const css_selector& selector) override;
 
-		virtual element::ptr		select_one(const tstring_view& selector) override;
+		virtual element::ptr		select_one(tstring_view selector) override;
 		virtual element::ptr		select_one(const css_selector& selector) override;
 
 		virtual element::ptr		find_ancestor(const css_selector& selector, bool apply_pseudo = true, bool* is_pseudo = 0) override;

@@ -32,12 +32,12 @@ namespace litehtml
 
         void	parse_stylesheet(tstring_view str, tstring_view baseurl, const std::shared_ptr <document>& doc, const media_query_list::ptr& media);
 		void	sort_selectors();
-		static void	parse_css_url(const tstring_view& str, tstring& url);
+		static void	parse_css_url(tstring_view str, tstring& url);
 
 	private:
-		void	parse_atrule(const tstring_view& text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media);
+		void	parse_atrule(tstring_view text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media);
 		void	add_selector(css_selector::ptr selector);
-		bool	parse_selectors(const tstring_view& txt, const litehtml::style::ptr& styles, const media_query_list::ptr& media);
+		bool	parse_selectors(tstring_view txt, const litehtml::style::ptr& styles, const media_query_list::ptr& media);
 
 	};
 

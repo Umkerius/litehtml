@@ -2,7 +2,7 @@
 #include "css_selector.h"
 #include "document.h"
 
-void litehtml::css_element_selector::parse( const tstring_view& txt )
+void litehtml::css_element_selector::parse( tstring_view txt )
 {
 	tstring_view::size_type el_end = txt.find_first_of(_t(".#[:"));
 	m_tag = litehtml::lcase_copy(txt.substr(0, el_end));
@@ -155,7 +155,7 @@ void litehtml::css_element_selector::parse( const tstring_view& txt )
 }
 
 
-bool litehtml::css_selector::parse( const tstring_view& text )
+bool litehtml::css_selector::parse( tstring_view text )
 {
 	if(text.empty())
 	{

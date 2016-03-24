@@ -318,9 +318,9 @@ void litehtml::element::get_line_left_right( int y, int def_right, int& ln_left,
 void litehtml::element::add_style( const litehtml::style& st )						LITEHTML_EMPTY_FUNC
 void litehtml::element::select_all(const css_selector& selector, litehtml::elements_vector& res)	LITEHTML_EMPTY_FUNC
 litehtml::elements_vector litehtml::element::select_all(const litehtml::css_selector& selector)	 LITEHTML_RETURN_FUNC(litehtml::elements_vector())
-litehtml::elements_vector litehtml::element::select_all(const litehtml::tstring_view& selector)			 LITEHTML_RETURN_FUNC(litehtml::elements_vector())
+litehtml::elements_vector litehtml::element::select_all(litehtml::tstring_view selector)			 LITEHTML_RETURN_FUNC(litehtml::elements_vector())
 litehtml::element::ptr litehtml::element::select_one( const css_selector& selector ) LITEHTML_RETURN_FUNC(0)
-litehtml::element::ptr litehtml::element::select_one( const tstring_view& selector )		LITEHTML_RETURN_FUNC(0)
+litehtml::element::ptr litehtml::element::select_one( tstring_view selector )		LITEHTML_RETURN_FUNC(0)
 litehtml::element::ptr litehtml::element::find_adjacent_sibling(const element::ptr& el, const css_selector& selector, bool apply_pseudo /*= true*/, bool* is_pseudo /*= 0*/) LITEHTML_RETURN_FUNC(0)
 litehtml::element::ptr litehtml::element::find_sibling(const element::ptr& el, const css_selector& selector, bool apply_pseudo /*= true*/, bool* is_pseudo /*= 0*/) LITEHTML_RETURN_FUNC(0)
 bool litehtml::element::is_nth_last_child(const element::ptr& el, int num, int off, bool of_type) const		LITEHTML_RETURN_FUNC(false)

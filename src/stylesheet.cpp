@@ -85,7 +85,7 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 	}
 }
 
-void litehtml::css::parse_css_url(const tstring_view& str, tstring& url)
+void litehtml::css::parse_css_url(tstring_view str, tstring& url)
 {
 	url = _t("");
 	size_t pos1 = str.find(_t('('));
@@ -110,7 +110,7 @@ void litehtml::css::parse_css_url(const tstring_view& str, tstring& url)
 	}
 }
 
-bool litehtml::css::parse_selectors( const tstring_view& txt, const litehtml::style::ptr& styles, const media_query_list::ptr& media )
+bool litehtml::css::parse_selectors( tstring_view txt, const litehtml::style::ptr& styles, const media_query_list::ptr& media )
 {
     tstring_view selector = trim(txt);
 	string_view_vector tokens;
@@ -143,7 +143,7 @@ void litehtml::css::sort_selectors()
 	);
 }
 
-void litehtml::css::parse_atrule(const tstring_view& text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
+void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const std::shared_ptr<document>& doc, const media_query_list::ptr& media)
 {
 	if(text.substr(0, 7) == _t("@import"))
 	{

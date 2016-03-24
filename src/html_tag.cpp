@@ -108,7 +108,7 @@ litehtml::tstring_view litehtml::html_tag::get_attr(tstring_view name, tstring_v
 	return def;
 }
 
-litehtml::elements_vector litehtml::html_tag::select_all( const tstring_view& selector )
+litehtml::elements_vector litehtml::html_tag::select_all( tstring_view selector )
 {
 	css_selector sel(media_query_list::ptr(0));
 	sel.parse(selector);
@@ -137,7 +137,7 @@ void litehtml::html_tag::select_all(const css_selector& selector, elements_vecto
 }
 
 
-litehtml::element::ptr litehtml::html_tag::select_one( const tstring_view& selector )
+litehtml::element::ptr litehtml::html_tag::select_one( tstring_view selector )
 {
 	css_selector sel(media_query_list::ptr(0));
 	sel.parse(selector);

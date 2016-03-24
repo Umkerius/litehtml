@@ -89,10 +89,10 @@ namespace litehtml
 
 		std::shared_ptr<document>	get_document() const;
 
-		virtual elements_vector		select_all(const tstring_view& selector);
+		virtual elements_vector		select_all(tstring_view selector);
 		virtual elements_vector		select_all(const css_selector& selector);
 
-		virtual element::ptr		select_one(const tstring_view& selector);
+		virtual element::ptr		select_one(tstring_view selector);
 		virtual element::ptr		select_one(const css_selector& selector);
 
 		virtual int					render(int x, int y, int max_width, bool second_pass = false);

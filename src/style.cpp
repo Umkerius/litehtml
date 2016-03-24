@@ -36,7 +36,7 @@ void litehtml::style::parse( tstring_view txt, tstring_view baseurl )
 	}
 }
 
-void litehtml::style::parse_property( const tstring_view& txt, tstring_view baseurl )
+void litehtml::style::parse_property( tstring_view txt, tstring_view baseurl )
 {
 	tstring_view::size_type pos = txt.find_first_of(_t(":"));
 	if(pos != tstring_view::npos)
@@ -449,7 +449,7 @@ void litehtml::style::add_property(tstring_view name, tstring_view val, tstring_
 	}
 }
 
-void litehtml::style::parse_short_border( const tstring_view& prefix, const tstring_view& val, bool important )
+void litehtml::style::parse_short_border( tstring_view prefix, tstring_view val, bool important )
 {
     string_view_vector tokens;
 	split_string(val, tokens, _t(" "), _t(""), _t("("));
@@ -472,7 +472,7 @@ void litehtml::style::parse_short_border( const tstring_view& prefix, const tstr
 	}
 }
 
-void litehtml::style::parse_short_background( const tstring_view& val, tstring_view baseurl, bool important )
+void litehtml::style::parse_short_background( tstring_view val, tstring_view baseurl, bool important )
 {
 	add_parsed_property(_t("background-color"),			_t("transparent"),	important);
 	add_parsed_property(_t("background-image"),			_t(""),				important);
@@ -536,7 +536,7 @@ void litehtml::style::parse_short_background( const tstring_view& val, tstring_v
 	}
 }
 
-void litehtml::style::parse_short_font( const tstring_view& val, bool important )
+void litehtml::style::parse_short_font( tstring_view val, bool important )
 {
 	add_parsed_property(_t("font-style"),	_t("normal"),	important);
 	add_parsed_property(_t("font-variant"),	_t("normal"),	important);
@@ -605,7 +605,7 @@ void litehtml::style::parse_short_font( const tstring_view& val, bool important 
 	add_parsed_property(_t("font-family"), font_family, important);
 }
 
-void litehtml::style::add_parsed_property( const tstring_view& name, const tstring_view& val, bool important )
+void litehtml::style::add_parsed_property( tstring_view name, tstring_view val, bool important )
 {
 	bool is_valid = true;
 	auto vals = m_valid_values.find(name.to_string());
@@ -635,7 +635,7 @@ void litehtml::style::add_parsed_property( const tstring_view& name, const tstri
 	}
 }
 
-void litehtml::style::remove_property( const tstring_view& name, bool important )
+void litehtml::style::remove_property( tstring_view name, bool important )
 {
     props_map::iterator prop = m_properties.find(name.to_string());
 	if(prop != m_properties.end())
