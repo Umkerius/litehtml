@@ -803,8 +803,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 				}
 				if(begin != tstring_view::npos)
 				{
-					selector_name = i->val.substr(0, begin);
-					litehtml::trim(selector_name);
+                    selector_name = trim(i->val.substr(0, begin));
 				} else
 				{
 					selector_name = i->val;
@@ -904,7 +903,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 					break;
 				case pseudo_class_lang:
 					{
-						trim( selector_param );
+                        selector_param = trim(selector_param);
 
 						if( !get_document()->match_lang( selector_param ) )
 						{

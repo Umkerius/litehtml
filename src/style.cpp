@@ -41,9 +41,8 @@ void litehtml::style::parse_property( const tstring_view& txt, tstring_view base
 	tstring_view::size_type pos = txt.find_first_of(_t(":"));
 	if(pos != tstring_view::npos)
 	{
-		tstring name	= trim(txt.substr(0, pos)).to_string();
-		tstring_view val	= trim(txt.substr(pos + 1));
-		lcase(name);
+		tstring name = lcase_copy(trim(txt.substr(0, pos)));
+		tstring_view val = trim(txt.substr(pos + 1));
 
 		if(!name.empty() && !val.empty())
 		{
@@ -57,8 +56,7 @@ void litehtml::style::parse_property( const tstring_view& txt, tstring_view base
             else if(vals.size() > 1)
 			{
                 vals[0] = trim(vals[0]);
-                tstring val_type = vals[1].to_string();
-                lcase(val_type);
+                tstring val_type = lcase_copy(vals[1]);
 
                 if (val_type == _t("important"))
 				{

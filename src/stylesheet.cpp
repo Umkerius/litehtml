@@ -118,12 +118,11 @@ bool litehtml::css::parse_selectors( const tstring_view& txt, const litehtml::st
 
 	bool added_something = false;
 
-	for(auto tok = tokens.begin(); tok != tokens.end(); tok++)
+	for(auto tok : tokens)
 	{
 		css_selector::ptr selector = std::make_shared<css_selector>(media);
 		selector->m_style = styles;
-		trim(*tok);
-		if(selector->parse(*tok))
+        if (selector->parse(trim(tok)))
 		{
 			selector->calc_specificity();
 			add_selector(selector);

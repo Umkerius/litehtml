@@ -91,11 +91,10 @@ void string_view<CharT>::clear()
 template <typename CharT>
 string_view<CharT> string_view<CharT>::substr(size_type offset, size_type len) const
 {
-    if (len == npos)
-        len = size() - offset;
+    size_type newLen = std::min(size() - offset, len);
 
-    assert(offset + len <= size());
-    return string_view<CharT>(c_str() + offset, len);
+    assert(offset + newLen <= size());
+    return string_view<CharT>(c_str() + offset, newLen);
 }
 
 template <typename CharT>

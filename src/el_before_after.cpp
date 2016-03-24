@@ -53,8 +53,7 @@ void litehtml::el_before_after_base::add_style(const litehtml::style& st)
 				} else if(content.at(i) == _t('('))
 				{
 					i++;
-                    fnc = litehtml::trim(fnc).to_string();
-					litehtml::lcase(fnc);
+                    fnc = lcase_copy(trim(fnc));
 					tstring_view::size_type pos = content.find(_t(')'), i);
 					tstring_view params;
 					if(pos == tstring_view::npos)

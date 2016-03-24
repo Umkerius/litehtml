@@ -172,7 +172,7 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 		tstring red;
         tstring green;
         tstring blue;
-		if(str.size() + 1 == 3)
+		if(str.size() == 4) // #fff
 		{
 			red		+= str[1];
 			red		+= str[1];
@@ -180,7 +180,7 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 			green	+= str[2];
 			blue	+= str[3];
 			blue	+= str[3];
-		} else if(str.size() + 1 == 6)
+		} else if(str.size() == 7) //#ffffff
 		{
 			red		+= str[1];
 			red		+= str[2];
@@ -247,7 +247,7 @@ litehtml::tstring_view litehtml::web_color::resolve_name(tstring_view name)
 
 bool litehtml::web_color::is_color(tstring_view str)
 {
-    if ((lcase_copy(str.substr(0, 3)) == _t("rgb")) || str[0] == _t('#'))
+    if ((lcase_copy(str).find(_t("rgb")) == 0) || str[0] == _t('#'))
 	{
 		return true;
 	}

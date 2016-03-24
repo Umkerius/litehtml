@@ -91,7 +91,7 @@ litehtml::document::ptr litehtml::document::createFromUTF8(const char* str, lite
 			{
 				media = 0;
 			}
-			doc->m_styles.parse_stylesheet(css->text.c_str(), css->baseurl.c_str(), doc, media);
+			doc->m_styles.parse_stylesheet(css->text, css->baseurl, doc, media);
 		}
 		// Sort css selectors using CSS rules.
 		doc->m_styles.sort_selectors();
