@@ -71,7 +71,6 @@ namespace litehtml
 		void							add_tabular(const element::ptr& el);
 
 		static litehtml::document::ptr createFromString(tstring_view str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
-		static litehtml::document::ptr createFromUTF8(const char* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
 	
 	private:
 		litehtml::uint_ptr	add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm);

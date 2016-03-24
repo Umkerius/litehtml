@@ -47,13 +47,25 @@ litehtml::document::~document()
 
 litehtml::document::ptr litehtml::document::createFromString(tstring_view str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles)
 {
-    return createFromUTF8(litehtml_to_utf8(str.data()), objPainter, ctx, user_styles);
-}
+    if (str.empty())
+        return nullptr;
 
-litehtml::document::ptr litehtml::document::createFromUTF8(const char* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles)
-{
+    tstring nullterm_str;
+    tstring_view input_str;
+
+    // check if str is not null-terminated
+    if (*str.end() != 0)
+    {
+        nullterm_str = str.to_string();
+        input_str = nullterm_str;
+    }
+    else
+    {
+        input_str = str;
+    }
+
 	// parse document into GumboOutput
-	GumboOutput* output = gumbo_parse(str);
+    GumboOutput* output = gumbo_parse(input_str.data());
 
 	// Create litehtml::document
 	litehtml::document::ptr doc = std::make_shared<litehtml::document>(objPainter, ctx);
@@ -650,7 +662,7 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 			for (unsigned int i = 0; i < node->v.element.attributes.length; i++)
 			{
 				attr = (GumboAttribute*)node->v.element.attributes.data[i];
-				attrs[tstring(litehtml_from_utf8(attr->name))] = litehtml_from_utf8(attr->value);
+				attrs[attr->name] = attr->value;
 			}
 
 
@@ -658,7 +670,7 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 			const char* tag = gumbo_normalized_tagname(node->v.element.tag);
 			if (tag[0])
 			{
-                ret = create_element(tstring(litehtml_from_utf8(tag)), attrs);
+                ret = create_element(tag, attrs);
 			}
 			else
 			{
@@ -667,7 +679,7 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 					std::string strA;
 					gumbo_tag_from_original_text(&node->v.element.original_tag);
 					strA.append(node->v.element.original_tag.data, node->v.element.original_tag.length);
-                    ret = create_element(tstring(litehtml_from_utf8(strA.c_str())), attrs);
+                    ret = create_element(strA, attrs);
 				}
 			}
 			if (ret)
@@ -691,7 +703,10 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 	case GUMBO_NODE_TEXT:
 		{
 			std::wstring str;
-			std::wstring str_in = (const wchar_t*) (utf8_to_wchar(node->v.text.text));
+            std::wstring str_in;
+            tstring strA;
+            utf8_to_wchar(node->v.text.text).acquire_str(str_in);
+
 			ucode_t c;
 			for (size_t i = 0; i < str_in.length(); i++)
 			{
@@ -700,11 +715,13 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 				{
 					if (!str.empty())
 					{
-						elements.push_back(std::make_shared<el_text>(litehtml_from_wchar(str.c_str()), shared_from_this()));
+                        wchar_to_utf8(str.c_str()).acquire_str(strA);
+                        elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
 						str.clear();
 					}
 					str += c;
-					elements.push_back(std::make_shared<el_space>(litehtml_from_wchar(str.c_str()), shared_from_this()));
+                    wchar_to_utf8(str.c_str()).acquire_str(strA);
+                    elements.push_back(std::make_shared<el_space>(tstring_view(strA), shared_from_this()));
 					str.clear();
 				}
 				// CJK character range
@@ -712,11 +729,13 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 				{
 					if (!str.empty())
 					{
-						elements.push_back(std::make_shared<el_text>(litehtml_from_wchar(str.c_str()), shared_from_this()));
+                        wchar_to_utf8(str.c_str()).acquire_str(strA);
+                        elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
 						str.clear();
 					}
 					str += c;
-					elements.push_back(std::make_shared<el_text>(litehtml_from_wchar(str.c_str()), shared_from_this()));
+                    wchar_to_utf8(str.c_str()).acquire_str(strA);
+                    elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
 					str.clear();
 				}
 				else
@@ -726,30 +745,31 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 			}
 			if (!str.empty())
 			{
-				elements.push_back(std::make_shared<el_text>(litehtml_from_wchar(str.c_str()), shared_from_this()));
+                wchar_to_utf8(str.c_str()).acquire_str(strA);
+                elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
 			}
 		}
 		break;
 	case GUMBO_NODE_CDATA:
 		{
 			element::ptr ret = std::make_shared<el_cdata>(shared_from_this());
-			ret->set_data(tstring(litehtml_from_utf8(node->v.text.text)));
+			ret->set_data(node->v.text.text);
 			elements.push_back(ret);
 		}
 		break;
 	case GUMBO_NODE_COMMENT:
 		{
 			element::ptr ret = std::make_shared<el_comment>(shared_from_this());
-            ret->set_data(tstring(litehtml_from_utf8(node->v.text.text)));
+            ret->set_data(node->v.text.text);
 			elements.push_back(ret);
 		}
 		break;
 	case GUMBO_NODE_WHITESPACE:
 		{
-			tstring str = litehtml_from_utf8(node->v.text.text);
+			tstring_view str = node->v.text.text;
 			for (size_t i = 0; i < str.length(); i++)
 			{
-				elements.push_back(std::make_shared<el_space>(str.substr(i, 1).c_str(), shared_from_this()));
+				elements.push_back(std::make_shared<el_space>(str.substr(i, 1), shared_from_this()));
 			}
 		}
 		break;

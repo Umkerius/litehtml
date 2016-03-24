@@ -7,11 +7,14 @@ namespace litehtml
 		const byte* m_utf8;
 		std::wstring m_str;
 	public:
-		utf8_to_wchar(const char* val);
-		operator const wchar_t*() const
-		{
-			return m_str.c_str();
-		}
+        utf8_to_wchar(const char* val);
+
+        void acquire_str(std::wstring& str)
+        {
+            m_str.swap(str);
+            m_str.clear();
+        }
+
 	private:
 		ucode_t getb()
 		{
@@ -30,19 +33,11 @@ namespace litehtml
 		std::string m_str;
 	public:
 		wchar_to_utf8(const wchar_t* val);
-		operator const char*() const
-		{
-			return m_str.c_str();
-		}
-	};
 
-#ifdef LITEHTML_UTF8
-#define litehtml_from_utf8(str)		str
-#define litehtml_to_utf8(str)		str
-#define litehtml_from_wchar(str)	tstring(wchar_to_utf8(str))
-#else
-#define litehtml_from_utf8(str)		utf8_to_wchar(str)
-#define litehtml_from_wchar(str)	str
-#define litehtml_to_utf8(str)		wchar_to_utf8(str)
-#endif
+        void acquire_str(std::string& str)
+        {
+            m_str.swap(str);
+            m_str.clear();
+        }
+	};
 }
