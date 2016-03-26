@@ -332,7 +332,8 @@ void litehtml::style::add_property(tstring_view name, tstring_view val, tstring_
 				if(idx >= 0)
 				{
 					add_parsed_property(_Q("list-style-position"), tok, important);
-				} else if(val.substr(0, 3) == _Q("url"))
+				} 
+				else if(val.find(_Q("url")) == 0)
 				{
 					add_parsed_property(_Q("list-style-image"), tok, important);
                     if (!baseurl.empty())
