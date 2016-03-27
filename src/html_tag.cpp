@@ -753,7 +753,7 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
+			} else if(attr_value.find(i->val) != 0)
 			{
 				return select_no_match;
 			}
@@ -762,8 +762,9 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(strncmp(attr_value.data(), i->val.c_str(), i->val.length()))
+			} else if(attr_value.find(i->val) != 0)
 			{
+			    //TODO: WTF?!
                 const tchar_t* s = attr_value.data() + attr_value.length() - i->val.length() - 1;
 				if(s < attr_value.data())
 				{
