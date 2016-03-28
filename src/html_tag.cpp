@@ -712,10 +712,10 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 					const string_vector & tokens1 = m_class_values;
                     const string_vector & tokens2 = i->class_val;
 					bool found = true;
-					for(auto str1 = tokens2.begin(); str1 != tokens2.end() && found; str1++)
+					for(auto str1 = tokens2.begin(); str1 != tokens2.end() && found; ++str1)
 					{
 						bool f = false;
-                        for (auto str2 = tokens1.begin(); str2 != tokens1.end() && !f; str2++)
+                        for (auto str2 = tokens1.begin(); str2 != tokens1.end() && !f; ++str2)
 						{
                             if (lcase_copy(*str1) == lcase_copy(*str2))
 							{
@@ -1220,7 +1220,7 @@ int litehtml::html_tag::fix_line_width( int max_width, element_float flt )
 		{
 			m_boxes.pop_back();
 
-			for(elements_vector::iterator i = els.begin(); i != els.end(); i++)
+			for(elements_vector::iterator i = els.begin(); i != els.end(); ++i)
 			{
 				int rw = place_element((*i), max_width);
 				if(rw > ret_width)
@@ -1254,7 +1254,7 @@ int litehtml::html_tag::fix_line_width( int max_width, element_float flt )
 				if(m_css_text_indent.val() != 0)
 				{
 					bool line_box_found = false;
-					for(box::vector::iterator iter = m_boxes.begin(); iter < m_boxes.end(); iter++)
+					for(box::vector::iterator iter = m_boxes.begin(); iter < m_boxes.end(); ++iter)
 					{
 						if((*iter)->get_type() == box_line)
 						{
@@ -1307,7 +1307,7 @@ void litehtml::html_tag::add_float(const element::ptr &el, int x, int y)
 			} else
 			{
 				bool inserted = false;
-				for(floated_box::vector::iterator i = m_floats_left.begin(); i != m_floats_left.end(); i++)
+				for(floated_box::vector::iterator i = m_floats_left.begin(); i != m_floats_left.end(); ++i)
 				{
 					if(fb.pos.right() > i->pos.right())
 					{
@@ -1330,7 +1330,7 @@ void litehtml::html_tag::add_float(const element::ptr &el, int x, int y)
 			} else
 			{
 				bool inserted = false;
-				for(floated_box::vector::iterator i = m_floats_right.begin(); i != m_floats_right.end(); i++)
+				for(floated_box::vector::iterator i = m_floats_right.begin(); i != m_floats_right.end(); ++i)
 				{
 					if(fb.pos.left() < i->pos.left())
 					{
@@ -1778,7 +1778,7 @@ bool litehtml::html_tag::find_styles_changes( position::vector& redraw_boxes, in
 
 	bool ret = false;
 	bool apply = false;
-	for (used_selector::vector::iterator iter = m_used_styles.begin(); iter != m_used_styles.end() && !apply; iter++)
+	for (used_selector::vector::iterator iter = m_used_styles.begin(); iter != m_used_styles.end() && !apply; ++iter)
 	{
 		if((*iter)->m_selector->is_media_valid())
 		{
@@ -1796,7 +1796,7 @@ bool litehtml::html_tag::find_styles_changes( position::vector& redraw_boxes, in
 		{
 			position::vector boxes;
 			get_inline_boxes(boxes);
-			for(position::vector::iterator pos = boxes.begin(); pos != boxes.end(); pos++)
+			for(position::vector::iterator pos = boxes.begin(); pos != boxes.end(); ++pos)
 			{
 				pos->x	+= x;
 				pos->y	+= y;
@@ -2074,7 +2074,7 @@ void litehtml::html_tag::draw_background( uint_ptr hdc, int x, int y, const posi
 		background_paint bg_paint;
 		position content_box;
 
-		for(position::vector::iterator box = boxes.begin(); box != boxes.end(); box++)
+		for(position::vector::iterator box = boxes.begin(); box != boxes.end(); ++box)
 		{
 			box->x	+= x;
 			box->y	+= y;
@@ -2564,7 +2564,7 @@ int litehtml::html_tag::new_box(const element::ptr &el, int max_width, line_cont
 		if(m_css_text_indent.val() != 0)
 		{
 			bool line_box_found = false;
-			for(box::vector::iterator iter = m_boxes.begin(); iter != m_boxes.end(); iter++)
+			for(box::vector::iterator iter = m_boxes.begin(); iter != m_boxes.end(); ++iter)
 			{
 				if((*iter)->get_type() == box_line)
 				{
@@ -3241,12 +3241,12 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 	std::map<int, bool> zindexes;
 	if(with_positioned)
 	{
-		for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); i++)
+		for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); ++i)
 		{
 			zindexes[(*i)->get_zindex()];
 		}
 
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); idx++)
+		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first < 0)
 			{
@@ -3259,7 +3259,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 	draw_children(hdc, x, y, clip, draw_inlines, 0);
 	if(with_positioned)
 	{
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); idx++)
+		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first == 0)
 			{
@@ -3267,7 +3267,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 			}
 		}
 
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); idx++)
+		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first > 0)
 			{
@@ -3317,7 +3317,7 @@ bool litehtml::html_tag::is_nth_child(const element::ptr& el, int num, int off, 
 bool litehtml::html_tag::is_nth_last_child(const element::ptr& el, int num, int off, bool of_type) const
 {
 	int idx = 1;
-	for(elements_vector::const_reverse_iterator child = m_children.rbegin(); child != m_children.rend(); child++)
+	for(elements_vector::const_reverse_iterator child = m_children.rbegin(); child != m_children.rend(); ++child)
 	{
 		if((*child)->get_display() != display_inline_text)
 		{
@@ -3365,7 +3365,7 @@ void litehtml::html_tag::parse_nth_child_params( tstring_view param, int &num, i
         tstring s_off;
 
         tstring s_int;
-		for(auto tok = tokens.begin(); tok != tokens.end(); tok++)
+		for(auto tok = tokens.begin(); tok != tokens.end(); ++tok)
 		{
 			if((*tok) == _Q("n"))
 			{
@@ -3524,7 +3524,7 @@ void litehtml::html_tag::update_floats(int dy, const element::ptr &parent)
 	if(is_floats_holder())
 	{
 		bool reset_cache = false;
-		for(floated_box::vector::reverse_iterator fb = m_floats_left.rbegin(); fb != m_floats_left.rend(); fb++)
+		for(floated_box::vector::reverse_iterator fb = m_floats_left.rbegin(); fb != m_floats_left.rend(); ++fb)
 		{
 			if(fb->el->is_ancestor(parent))
 			{
@@ -3537,7 +3537,7 @@ void litehtml::html_tag::update_floats(int dy, const element::ptr &parent)
 			m_cahe_line_left.invalidate();
 		}
 		reset_cache = false;
-		for(floated_box::vector::reverse_iterator fb = m_floats_right.rbegin(); fb != m_floats_right.rend(); fb++)
+		for(floated_box::vector::reverse_iterator fb = m_floats_right.rbegin(); fb != m_floats_right.rend(); ++fb)
 		{
 			if(fb->el->is_ancestor(parent))
 			{
@@ -3715,7 +3715,7 @@ litehtml::element::ptr litehtml::html_tag::get_child_by_point(int x, int y, int 
 	pos.x	= x - pos.x;
 	pos.y	= y - pos.y;
 
-	for(elements_vector::reverse_iterator i = m_children.rbegin(); i != m_children.rend() && !ret; i++)
+	for(elements_vector::reverse_iterator i = m_children.rbegin(); i != m_children.rend() && !ret; ++i)
 	{
 		element::ptr el = (*i);
 
@@ -3819,12 +3819,12 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 
 	std::map<int, bool> zindexes;
 
-	for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); i++)
+	for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); ++i)
 	{
 		zindexes[(*i)->get_zindex()];
 	}
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; idx++)
+	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first > 0)
 		{
@@ -3833,7 +3833,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 	}
 	if(ret) return ret;
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; idx++)
+	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first == 0)
 		{
@@ -3852,7 +3852,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 	if(ret) return ret;
 
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; idx++)
+	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first < 0)
 		{

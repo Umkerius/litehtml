@@ -243,7 +243,7 @@ void litehtml::table_grid::distribute_width( int width, int start, int end )
 		if(!distribute_columns.empty() || step == 2)
 		{
 			int cols_width = 0;
-			for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); col++)
+			for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); ++col)
 			{
 				cols_width += (*col)->max_width - (*col)->min_width;
 			}
@@ -251,7 +251,7 @@ void litehtml::table_grid::distribute_width( int width, int start, int end )
 			if(cols_width)
 			{
 				int add = width / (int) distribute_columns.size();
-				for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); col++)
+				for(std::vector<table_column*>::iterator col = distribute_columns.begin(); col != distribute_columns.end(); ++col)
 				{
 					add = round_f( (float) width * ((float) ((*col)->max_width - (*col)->min_width) / (float) cols_width) );
 					if((*col)->width + add >= (*col)->min_width)

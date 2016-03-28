@@ -72,7 +72,7 @@ void litehtml::style::parse_property( tstring_view txt, tstring_view baseurl )
 
 void litehtml::style::combine( const litehtml::style& src )
 {
-	for(props_map::const_iterator i = src.m_properties.begin(); i != src.m_properties.end(); i++)
+	for(props_map::const_iterator i = src.m_properties.begin(); i != src.m_properties.end(); ++i)
 	{
 		add_parsed_property(i->first, i->second.m_value, i->second.m_important);
 	}

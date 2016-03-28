@@ -35,7 +35,7 @@ bool litehtml::element::is_point_inside( int x, int y )
 	{
 		position::vector boxes;
 		get_inline_boxes(boxes);
-		for(position::vector::iterator box = boxes.begin(); box != boxes.end(); box++)
+		for(position::vector::iterator box = boxes.begin(); box != boxes.end(); ++box)
 		{
 			if(box->is_point_inside(x, y))
 			{

@@ -38,7 +38,7 @@ litehtml::document::~document()
 	m_over_element = 0;
 	if(m_container)
 	{
-		for(fonts_map::iterator f = m_fonts.begin(); f != m_fonts.end(); f++)
+		for(fonts_map::iterator f = m_fonts.begin(); f != m_fonts.end(); ++f)
 		{
 			m_container->delete_font(f->second.font);
 		}
@@ -93,7 +93,7 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
 
 		// parse style sheets linked in document
 		media_query_list::ptr media;
-		for (css_text::vector::iterator css = doc->m_css.begin(); css != doc->m_css.end(); css++)
+		for (css_text::vector::iterator css = doc->m_css.begin(); css != doc->m_css.end(); ++css)
 		{
 			if (!css->media.empty())
 			{
@@ -572,7 +572,7 @@ litehtml::element::ptr litehtml::document::create_element(tstring_view tag_name,
 	if(newTag)
 	{
 		newTag->set_tagName(tag_name);
-        for (string_hash_map::const_iterator iter = attributes.begin(); iter != attributes.end(); iter++)
+        for (string_hash_map::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
 		{
 			newTag->set_attr(iter->first, iter->second);
 		}
@@ -630,7 +630,7 @@ bool litehtml::document::lang_changed()
 bool litehtml::document::update_media_lists(const media_features& features)
 {
 	bool update_styles = false;
-	for(media_query_list::vector::iterator iter = m_media_lists.begin(); iter != m_media_lists.end(); iter++)
+	for(media_query_list::vector::iterator iter = m_media_lists.begin(); iter != m_media_lists.end(); ++iter)
 	{
 		if((*iter)->apply_media_features(features))
 		{
@@ -857,7 +857,7 @@ void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display 
 				}
 				tmp.push_back((*cur_iter));
 			}
-			cur_iter++;
+			++cur_iter;
 		}
 		else if (!tmp.empty())
 		{
@@ -865,7 +865,7 @@ void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display 
 		}
 		else
 		{
-			cur_iter++;
+			++cur_iter;
 		}
 	}
 	if (!tmp.empty())
@@ -901,7 +901,7 @@ void litehtml::document::fix_table_parent(element::ptr& el_ptr, style_display di
 			while (true)
 			{
 				if (cur == parent->m_children.begin()) break;
-				cur--;
+				--cur;
 				if ((*cur)->is_white_space() || (*cur)->get_display() == el_disp)
 				{
 					first = cur;
@@ -916,7 +916,7 @@ void litehtml::document::fix_table_parent(element::ptr& el_ptr, style_display di
 			cur = this_element;
 			while (true)
 			{
-				cur++;
+				++cur;
 				if (cur == parent->m_children.end()) break;
 
 				if ((*cur)->is_white_space() || (*cur)->get_display() == el_disp)

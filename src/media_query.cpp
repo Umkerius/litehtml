@@ -103,7 +103,7 @@ bool litehtml::media_query::check( const media_features& features ) const
 	if(m_media_type == media_type_all || m_media_type == features.type)
 	{
 		res = true;
-		for(media_query_expression::vector::const_iterator expr = m_expressions.begin(); expr != m_expressions.end() && res; expr++)
+		for(auto expr = m_expressions.begin(); expr != m_expressions.end() && res; ++expr)
 		{
 			if(!expr->check(features))
 			{
@@ -151,7 +151,7 @@ bool litehtml::media_query_list::apply_media_features( const media_features& fea
 {
 	bool apply = false;
 	
-	for(media_query::vector::iterator iter = m_queries.begin(); iter != m_queries.end() && !apply; iter++)
+	for(media_query::vector::iterator iter = m_queries.begin(); iter != m_queries.end() && !apply; ++iter)
 	{
 		if((*iter)->check(features))
 		{

@@ -45,10 +45,6 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 					if(pos != tstring_view::npos)
 					{
 						pos++;
-					} else
-					{
-						int iii = 0;
-						iii++;
 					}
 				}
 				if(pos != tstring_view::npos)
@@ -184,7 +180,7 @@ bool litehtml::css_selector::parse( tstring_view text )
 	}
 
     tstring joined_tokens;
-	for(auto i = tokens.begin(); i != tokens.end(); i++)
+	for(auto i = tokens.begin(); i != tokens.end(); ++i)
 	{
         joined_tokens.append(i->data(), i->size());
 	}
@@ -235,7 +231,7 @@ void litehtml::css_selector::calc_specificity()
 	{
 		m_specificity.d = 1;
 	}
-	for(css_attribute_selector::vector::iterator i = m_right.m_attrs.begin(); i != m_right.m_attrs.end(); i++)
+	for(auto i = m_right.m_attrs.begin(); i != m_right.m_attrs.end(); ++i)
 	{
 		if(i->attribute == _Q("id"))
 		{

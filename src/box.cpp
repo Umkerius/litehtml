@@ -153,7 +153,7 @@ void litehtml::line_box::finish(bool last_box)
 		return;
 	}
 
-	for(auto i = m_items.rbegin(); i != m_items.rend(); i++)
+	for(auto i = m_items.rbegin(); i != m_items.rend(); ++i)
 	{
 		if((*i)->is_white_space() || (*i)->is_break())
 		{
@@ -320,7 +320,7 @@ bool litehtml::line_box::can_hold(const element::ptr &el, white_space ws)
 bool litehtml::line_box::have_last_space()
 {
 	bool ret = false;
-	for (auto i = m_items.rbegin(); i != m_items.rend() && !ret; i++)
+	for (auto i = m_items.rbegin(); i != m_items.rend() && !ret; ++i)
 	{
 		if((*i)->is_white_space() || (*i)->is_break())
 		{
@@ -336,7 +336,7 @@ bool litehtml::line_box::have_last_space()
 bool litehtml::line_box::is_empty()
 {
 	if(m_items.empty()) return true;
-	for (auto i = m_items.rbegin(); i != m_items.rend(); i++)
+	for (auto i = m_items.rbegin(); i != m_items.rend(); ++i)
 	{
 		if(!(*i)->m_skip || (*i)->is_break())
 		{
@@ -402,7 +402,7 @@ void litehtml::line_box::new_width( int left, int right, elements_vector& els )
 		m_box_right	= right;
 		m_width = 0;
 		auto remove_begin = m_items.end();
-		for (auto i = m_items.begin() + 1; i != m_items.end(); i++)
+		for (auto i = m_items.begin() + 1; i != m_items.end(); ++i)
 		{
 			element::ptr el = (*i);
 
