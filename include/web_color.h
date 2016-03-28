@@ -4,12 +4,19 @@ namespace litehtml
 {
 	struct web_color
 	{
-		byte    blue;
-		byte    green;
-		byte    red;
-		byte    alpha;
+        union
+        {
+            uint8_t color;
+            struct
+            {
+                byte    blue;
+                byte    green;
+                byte    red;
+                byte    alpha;
+            };
+        };
 
-		web_color(byte r, byte g, byte b, byte a = 255)
+        web_color(byte r, byte g, byte b, byte a = 255)
 		{
 			blue	= b;
 			green	= g;
@@ -17,32 +24,40 @@ namespace litehtml
 			alpha	= a;
 		}
 
-		web_color()
-		{
-			blue	= 0;
-			green	= 0;
-			red		= 0;
-			alpha	= 0xFF;
-		}
+        web_color() : web_color(0, 0, 0) {}
 
-		web_color(const web_color& val)
-		{
-			blue	= val.blue;
-			green	= val.green;
-			red		= val.red;
-			alpha	= val.alpha;
-		}
-
-		web_color& operator=(const web_color& val)
-		{
-			blue	= val.blue;
-			green	= val.green;
-			red		= val.red;
-			alpha	= val.alpha;
-			return *this;
-		}
 		static web_color		from_string(tstring_view str);
 		static tstring_view	resolve_name(tstring_view name);
 		static bool				is_color(tstring_view str);
 	};
+
+    inline bool operator==(web_color lhs, web_color rhs)
+    {
+        return lhs.color == rhs.color;
+    }
+
+    inline bool operator!=(web_color lhs, web_color rhs)
+    {
+        return !(lhs == rhs);
+    }
+
+    inline bool operator<(web_color lhs, web_color rhs)
+    {
+        return lhs.color < rhs.color;
+    }
+
+    inline bool operator<=(web_color lhs, web_color rhs)
+    {
+        return lhs < rhs || lhs == rhs;
+    }
+
+    inline bool operator>(web_color lhs, web_color rhs)
+    {
+        return lhs.color > rhs.color;
+    }
+
+    inline bool operator>=(web_color lhs, web_color rhs)
+    {
+        return lhs > rhs || lhs == rhs;
+    }
 }
