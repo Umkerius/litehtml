@@ -491,7 +491,7 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 		m_list_style_position = (list_style_position) value_index(list_pos, list_style_position_strings, list_style_position_outside);
 
 		tstring_view list_image = get_style_property(_Q("list-style-image"), true, 0);
-		if(!list_image.empty())
+		if(!list_image.empty() && list_image != _Q("none"))
 		{
 			tstring url;
 			css::parse_css_url(list_image, url);
@@ -762,18 +762,21 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
             if (attr_value.empty())
 			{
 				return select_no_match;
-			} else if(attr_value.find(i->val) != 0)
+			} 
+            else if(attr_value.find(i->val) != 0)
 			{
-			    //TODO: WTF?!
-                const tchar_t* s = attr_value.data() + attr_value.length() - i->val.length() - 1;
-				if(s < attr_value.data())
-				{
-					return select_no_match;
-				}
-				if(i->val != s)
-				{
-					return select_no_match;
-				}
+                if (i->val.size() > attr_value.size())
+                {
+                    return select_no_match;
+                }
+
+                tstring_view val = attr_value;
+                val.remove_prefix(attr_value.size() - i->val.size());
+
+                if (val != i->val)
+                {
+                    return select_no_match;
+                }
 			}
 			break;
 		case select_pseudo_element:

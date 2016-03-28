@@ -17,11 +17,5 @@ namespace litehtml
     using tstring = std::basic_string<tchar_t>;
 }
 
-#if defined( WIN32 )
-#define t_strncasecmp _strnicmp
-#else
-#define t_strncasecmp strncasecmp
-#endif
-
-//small optimization: _Q("string") creates string_view with known size at runtime
+//small optimization: _Q("string") creates string_view with known size at compile-time
 #define _Q(str) litehtml::tstring_view(str, litehtml::array_size(str) - 1)
