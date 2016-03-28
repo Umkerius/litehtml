@@ -13,8 +13,8 @@ namespace litehtml
 	class box
 	{
 	public:
-		typedef std::unique_ptr<litehtml::box>	ptr;
-		typedef std::vector< box::ptr >			vector;
+		using ptr = std::unique_ptr<litehtml::box>;
+		using vector = lite_vector<box::ptr>;
 	protected:
 		int		m_box_top;
 		int		m_box_left;

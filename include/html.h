@@ -72,7 +72,7 @@ namespace litehtml
     void split_string(tstring_view str, string_view_deque& tokens, tstring_view delims, tstring_view delims_preserve = _Q(""), tstring_view quote = _Q("\""));
 
     template <typename StringT>
-    void join_string(tstring& str, const std::vector<StringT>& tokens, tstring_view delims)
+    void join_string(tstring& str, const lite_vector<StringT>& tokens, tstring_view delims)
     {
         str.clear();
 

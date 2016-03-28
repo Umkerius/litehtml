@@ -19,7 +19,10 @@ public:
     string_view() = default;
     string_view(const CharT* str, size_t size) : m_str(str), m_size(size) {}
     string_view(const CharT* str);
-    string_view(const std::basic_string<CharT>& str) : string_view(str.c_str(), str.size()) {}
+
+    template <typename Alloc>
+    string_view(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& str) 
+        : string_view(str.c_str(), str.size()) {}
 
     const_iterator begin() const { return m_str; }
     const_iterator end() const { return begin() + m_size; }
@@ -67,8 +70,8 @@ public:
 
 private:
     //c_str is not recommended for use
-    //it usually used for call C function which expects null-terminated string
-    //with string_view you cant be sure that c_str return pointer to null-terminating string
+    //it usually used for call C functions which expects null-terminated string
+    //you cant be sure that string_view::c_str returns pointer to null-terminated string
     //if you need an access to internal string, you should use data or begin
     //they do the same as c_str, but if you use it consciously, you are already warned
     const CharT* c_str() const { return begin(); }
@@ -77,6 +80,18 @@ private:
     size_type m_size = 0;
 };
 
+//--------------------------------------------------------------------------------------------------
+// Free functions 
+//--------------------------------------------------------------------------------------------------
+template <typename CharT>
+basic_lite_string<CharT> to_lite_string(string_view<CharT> str)
+{
+    return basic_lite_string<CharT>(str.data(), str.size());
+}
+
+//--------------------------------------------------------------------------------------------------
+// string_view implementation 
+//--------------------------------------------------------------------------------------------------
 template <typename CharT>
 string_view<CharT>::string_view(const CharT* str) 
     : string_view(str, str != nullptr ? std::char_traits<CharT>::length(str) : 0) {}

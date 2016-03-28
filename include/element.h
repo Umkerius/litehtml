@@ -15,8 +15,8 @@ namespace litehtml
 		friend class el_table;
 		friend class document;
 	public:
-		typedef std::shared_ptr<litehtml::element>		ptr;
-		typedef std::weak_ptr<litehtml::element>		weak_ptr;
+		using ptr = std::shared_ptr<litehtml::element>;
+		using weak_ptr = std::weak_ptr<litehtml::element>;
 	protected:
 		std::weak_ptr<element>		m_parent;
 		std::weak_ptr<litehtml::document>	m_doc;

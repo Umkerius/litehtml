@@ -1,30 +1,63 @@
 #pragma once
 
-#include <stdlib.h>
-#include <memory>
-#include <map>
 #include <deque>
-#include <unordered_map>
+#include <map>
+#include <memory>
+#include <string>
 #include <vector>
+#include <unordered_map>
+#include "string_view.h"
 
 namespace litehtml
 {
 	class document;
 	class element;
 
-    typedef std::unordered_map<litehtml::tstring, litehtml::tstring> string_hash_map;
-	typedef std::vector<std::shared_ptr<litehtml::element>>		     elements_vector;
-	typedef std::vector<int>										 int_vector;
-    typedef std::deque<litehtml::tstring_view>						 string_view_deque;
-    typedef std::vector<litehtml::tstring>						     string_vector;
+    // UTODO: need move to own header and implement
+	template <typename T>
+	using lite_allocator = std::allocator<T>;
 
-	const unsigned int font_decoration_none			= 0x00;
-	const unsigned int font_decoration_underline	= 0x01;
-	const unsigned int font_decoration_linethrough	= 0x02;
-	const unsigned int font_decoration_overline		= 0x04;
+	template <typename T, typename Alloc = lite_allocator<T>>
+	using lite_vector<T, Alloc> = std::vector<T, Alloc>;
 
-	typedef unsigned char	byte;
-	typedef unsigned int	ucode_t;
+	template <typename T, typename Alloc = lite_allocator<T>>
+	using lite_deque<T, Alloc> = std::deque<T, Alloc>;
+
+	template <typename Key,
+              typename T,
+              typename Hash = std::hash<Key>,
+              typename KeyEqual = std::equal_to<Key>
+              typename Alloc = lite_allocator<const Key, T>>
+    using lite_hash_map<Key, T, Hash, KeyEqual, Alloc> = 
+        std::unordered_map<Key, T, Hash, KeyEqual, Alloc>;
+
+    template <typename CharT, 
+              typename Traits = std::char_traits<CharT>,
+              typename Alloc = lite_allocator<CharT>>
+    using basic_lite_string = std::basic_string<CharT, Traits, Alloc>;
+
+    // Type aliases
+    using tchar_t  = char;
+    using twchar_t = wchar_t;
+    using uint_ptr = uintptr_t;
+    using byte     = unsigned char;
+	using ucode_t  = unsigned;
+
+    using tstring       = basic_lite_string<tchar_t>;
+    using twstring      = basic_lite_string<twchar_t>;
+    using tstring_view  = string_view<tchar_t>;
+    using twstring_view = string_view<twchar_t>;
+
+    using string_hash_map   = lite_hash_map<litehtml::tstring, litehtml::tstring>;
+	using elements_vector   = lite_vector<std::shared_ptr<litehtml::element>>;
+	using int_vector        = lite_vector<int>;
+    using string_view_deque = lite_deque<litehtml::tstring_view>;
+    using string_vector     = lite_vector<litehtml::tstring>;
+
+	const unsigned font_decoration_none			= 0x00;
+	const unsigned font_decoration_underline	= 0x01;
+	const unsigned font_decoration_linethrough	= 0x02;
+	const unsigned font_decoration_overline		= 0x04;
 
 	struct margins
 	{
@@ -56,7 +89,7 @@ namespace litehtml
 
 	struct position
 	{
-		typedef std::vector<position>	vector;
+		using vector = lite_vector<position>;
 
 		int	x;
 		int	y;
@@ -173,7 +206,7 @@ namespace litehtml
 		font_metrics	metrics;
 	};
 
-	typedef std::map<tstring, font_item>	fonts_map;
+	using fonts_map = lite_map<tstring, font_item>;
 
 	enum draw_flag
 	{
@@ -520,7 +553,7 @@ namespace litehtml
 
 	struct floated_box
 	{
-		typedef std::vector<floated_box>	vector;
+		using vector = lite_vector<floated_box>;
 
 		position		pos;
 		element_float	float_side;
@@ -732,5 +765,5 @@ namespace litehtml
 	};
 
 	// List of the Void Elements (can't have any contents)
-	litehtml::tstring_view const void_elements = _Q("area;base;br;col;command;embed;hr;img;input;keygen;link;meta;param;source;track;wbr");
+	const tstring_view void_elements = _Q("area;base;br;col;command;embed;hr;img;input;keygen;link;meta;param;source;track;wbr");
 }

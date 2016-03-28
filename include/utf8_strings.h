@@ -5,11 +5,11 @@ namespace litehtml
 	class utf8_to_wchar
 	{
 		const byte* m_utf8;
-		std::wstring m_str;
+		twstring m_str;
 	public:
         utf8_to_wchar(const char* val);
 
-        void acquire_str(std::wstring& str)
+        void acquire_str(twstring& str)
         {
             m_str.swap(str);
             m_str.clear();
@@ -30,11 +30,11 @@ namespace litehtml
 
 	class wchar_to_utf8
 	{
-		std::string m_str;
+		tstring m_str;
 	public:
 		wchar_to_utf8(const wchar_t* val);
 
-        void acquire_str(std::string& str)
+        void acquire_str(tstring& str)
         {
             m_str.swap(str);
             m_str.clear();

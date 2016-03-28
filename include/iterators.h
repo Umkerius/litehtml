@@ -35,7 +35,7 @@ namespace litehtml
 			}
 		};
 
-		std::vector<stack_item>		m_stack;
+		lite_vector<stack_item>		m_stack;
 		element::ptr				m_el;
 		int							m_idx;
 		iterator_selector*			m_go_inside;

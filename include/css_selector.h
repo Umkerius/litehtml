@@ -130,7 +130,7 @@ namespace litehtml
 
 	struct css_attribute_selector
 	{
-		typedef std::vector<css_attribute_selector>	vector;
+		using vector = lite_vector<css_attribute_selector>;
 
 		tstring					attribute;
 		tstring					val;
@@ -170,8 +170,8 @@ namespace litehtml
 	class css_selector
 	{
 	public:
-		typedef std::shared_ptr<css_selector>	ptr;
-		typedef std::vector<css_selector::ptr>	vector;
+		using ptr = std::shared_ptr<css_selector>;
+		using vector = std::vector<css_selector::ptr>;
 	public:
 		selector_specificity	m_specificity;
 		css_element_selector	m_right;
@@ -259,8 +259,8 @@ namespace litehtml
 	class used_selector
 	{
 	public:
-		typedef std::unique_ptr<used_selector>	ptr;
-		typedef std::vector<used_selector::ptr>	vector;
+		using ptr = std::unique_ptr<used_selector>;
+		using vector = std::vector<used_selector::ptr>;
 
 		css_selector::ptr	m_selector;
 		bool				m_used;

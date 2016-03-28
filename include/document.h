@@ -10,7 +10,7 @@ namespace litehtml
 {
 	struct css_text
 	{
-		typedef std::vector<css_text> vector;
+		using vector = lite_vector<css_text>;
 
 		tstring	text;
 		tstring	baseurl;
@@ -26,8 +26,8 @@ namespace litehtml
 	class document : public std::enable_shared_from_this<document>
 	{
 	public:
-		typedef std::shared_ptr<document>	ptr;
-		typedef std::weak_ptr<document>		weak_ptr;
+		using ptr = std::shared_ptr<document>;
+		using weak_ptr = std::weak_ptr<document>;
 	private:
 		std::shared_ptr<element>			m_root;
 		document_container*					m_container;

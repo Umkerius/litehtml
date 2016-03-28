@@ -37,13 +37,13 @@ namespace litehtml
 		friend class block_box;
 		friend class line_box;
 	public:
-		typedef std::shared_ptr<litehtml::html_tag>	ptr;
+		using ptr = std::shared_ptr<litehtml::html_tag>;
 	protected:
 		box::vector				m_boxes;
 		string_vector			m_class_values;
 		tstring					m_tag;
 		litehtml::style			m_style;
-		string_hash_map				m_attrs;
+		string_hash_map			m_attrs;
 		vertical_align			m_vertical_align;
 		text_align				m_text_align;
 		style_display			m_display;
@@ -133,11 +133,11 @@ namespace litehtml
 		virtual element_clear		get_clear() const override;
 		virtual size_t				get_children_count() const override;
 		virtual element::ptr		get_child(int idx) const override;
-		virtual element_position	get_element_position(css_offsets* offsets = 0) const override;
+		virtual element_position	get_element_position(css_offsets* offsets = nullptr) const override;
 		virtual overflow			get_overflow() const override;
 
 		virtual void				set_attr(tstring_view name, tstring_view val) override;
-		virtual tstring_view		get_attr(tstring_view name, tstring_view def = 0) override;
+		virtual tstring_view		get_attr(tstring_view name, tstring_view def = _Q("")) override;
 		virtual void				apply_stylesheet(const litehtml::css& stylesheet) override;
 		virtual void				refresh_styles() override;
 
@@ -164,7 +164,7 @@ namespace litehtml
 		virtual void				draw(uint_ptr hdc, int x, int y, const position* clip) override;
 		virtual void				draw_background(uint_ptr hdc, int x, int y, const position* clip) override;
 
-		virtual tstring_view		get_style_property(tstring_view name, bool inherited, tstring_view def = 0) override;
+		virtual tstring_view		get_style_property(tstring_view name, bool inherited, tstring_view def = _Q("")) override;
 		virtual uint_ptr			get_font(font_metrics* fm = 0) override;
 		virtual int					get_font_size() const override;
 
@@ -243,4 +243,3 @@ namespace litehtml
 		return m_children;
 	}
 }
-

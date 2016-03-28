@@ -33,13 +33,13 @@ namespace litehtml
 		}
 	};
 
-	typedef std::map<tstring, property_value>	props_map;
+	using props_map = lite_map<tstring, property_value>;
 
 	class style
 	{
 	public:
-		typedef std::shared_ptr<style>		ptr;
-		typedef std::vector<style::ptr>		vector;
+		using ptr = std::shared_ptr<style>;
+		using vector = lite_vector<style::ptr>;
 	private:
 		props_map			m_properties;
 		static string_hash_map	m_valid_values;

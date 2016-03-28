@@ -9,12 +9,6 @@ namespace litehtml
     {
         return N;
     }
-
-    using tchar_t = char;
-    using uint_ptr = uintptr_t;
-
-    using tstring_view = string_view<tchar_t>;
-    using tstring = std::basic_string<tchar_t>;
 }
 
 //small optimization: _Q("string") creates string_view with known size at compile-time

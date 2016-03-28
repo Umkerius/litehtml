@@ -4,7 +4,7 @@ namespace litehtml
 {
 	struct media_query_expression
 	{
-		typedef std::vector<media_query_expression>	vector;
+		using vector = lite_vector<media_query_expression>;
 		media_feature	feature;
 		int				val;
 		int				val2;
@@ -24,8 +24,8 @@ namespace litehtml
 	class media_query
 	{
 	public:
-		typedef std::shared_ptr<media_query>	ptr;
-		typedef std::vector<media_query::ptr>	vector;
+		using ptr = std::shared_ptr<media_query>;
+		using vector = lite_vector<media_query::ptr>;
 	private:
 		media_query_expression::vector	m_expressions;
 		bool							m_not;
@@ -41,8 +41,8 @@ namespace litehtml
 	class media_query_list
 	{
 	public:
-		typedef std::shared_ptr<media_query_list>	ptr;
-		typedef std::vector<media_query_list::ptr>	vector;
+		using ptr = std::shared_ptr<media_query_list>;
+		using vector = lite_vector<media_query_list::ptr>;
 	private:
 		media_query::vector	m_queries;
 		bool				m_is_used;
