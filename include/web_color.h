@@ -6,7 +6,7 @@ namespace litehtml
 	{
         union
         {
-            uint8_t color;
+            uint32_t color;
             struct
             {
                 byte    blue;
