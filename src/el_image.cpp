@@ -14,7 +14,7 @@ litehtml::el_image::~el_image( void )
 
 void litehtml::el_image::get_content_size( size& sz, int max_width )
 {
-	get_document()->container()->get_image_size(m_src.c_str(), 0, sz);
+	get_document()->container()->get_image_size(m_src, 0, sz);
 }
 
 int litehtml::el_image::line_height() const
@@ -38,7 +38,7 @@ int litehtml::el_image::render( int x, int y, int max_width, bool second_pass )
 	document::ptr doc = get_document();
 
 	litehtml::size sz;
-	doc->container()->get_image_size(m_src.c_str(), 0, sz);
+	doc->container()->get_image_size(m_src, 0, sz);
 
 	m_pos.width		= sz.width;
 	m_pos.height	= sz.height;
@@ -246,10 +246,10 @@ void litehtml::el_image::parse_styles( bool is_reparse /*= false*/ )
 	{
 		if(!m_css_height.is_predefined() && !m_css_width.is_predefined())
 		{
-			get_document()->container()->load_image(m_src.c_str(), 0, true);
+			get_document()->container()->load_image(m_src, 0, true);
 		} else
 		{
-			get_document()->container()->load_image(m_src.c_str(), 0, false);
+			get_document()->container()->load_image(m_src, 0, false);
 		}
 	}
 }

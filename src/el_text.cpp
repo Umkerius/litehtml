@@ -79,7 +79,7 @@ void litehtml::el_text::parse_styles(bool is_reparse)
 	} else
 	{
 		m_size.height	= fm.height;
-		m_size.width	= get_document()->container()->text_width(m_use_transformed ? m_transformed_text.c_str() : m_text.c_str(), font);
+		m_size.width	= get_document()->container()->text_width(m_use_transformed ? m_transformed_text : m_text, font);
 	}
 	m_draw_spaces = fm.draw_spaces;
 }
@@ -114,7 +114,7 @@ void litehtml::el_text::draw( uint_ptr hdc, int x, int y, const position* clip )
 
 			uint_ptr font = el_parent->get_font();
 			litehtml::web_color color = el_parent->get_color(_Q("color"), true, doc->get_def_color());
-			doc->container()->draw_text(hdc, m_use_transformed ? m_transformed_text.c_str() : m_text.c_str(), font, color, pos);
+			doc->container()->draw_text(hdc, m_use_transformed ? m_transformed_text : m_text, font, color, pos);
 		}
 	}
 }

@@ -73,7 +73,7 @@ void litehtml::html_tag::clearRecursive()
 
 litehtml::tstring_view litehtml::html_tag::get_tagName() const
 {
-	return m_tag.c_str();
+	return m_tag;
 }
 
 void litehtml::html_tag::set_attr(tstring_view name, tstring_view val)
@@ -497,7 +497,7 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 			css::parse_css_url(list_image, url);
 
 			tstring_view list_image_baseurl = get_style_property(_Q("list-style-image-baseurl"), true, 0);
-			doc->container()->load_image(url.c_str(), list_image_baseurl, true);
+			doc->container()->load_image(url, list_image_baseurl, true);
 		}
 
 	}
@@ -690,9 +690,9 @@ int litehtml::html_tag::select(const css_element_selector& selector, bool apply_
 	int res = select_match;
 	element::ptr el_parent = parent();
 
-	for(css_attribute_selector::vector::const_iterator i = selector.m_attrs.begin(); i != selector.m_attrs.end(); i++)
+	for(auto i = selector.m_attrs.begin(); i != selector.m_attrs.end(); ++i)
 	{
-		tstring_view attr_value = get_attr(i->attribute.c_str());
+		tstring_view attr_value = get_attr(i->attribute);
 		switch(i->condition)
 		{
 		case select_exists:
@@ -2487,7 +2487,7 @@ bool litehtml::html_tag::set_class( tstring_view pclass, bool add )
 	{
 		tstring class_string;
 		join_string(class_string, m_class_values, _Q(" "));
-		set_attr(_Q("class"), class_string.c_str());
+		set_attr(_Q("class"), class_string);
 
 		return true;
 	}
@@ -2863,13 +2863,12 @@ void litehtml::html_tag::init_background_paint(position pos, background_paint &b
 
 	if(!bg_paint.image.empty())
 	{
-		get_document()->container()->get_image_size(bg_paint.image.c_str(), bg_paint.baseurl.c_str(), bg_paint.image_size);
+		get_document()->container()->get_image_size(bg_paint.image, bg_paint.baseurl, bg_paint.image_size);
 		if(bg_paint.image_size.width && bg_paint.image_size.height)
 		{
 			litehtml::size img_new_sz = bg_paint.image_size;
 			double img_ar_width		= (double) bg_paint.image_size.width / (double) bg_paint.image_size.height;
 			double img_ar_height	= (double) bg_paint.image_size.height / (double) bg_paint.image_size.width;
-
 
 			if(bg->m_position.width.is_predefined())
 			{
@@ -4125,7 +4124,7 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 
 			size sz;
 			tstring_view list_image_baseurl = get_style_property(_Q("list-style-image-baseurl"), true, 0);
-			get_document()->container()->get_image_size(url.c_str(), list_image_baseurl, sz);
+			get_document()->container()->get_image_size(url, list_image_baseurl, sz);
 			if (min_height < sz.height)
 			{
 				min_height = sz.height;

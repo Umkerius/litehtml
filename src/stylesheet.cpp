@@ -195,7 +195,7 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 								new_media = media;
 							}
 						}
-						parse_stylesheet(css_text.c_str(), css_baseurl.c_str(), doc, new_media);
+						parse_stylesheet(css_text, css_baseurl, doc, new_media);
 					}
 				}
 			}

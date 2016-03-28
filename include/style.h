@@ -67,7 +67,7 @@ namespace litehtml
 				props_map::const_iterator f = m_properties.find(name.to_string());
 				if(f != m_properties.end())
 				{
-					return f->second.m_value.c_str();
+					return f->second.m_value;
 				}
 			}
             return tstring_view();
