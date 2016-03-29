@@ -8,7 +8,6 @@
 #include <cstring>
 #include <algorithm>
 #include <sstream>
-#include "os_types.h"
 #include "types.h"
 #include "background.h"
 #include "borders.h"

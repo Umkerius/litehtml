@@ -66,6 +66,15 @@ namespace litehtml
         return basic_lite_string<CharT>(str.data(), str.size());
     }
 
+    template <typename T, size_t N>
+    size_t array_size(T(&)[N])
+    {
+        return N;
+    }
+
+    //small optimization: _Q("string") creates string_view with known size at compile-time
+    #define _Q(str) litehtml::tstring_view(str, litehtml::array_size(str) - 1)
+
 	struct margins
 	{
 		int	left;
