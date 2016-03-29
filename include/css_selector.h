@@ -171,7 +171,7 @@ namespace litehtml
 	{
 	public:
 		using ptr = std::shared_ptr<css_selector>;
-		using vector = std::vector<css_selector::ptr>;
+		using vector = lite_vector<css_selector::ptr>;
 	public:
 		selector_specificity	m_specificity;
 		css_element_selector	m_right;
@@ -260,7 +260,7 @@ namespace litehtml
 	{
 	public:
 		using ptr = std::unique_ptr<used_selector>;
-		using vector = std::vector<used_selector::ptr>;
+        using vector = lite_vector<used_selector::ptr>;
 
 		css_selector::ptr	m_selector;
 		bool				m_used;

@@ -17,24 +17,25 @@ namespace litehtml
 	template <typename T>
 	using lite_allocator = std::allocator<T>;
 
-	template <typename T, typename Alloc = lite_allocator<T>>
-	using lite_vector<T, Alloc> = std::vector<T, Alloc>;
+	template <typename T>
+    using lite_vector = std::vector<T, lite_allocator<T>>;
 
-	template <typename T, typename Alloc = lite_allocator<T>>
-	using lite_deque<T, Alloc> = std::deque<T, Alloc>;
+	template <typename T>
+    using lite_deque = std::deque<T, lite_allocator<T>>;
 
 	template <typename Key,
               typename T,
               typename Hash = std::hash<Key>,
-              typename KeyEqual = std::equal_to<Key>
-              typename Alloc = lite_allocator<const Key, T>>
-    using lite_hash_map<Key, T, Hash, KeyEqual, Alloc> = 
-        std::unordered_map<Key, T, Hash, KeyEqual, Alloc>;
+              typename KeyEqual = std::equal_to<Key>>
+    using lite_hash_map = std::unordered_map<Key, T, Hash, KeyEqual, lite_allocator<std::pair<const Key, T>>>;
 
-    template <typename CharT, 
-              typename Traits = std::char_traits<CharT>,
-              typename Alloc = lite_allocator<CharT>>
-    using basic_lite_string = std::basic_string<CharT, Traits, Alloc>;
+    template <typename Key,
+              typename T,
+              typename Compare = std::less<Key>>
+    using lite_map = std::map<Key, T, Compare, lite_allocator<std::pair<const Key, T>>>;
+
+    template <typename CharT, typename Traits = std::char_traits<CharT>>
+    using basic_lite_string = std::basic_string<CharT, Traits, lite_allocator<CharT>>;
 
     // Type aliases
     using tchar_t  = char;
@@ -58,6 +59,12 @@ namespace litehtml
 	const unsigned font_decoration_underline	= 0x01;
 	const unsigned font_decoration_linethrough	= 0x02;
 	const unsigned font_decoration_overline		= 0x04;
+
+    template <typename CharT>
+    basic_lite_string<CharT> to_lite_string(string_view<CharT> str)
+    {
+        return basic_lite_string<CharT>(str.data(), str.size());
+    }
 
 	struct margins
 	{

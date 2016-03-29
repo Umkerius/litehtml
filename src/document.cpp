@@ -676,7 +676,7 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 			{
 				if (node->v.element.original_tag.data && node->v.element.original_tag.length)
 				{
-					std::string strA;
+					tstring strA;
 					gumbo_tag_from_original_text(&node->v.element.original_tag);
 					strA.append(node->v.element.original_tag.data, node->v.element.original_tag.length);
                     ret = create_element(strA, attrs);
@@ -702,8 +702,8 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 		break;
 	case GUMBO_NODE_TEXT:
 		{
-			std::wstring str;
-            std::wstring str_in;
+            twstring str;
+            twstring str_in;
             tstring strA;
             utf8_to_wchar(node->v.text.text).acquire_str(str_in);
 

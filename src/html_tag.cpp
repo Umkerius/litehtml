@@ -3203,7 +3203,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 {
 	if(!is_visible()) return;
 
-	std::map<int, bool> zindexes;
+	lite_map<int, bool> zindexes;
 	if(with_positioned)
 	{
 		for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); ++i)
@@ -3211,7 +3211,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 			zindexes[(*i)->get_zindex()];
 		}
 
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
+		for(auto idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first < 0)
 			{
@@ -3224,7 +3224,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 	draw_children(hdc, x, y, clip, draw_inlines, 0);
 	if(with_positioned)
 	{
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
+        for (auto idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first == 0)
 			{
@@ -3232,7 +3232,7 @@ void litehtml::html_tag::draw_stacking_context( uint_ptr hdc, int x, int y, cons
 			}
 		}
 
-		for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end(); ++idx)
+        for (auto idx = zindexes.begin(); idx != zindexes.end(); ++idx)
 		{
 			if(idx->first > 0)
 			{
@@ -3782,14 +3782,14 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 
 	element::ptr ret;
 
-	std::map<int, bool> zindexes;
+	lite_map<int, bool> zindexes;
 
 	for(elements_vector::iterator i = m_positioned.begin(); i != m_positioned.end(); ++i)
 	{
 		zindexes[(*i)->get_zindex()];
 	}
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
+    for (auto idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first > 0)
 		{
@@ -3798,7 +3798,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 	}
 	if(ret) return ret;
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
+    for (auto idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first == 0)
 		{
@@ -3817,7 +3817,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_by_point(int x, int y, in
 	if(ret) return ret;
 
 
-	for(std::map<int, bool>::iterator idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
+    for (auto idx = zindexes.begin(); idx != zindexes.end() && !ret; ++idx)
 	{
 		if(idx->first < 0)
 		{
