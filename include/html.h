@@ -1,13 +1,6 @@
 #pragma once
 
-#include <stdlib.h>
-#include <string>
-#include <ctype.h>
-#include <vector>
-#include <map>
-#include <cstring>
 #include <algorithm>
-#include <sstream>
 #include "types.h"
 #include "background.h"
 #include "borders.h"
@@ -25,6 +18,12 @@ namespace litehtml
 		web_color		color;
 		position		pos;
 	};
+
+    struct text_node
+    {
+        tstring str;
+        bool is_text; // true for text, false for space
+    };
 
 	// call back interface to draw text, images and other elements
 	class document_container
@@ -59,6 +58,9 @@ namespace litehtml
 
 		virtual void				get_media_features(litehtml::media_features& media) const = 0;
 		virtual void				get_language(litehtml::tstring& language, litehtml::tstring& culture) const = 0;
+
+        // split UTF8 text on text nodes. returns false for default behavior (UTF8 -> Unicode -> split by spaces)
+        virtual bool                split_text(litehtml::tstring_view text, litehtml::lite_deque<text_node>& result) const { return false; }
 	};
 
     tstring_view trim(tstring_view s);

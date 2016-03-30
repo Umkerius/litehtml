@@ -2,15 +2,15 @@
 #include "el_text.h"
 #include "document.h"
 
-litehtml::el_text::el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc) : element(doc)
+litehtml::el_text::el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc) 
+    : element(doc)
+    , m_text(text.to_string())
 {
-    m_text = text.to_string();
-	m_text_transform	= text_transform_none;
-	m_use_transformed	= false;
-	m_draw_spaces		= true;
 }
 
-litehtml::el_text::~el_text()
+litehtml::el_text::el_text(tstring&& text, const std::shared_ptr<litehtml::document>& doc)
+    : element(doc)
+    , m_text(std::move(text))
 {
 }
 

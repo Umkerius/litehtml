@@ -13,10 +13,11 @@ namespace litehtml
 	class document;
 	class element;
 
-    // UTODO: need move to own header and implement
+    // UTODO: need to include real lite_allocator
 	template <typename T>
 	using lite_allocator = std::allocator<T>;
 
+    // STL containers aliases with lite_allocator
 	template <typename T>
     using lite_vector = std::vector<T, lite_allocator<T>>;
 

@@ -2,13 +2,15 @@
 #include "document.h"
 #include "el_space.h"
 
-litehtml::el_space::el_space(tstring_view text, const std::shared_ptr<litehtml::document>& doc) : el_text(text, doc)
+litehtml::el_space::el_space(tstring_view text, const std::shared_ptr<litehtml::document>& doc) 
+    : el_text(text, doc)
 {
 }
 
-litehtml::el_space::~el_space()
-{
 
+litehtml::el_space::el_space(tstring&& text, const std::shared_ptr<litehtml::document>& doc)
+    : el_text(std::move(text), doc)
+{
 }
 
 bool litehtml::el_space::is_white_space() const

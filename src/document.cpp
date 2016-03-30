@@ -27,6 +27,68 @@
 #include "gumbo/gumbo.h"
 #include "utf8_strings.h"
 
+void split_text(const char* text, litehtml::lite_deque<litehtml::text_node>& result)
+{
+    using namespace litehtml;
+    text_node node;
+
+    twstring str;
+    twstring str_in;
+    tstring strA;
+    utf8_to_wchar(text).acquire_str(str_in);
+
+    ucode_t c;
+    for (size_t i = 0; i < str_in.length(); i++)
+    {
+        c = (ucode_t)str_in[i];
+        if (c <= ' ' && (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f'))
+        {
+            if (!str.empty())
+            {
+                node.is_text = true;
+                wchar_to_utf8(str.c_str()).acquire_str(node.str);
+                result.emplace_back(std::move(node));
+                str.clear();
+            }
+
+            str += c;
+
+            node.is_text = false;
+            wchar_to_utf8(str.c_str()).acquire_str(node.str);
+            result.emplace_back(std::move(node));
+            str.clear();
+        }
+        // CJK character range
+        else if (c >= 0x4E00 && c <= 0x9FCC)
+        {
+            if (!str.empty())
+            {
+                node.is_text = true;
+                wchar_to_utf8(str.c_str()).acquire_str(node.str);
+                result.emplace_back(std::move(node));
+                str.clear();
+            }
+
+            str += c;
+            node.is_text = false;
+            wchar_to_utf8(str.c_str()).acquire_str(node.str);
+            result.emplace_back(std::move(node));
+            str.clear();
+        }
+        else
+        {
+            str += c;
+        }
+    }
+    if (!str.empty())
+    {
+        node.is_text = true;
+        wchar_to_utf8(str.c_str()).acquire_str(node.str);
+        result.emplace_back(std::move(node));
+        str.clear();
+    }
+}
+
 litehtml::document::document(litehtml::document_container* objContainer, litehtml::context* ctx)
 {
 	m_container	= objContainer;
@@ -702,52 +764,25 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 		break;
 	case GUMBO_NODE_TEXT:
 		{
-            twstring str;
-            twstring str_in;
-            tstring strA;
-            utf8_to_wchar(node->v.text.text).acquire_str(str_in);
+            lite_deque<text_node> text_nodes;
+            if (!container()->split_text(node->v.text.text, text_nodes))
+            {
+                split_text(node->v.text.text, text_nodes);
+            }
 
-			ucode_t c;
-			for (size_t i = 0; i < str_in.length(); i++)
-			{
-				c = (ucode_t) str_in[i];
-				if (c <= ' ' && (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f'))
-				{
-					if (!str.empty())
-					{
-                        wchar_to_utf8(str.c_str()).acquire_str(strA);
-                        elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
-						str.clear();
-					}
-					str += c;
-                    wchar_to_utf8(str.c_str()).acquire_str(strA);
-                    elements.push_back(std::make_shared<el_space>(tstring_view(strA), shared_from_this()));
-					str.clear();
-				}
-				// CJK character range
-				else if (c >= 0x4E00 && c <= 0x9FCC)
-				{
-					if (!str.empty())
-					{
-                        wchar_to_utf8(str.c_str()).acquire_str(strA);
-                        elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
-						str.clear();
-					}
-					str += c;
-                    wchar_to_utf8(str.c_str()).acquire_str(strA);
-                    elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
-					str.clear();
-				}
-				else
-				{
-					str += c;
-				}
-			}
-			if (!str.empty())
-			{
-                wchar_to_utf8(str.c_str()).acquire_str(strA);
-                elements.push_back(std::make_shared<el_text>(tstring_view(strA), shared_from_this()));
-			}
+            for (const text_node& node : text_nodes)
+            {
+                if (node.is_text)
+                {
+                    auto text_elem = std::make_shared<el_text>(std::move(node.str), shared_from_this());
+                    elements.emplace_back(std::move(text_elem));
+                }
+                else
+                {
+                    auto space_elem = std::make_shared<el_space>(std::move(node.str), shared_from_this());
+                    elements.emplace_back(std::move(space_elem));
+                }
+            }
 		}
 		break;
 	case GUMBO_NODE_CDATA:

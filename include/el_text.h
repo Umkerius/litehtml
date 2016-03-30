@@ -10,12 +10,13 @@ namespace litehtml
 		tstring			m_text;
 		tstring			m_transformed_text;
 		size			m_size;
-		text_transform	m_text_transform;
-		bool			m_use_transformed;
-		bool			m_draw_spaces;
+        text_transform	m_text_transform = text_transform_none;
+		bool			m_use_transformed = false;
+		bool			m_draw_spaces = true;
 	public:
-		el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc);
-		virtual ~el_text();
+        explicit el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc);
+        explicit el_text(tstring&& text, const std::shared_ptr<litehtml::document>& doc);
+		virtual ~el_text() = default;
 
 		virtual void				get_text(tstring& text) override;
 		virtual tstring_view		get_style_property(tstring_view name, bool inherited, tstring_view def = 0) override;
