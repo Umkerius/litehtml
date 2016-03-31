@@ -1182,13 +1182,11 @@ void litehtml::html_tag::get_line_left_right( int y, int def_right, int& ln_left
 			el_parent->get_line_left_right(y + m_pos.y, def_right + m_pos.x, ln_left, ln_right);
 		}
 		ln_right -= m_pos.x;
+		ln_left -= m_pos.x;
 
 		if(ln_left < 0)
 		{
 			ln_left = 0;
-		} else if(ln_left)
-		{
-			ln_left -= m_pos.x;
 		}
 	}
 }
@@ -1744,10 +1742,7 @@ void litehtml::html_tag::get_inline_boxes( position::vector& boxes )
 	{
 		if(m_padding.right + m_borders.right > 0)
 		{
-			position padding_box = (*boxes.rbegin());
-			padding_box.x		+= padding_box.width;
-			padding_box.width	= m_padding.right + m_borders.right;
-			boxes.push_back(padding_box);
+			boxes.back().width += m_padding.right + m_borders.right;
 		}
 	}
 }
@@ -2692,17 +2687,17 @@ bool litehtml::html_tag::is_last_child_inline(const element::ptr& el)
 {
 	if(!m_children.empty())
 	{
-		for (const auto& this_el : m_children)
+		for (auto this_el = m_children.rbegin(); this_el < m_children.rend(); ++this_el)
 		{
-			if (!this_el->is_white_space())
+			if (!(*this_el)->is_white_space())
 			{
-				if (el == this_el)
+				if (el == (*this_el))
 				{
 					return true;
 				}
-				if (this_el->get_display() == display_inline)
+				if ((*this_el)->get_display() == display_inline)
 				{
-					if (this_el->have_inline_child())
+					if ((*this_el)->have_inline_child())
 					{
 						return false;
 					}
