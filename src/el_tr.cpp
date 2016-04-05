@@ -12,21 +12,6 @@ litehtml::el_tr::~el_tr()
 
 }
 
-bool litehtml::el_tr::appendChild(const element::ptr & el)
-{
-    //if (get_direction() == direction_rtl)
-    {
-        if (el)
-        {
-            el->parent(shared_from_this());
-            m_children.insert(m_children.begin(), el);
-            return true;
-        }
-        return false;
-    }
-    return html_tag::appendChild(el);
-}
-
 void litehtml::el_tr::parse_attributes()
 {
 	tstring_view str = get_attr(_Q("align"));
