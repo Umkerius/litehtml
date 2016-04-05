@@ -138,10 +138,17 @@ void litehtml::line_box::add_element(const element::ptr &el)
 			int el_shift_left	= el->get_inline_shift_left();
 			int el_shift_right	= el->get_inline_shift_right();
 
-			el->m_pos.x	= m_box_left + m_width + el_shift_left + el->content_margins_left();
-			el->m_pos.y	= m_box_top + el->content_margins_top();
-			m_width		+= el->width() + el_shift_left + el_shift_right;
-		}
+            if (m_direction == direction_ltr || m_direction == direction_not_set)
+            {
+                el->m_pos.x = m_box_left + m_width + el_shift_left + el->content_margins_left();
+            }
+            else
+            {
+                el->m_pos.x = m_box_right - m_width - el_shift_right - el->content_margins_right() - el->width();
+            }
+            el->m_pos.y = m_box_top + el->content_margins_top();
+            m_width += el->width() + el_shift_left + el_shift_right;
+        }
 	}
 }
 
@@ -172,23 +179,50 @@ void litehtml::line_box::finish(bool last_box)
 	int line_height = m_line_height;
 
 	int add_x = 0;
-	switch(m_text_align)
-	{
-	case text_align_right:
-		if(m_width < (m_box_right - m_box_left))
-		{
-			add_x = (m_box_right - m_box_left) - m_width;
-		}
-		break;
-	case text_align_center:
-		if(m_width < (m_box_right - m_box_left))
-		{
-			add_x = ((m_box_right - m_box_left) - m_width) / 2;
-		}
-		break;
-	default:
-		add_x = 0;
-	}
+
+    if (m_direction == direction_ltr || m_direction == direction_not_set)
+    {
+        switch (m_text_align)
+        {
+        case text_align_right:
+        case text_align_end:
+            if (m_width < (m_box_right - m_box_left))
+            {
+                add_x = (m_box_right - m_box_left) - m_width;
+            }
+            break;
+        case text_align_center:
+            if (m_width < (m_box_right - m_box_left))
+            {
+                add_x = ((m_box_right - m_box_left) - m_width) / 2;
+            }
+            break;
+        default:
+            add_x = 0;
+        }
+    }
+    else // m_direction == direction_rtl
+    {
+        switch (m_text_align)
+        {
+        case text_align_left:
+        case text_align_end:
+            if (m_width < (m_box_right - m_box_left))
+            {
+                add_x = m_width - (m_box_right - m_box_left);
+            }
+            break;
+        case text_align_center:
+            if (m_width < (m_box_right - m_box_left))
+            {
+                add_x = (m_width - (m_box_right - m_box_left)) / 2;
+            }
+            break;
+        default:
+            add_x = 0;
+        }
+    }
+
 
 	m_height = 0;
 	// find line box baseline and line-height

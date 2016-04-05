@@ -14,10 +14,11 @@ litehtml::html_tag::html_tag(const std::shared_ptr<litehtml::document>& doc) : l
 	m_z_index				= 0;
 	m_overflow				= overflow_visible;
 	m_box					= 0;
-	m_text_align			= text_align_left;
+	m_text_align			= text_align_not_set;
+	m_directrion            = direction_not_set;
 	m_el_position			= element_position_static;
 	m_display				= display_inline;
-	m_vertical_align		= va_baseline;
+    m_vertical_align		= va_baseline;
 	m_list_style_type		= list_style_type_none;
 	m_list_style_position	= list_style_position_outside;
 	m_float					= float_none;
@@ -320,12 +321,13 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 	document::ptr doc = get_document();
 
 	m_el_position	= (element_position)	value_index(get_style_property(_Q("position"),		false,	_Q("static")),		element_position_strings,	element_position_fixed);
-	m_text_align	= (text_align)			value_index(get_style_property(_Q("text-align"),		true,	_Q("left")),		text_align_strings,			text_align_left);
+	m_text_align	= (text_align)			value_index(get_style_property(_Q("text-align"),	true),		                text_align_strings,			text_align_not_set);
+	m_directrion    = (style_direction)     value_index(get_style_property(_Q("direction"),     true),                      style_direction_strings,    direction_not_set);
 	m_overflow		= (overflow)			value_index(get_style_property(_Q("overflow"),		false,	_Q("visible")),		overflow_strings,			overflow_visible);
 	m_white_space	= (white_space)			value_index(get_style_property(_Q("white-space"),	true,	_Q("normal")),		white_space_strings,		white_space_normal);
 	m_display		= (style_display)		value_index(get_style_property(_Q("display"),		false,	_Q("inline")),		style_display_strings,		display_inline);
-	m_visibility	= (visibility)			value_index(get_style_property(_Q("visibility"),	true,	_Q("visible")),		visibility_strings,			visibility_visible);
-	m_box_sizing	= (box_sizing)			value_index(get_style_property(_Q("box-sizing"),		false,	_Q("content-box")),	box_sizing_strings,			box_sizing_content_box);
+    m_visibility	= (visibility)			value_index(get_style_property(_Q("visibility"),	true,	_Q("visible")),		visibility_strings,			visibility_visible);
+	m_box_sizing	= (box_sizing)			value_index(get_style_property(_Q("box-sizing"),	false,	_Q("content-box")),	box_sizing_strings,			box_sizing_content_box);
 
 	if(m_el_position != element_position_static)
 	{
@@ -2575,7 +2577,7 @@ int litehtml::html_tag::new_box(const element::ptr &el, int max_width, line_cont
 
 		font_metrics fm;
 		get_font(&fm);
-		m_boxes.emplace_back(std::unique_ptr<line_box>(new line_box(line_ctx.top, line_ctx.left + first_line_margin + text_indent, line_ctx.right, line_height(), fm, m_text_align)));
+		m_boxes.emplace_back(std::unique_ptr<line_box>(new line_box(line_ctx.top, line_ctx.left + first_line_margin + text_indent, line_ctx.right, line_height(), fm, m_text_align, m_directrion)));
 	} else
 	{
 		m_boxes.emplace_back(std::unique_ptr<block_box>(new block_box(line_ctx.top, line_ctx.left, line_ctx.right)));
@@ -2632,6 +2634,11 @@ int litehtml::html_tag::get_cleared_top(const element::ptr &el, int line_top) co
 litehtml::style_display litehtml::html_tag::get_display() const
 {
 	return m_display;
+}
+
+litehtml::style_direction litehtml::html_tag::get_direction() const
+{
+    return m_directrion;
 }
 
 litehtml::element_float litehtml::html_tag::get_float() const

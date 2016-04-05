@@ -47,6 +47,7 @@ namespace litehtml
 		vertical_align			m_vertical_align;
 		text_align				m_text_align;
 		style_display			m_display;
+        style_direction         m_directrion;
 		list_style_type			m_list_style_type;
 		list_style_position		m_list_style_position;
 		white_space				m_white_space;
@@ -159,6 +160,7 @@ namespace litehtml
 		virtual int					line_height() const override;
 		virtual white_space			get_white_space() const override;
 		virtual style_display		get_display() const override;
+        virtual style_direction		get_direction() const override;
 		virtual visibility			get_visibility() const override;
 		virtual void				parse_styles(bool is_reparse = false) override;
 		virtual void				draw(uint_ptr hdc, int x, int y, const position* clip) override;

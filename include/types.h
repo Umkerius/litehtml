@@ -94,8 +94,8 @@ namespace litehtml
 
 	struct size
 	{
-		int		width;
-		int		height;
+		int	width;
+		int height;
 
 		size()
 		{
@@ -467,15 +467,27 @@ namespace litehtml
 		element_position_fixed,
 	};
 
-#define text_align_strings		_Q("left;right;center;justify")
+#define text_align_strings		_Q("left;right;center;justify;start;end")
 
 	enum text_align
 	{
 		text_align_left,
 		text_align_right,
 		text_align_center,
-		text_align_justify
+		text_align_justify,
+        text_align_start,
+        text_align_end,
+        text_align_not_set
 	};
+
+#define style_direction_strings       _Q("ltr;rtl")
+
+    enum style_direction
+    {
+        direction_ltr,
+        direction_rtl,
+        direction_not_set
+    };
 
 #define text_transform_strings		_Q("none;capitalize;uppercase;lowercase")
 
