@@ -150,6 +150,7 @@ namespace litehtml
 		virtual int					line_height() const;
 		virtual white_space			get_white_space() const;
 		virtual style_display		get_display() const;
+        virtual style_direction     get_direction() const;
 		virtual visibility			get_visibility() const;
 		virtual element_position	get_element_position(css_offsets* offsets = 0) const;
 		virtual void				get_inline_boxes(position::vector& boxes);

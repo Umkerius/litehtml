@@ -4,7 +4,7 @@
 
 litehtml::el_tr::el_tr(const std::shared_ptr<litehtml::document>& doc) : html_tag(doc)
 {
-
+    
 }
 
 litehtml::el_tr::~el_tr()
@@ -35,7 +35,7 @@ void litehtml::el_tr::parse_attributes()
 void litehtml::el_tr::get_inline_boxes( position::vector& boxes )
 {
 	position pos;
-	for(auto& el : m_children)
+    for(auto& el : m_children)
 	{
 		if(el->get_display() == display_table_cell)
 		{

@@ -389,6 +389,7 @@ bool litehtml::element::find_styles_changes( position::vector& redraw_boxes, int
 litehtml::tstring_view litehtml::element::get_cursor()							LITEHTML_RETURN_FUNC(0)
 litehtml::white_space litehtml::element::get_white_space() const					LITEHTML_RETURN_FUNC(white_space_normal)
 litehtml::style_display litehtml::element::get_display() const						LITEHTML_RETURN_FUNC(display_none)
+litehtml::style_direction litehtml::element::get_direction() const                  LITEHTML_RETURN_FUNC(direction_not_set)
 bool litehtml::element::set_pseudo_class( tstring_view pclass, bool add )			LITEHTML_RETURN_FUNC(false)
 bool litehtml::element::set_class( tstring_view pclass, bool add )				LITEHTML_RETURN_FUNC(false)
 litehtml::element_position litehtml::element::get_element_position(css_offsets* offsets) const			LITEHTML_RETURN_FUNC(element_position_static)
