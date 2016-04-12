@@ -9,21 +9,14 @@ namespace litehtml
             uint32_t color;
             struct
             {
-                byte    blue;
-                byte    green;
                 byte    red;
+                byte    green;
+                byte    blue;
                 byte    alpha;
             };
         };
 
-        web_color(byte r, byte g, byte b, byte a = 255)
-		{
-			blue	= b;
-			green	= g;
-			red		= r;
-			alpha	= a;
-		}
-
+        web_color(byte r, byte g, byte b, byte a = 255) : red(r), green(g), blue(b), alpha(a) {}
         web_color() : web_color(0, 0, 0) {}
 
 		static web_color		from_string(tstring_view str);
