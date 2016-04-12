@@ -441,6 +441,48 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 	m_css_borders.radius.bottom_left_x.fromString(get_style_property(_Q("border-bottom-left-radius-x"), false, _Q("0")));
 	m_css_borders.radius.bottom_left_y.fromString(get_style_property(_Q("border-bottom-left-radius-y"), false, _Q("0")));
 
+    tstring_view transform_property = get_style_property(_Q("transform"), false);
+    tstring_view translation_x;
+    tstring_view translation_y;
+    if (starts_with(transform_property, _Q("translate"))) // translate/translateX/translateY
+    {
+        tstring_view translation = transform_property;
+        translation.remove_prefix(_Q("translate").size());
+
+        char axis = translation[0] != '(' ? translation[0] : '\0';
+        translation.remove_prefix(axis != '\0' ? 2 : 1);
+        translation.remove_suffix(1);
+
+        if (axis == 'X' || axis == 'x')
+        {
+            translation_x = translation;
+        }
+        else if (axis == 'Y' || axis == 'y')
+        {
+            translation_y = translation;
+        }
+        else
+        {
+            string_view_deque translations;
+            split_string(translation, translations, _Q(","));
+
+            translation_x = translations[0];
+            if (translations.size() > 1)
+            {
+                translation_y = translations[1];
+            }
+        }
+    }
+
+    if (!translation_x.empty())
+    {
+        m_translation_x.fromString(trim(translation_x));
+    }
+    if (!translation_y.empty())
+    {
+        m_translation_y.fromString(trim(translation_y));
+    }
+
 	doc->cvt_units(m_css_borders.radius.bottom_left_x,			m_font_size);
 	doc->cvt_units(m_css_borders.radius.bottom_left_y,			m_font_size);
 	doc->cvt_units(m_css_borders.radius.bottom_right_x,			m_font_size);
@@ -4184,10 +4226,10 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 	{
 		for (const auto& fb : m_floats_left)
 		{
-			fb.el->apply_relative_shift(fb.el->parent()->calc_width(m_pos.width));
+            fb.el->apply_relative_shift(fb.el->parent()->calc_width(m_pos.width));
+            fb.el->apply_position_transformation();
 		}
 	}
-
 
 	return ret_width;
 }

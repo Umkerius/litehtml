@@ -28,6 +28,7 @@ void litehtml::block_box::finish(bool last_box)
 {
 	if(!m_element) return;
 	m_element->apply_relative_shift(m_box_right - m_box_left);
+    m_element->apply_position_transformation();
 }
 
 bool litehtml::block_box::can_hold(const element::ptr &el, white_space ws)
@@ -323,7 +324,8 @@ void litehtml::line_box::finish(bool last_box)
 			}
 		}
 
-		el->apply_relative_shift(m_box_right - m_box_left);
+        el->apply_relative_shift(m_box_right - m_box_left);
+        el->apply_position_transformation();
 	}
 	m_height = y2 - y1;
 	m_baseline = (base_line - y1) - (m_height - line_height);

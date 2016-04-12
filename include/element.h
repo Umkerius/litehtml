@@ -23,6 +23,8 @@ namespace litehtml
 		litehtml::box*				m_box;
 		elements_vector				m_children;
 		position					m_pos;
+        css_length                  m_translation_x;
+        css_length                  m_translation_y;
 		margins						m_margins;
 		margins						m_padding;
 		margins						m_borders;
@@ -85,7 +87,8 @@ namespace litehtml
 		int							calc_width(int defVal) const;
 		int							get_inline_shift_left();
 		int							get_inline_shift_right();
-		void						apply_relative_shift(int parent_width);
+        void						apply_relative_shift(int parent_width);
+        void						apply_position_transformation();
 
 		std::shared_ptr<document>	get_document() const;
 

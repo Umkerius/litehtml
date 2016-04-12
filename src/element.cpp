@@ -310,6 +310,19 @@ void litehtml::element::apply_relative_shift(int parent_width)
 	}
 }
 
+void litehtml::element::apply_position_transformation()
+{
+    if (!m_translation_x.is_predefined())
+    {
+        m_pos.x += m_translation_x.calc_percent(m_pos.width);
+    }
+
+    if (!m_translation_y.is_predefined())
+    {
+        m_pos.y += m_translation_y.calc_percent(m_pos.height);
+    }
+}
+
 void litehtml::element::calc_auto_margins(int parent_width)							LITEHTML_EMPTY_FUNC
 const litehtml::background* litehtml::element::get_background(bool own_only)		LITEHTML_RETURN_FUNC(0)
 litehtml::element::ptr litehtml::element::get_element_by_point(int x, int y, int client_x, int client_y)	LITEHTML_RETURN_FUNC(0)

@@ -67,6 +67,11 @@ namespace litehtml
 	void lcase(tstring &s);
     tstring lcase_copy(tstring_view s);
 
+    inline bool starts_with(tstring_view lhs, tstring_view rhs)
+    {
+        return lhs.find(rhs) == 0;
+    }
+
     int	 value_index(tstring_view val, tstring_view strings, int defValue = -1, tchar_t delim = ';');
 	bool value_in_list(tstring_view val, tstring_view strings, tchar_t delim = ';');
 	tstring_view::size_type find_close_bracket(tstring_view s, tstring_view::size_type off, tchar_t open_b = '(', tchar_t close_b = ')');
