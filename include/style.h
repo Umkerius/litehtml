@@ -42,11 +42,10 @@ namespace litehtml
 		using vector = lite_vector<style::ptr>;
 	private:
 		props_map			m_properties;
-		static string_hash_map	m_valid_values;
 	public:
-		style();
+		style() = default;
 		style(const style& val);
-		virtual ~style();
+		virtual ~style() = default;
 
 		void operator=(const style& val)
 		{

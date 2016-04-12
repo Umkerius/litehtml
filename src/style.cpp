@@ -6,23 +6,20 @@
 #include <locale>
 #endif
 
-litehtml::string_hash_map litehtml::style::m_valid_values =
+struct valid_key_values
 {
-	{ "white-space", (white_space_strings).to_string() }
+    litehtml::tstring_view key;
+    litehtml::tstring_view values;
 };
 
-litehtml::style::style()
+valid_key_values g_valid_values[] = 
 {
-}
+	{ _Q("white-space"), white_space_strings }
+};
 
 litehtml::style::style( const style& val )
 {
 	m_properties = val.m_properties;
-}
-
-litehtml::style::~style()
-{
-
 }
 
 void litehtml::style::parse( tstring_view txt, tstring_view baseurl )
@@ -609,10 +606,15 @@ void litehtml::style::parse_short_font( tstring_view val, bool important )
 void litehtml::style::add_parsed_property( tstring_view name, tstring_view val, bool important )
 {
 	bool is_valid = true;
-	auto vals = m_valid_values.find(name.to_string());
-	if (vals != m_valid_values.end())
+    auto validate = [&](const valid_key_values& v)
+    {
+        return v.key == name;
+    };
+    auto vals = std::find_if(std::begin(g_valid_values), std::end(g_valid_values), validate);
+
+    if (vals != std::end(g_valid_values))
 	{
-		if (!value_in_list(val, vals->second))
+		if (!value_in_list(val, vals->values))
 		{
 			is_valid = false;
 		}

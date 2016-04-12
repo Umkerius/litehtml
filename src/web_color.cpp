@@ -155,8 +155,7 @@ def_color g_def_colors[] =
 	{_Q("White"),_Q("#FFFFFF")},
 	{_Q("WhiteSmoke"),_Q("#F5F5F5")},
 	{_Q("Yellow"),_Q("#FFFF00")},
-	{_Q("YellowGreen"),_Q("#9ACD32")},
-	{nullptr,nullptr}
+	{_Q("YellowGreen"),_Q("#9ACD32")}
 };
 
 
@@ -234,13 +233,13 @@ litehtml::tstring_view litehtml::web_color::resolve_name(tstring_view name)
 {
     tstring lcase_name = lcase_copy(name);
 
-	for(size_t i = 0; !g_def_colors[i].name.empty(); ++i)
-	{
-        if (lcase_name == lcase_copy(g_def_colors[i].name))
-		{
-			return g_def_colors[i].rgb;
-		}
-	}
+    for (const def_color& color : g_def_colors)
+    {
+        if (lcase_name == lcase_copy(color.name))
+        {
+            return color.rgb;
+        }
+    }
 
     return tstring_view();
 }
