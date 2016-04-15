@@ -35,7 +35,7 @@ namespace litehtml
 		virtual void				draw_text(litehtml::uint_ptr hdc, litehtml::tstring_view text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) = 0;
 		virtual int					pt_to_px(int pt) = 0;
 		virtual int					get_default_font_size() const = 0;
-		virtual litehtml::tstring_view	get_default_font_name() const = 0;
+		virtual litehtml::tstring	get_default_font_name() const = 0;
 		virtual void				draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker) = 0;
 		virtual void				load_image(litehtml::tstring_view src, litehtml::tstring_view baseurl, bool redraw_on_ready) = 0;
 		virtual void				get_image_size(litehtml::tstring_view src, litehtml::tstring_view baseurl, litehtml::size& sz) = 0;

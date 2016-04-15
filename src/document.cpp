@@ -203,10 +203,11 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
 litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
 	uint_ptr ret = 0;
+    tstring fontName = name.to_string();
 
-    if (name.empty() || (lcase_copy(name) == _Q("inherit")))
+    if (fontName.empty() || (lcase_copy(fontName) == _Q("inherit")))
 	{
-		name = m_container->get_default_font_name();
+        fontName = m_container->get_default_font_name();
 	}
 
 	if(!size)
@@ -214,7 +215,7 @@ litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tst
 		size = container()->get_default_font_size();
 	}
 
-	tstring key = name.to_string();
+    tstring key = fontName;
 	key += ":";
     key += std::to_string(size);
 	key += ":";
@@ -281,7 +282,7 @@ litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tst
 
 		font_item fi= {0};
 
-		fi.font = m_container->create_font(name, size, fw, fs, decor, &fi.metrics);
+        fi.font = m_container->create_font(fontName, size, fw, fs, decor, &fi.metrics);
 		m_fonts[key] = fi;
 		ret = fi.font;
 		if(fm)
@@ -294,9 +295,11 @@ litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tst
 
 litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
-	if(name.empty() || (lcase_copy(name) == _Q("inherit")))
+    tstring fontName = name.to_string();
+
+    if (fontName.empty() || (lcase_copy(fontName) == _Q("inherit")))
 	{
-		name = m_container->get_default_font_name();
+        fontName = m_container->get_default_font_name();
 	}
 
 	if(!size)
@@ -304,7 +307,7 @@ litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, ts
 		size = container()->get_default_font_size();
 	}
 
-	tstring key = name.to_string();
+    tstring key = fontName;
 	key += ":";
     key += std::to_string(size);
 	key += ":";
@@ -324,7 +327,7 @@ litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, ts
 		}
 		return el->second.font;
 	}
-	return add_font(name, size, weight, style, decoration, fm);
+    return add_font(fontName, size, weight, style, decoration, fm);
 }
 
 int litehtml::document::render( int max_width, render_type rt )
