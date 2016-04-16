@@ -10,8 +10,8 @@ struct allocator_helper
     using alloc_func = void*(*)(size_t);
     using dealloc_func = void(*)(void*);
 
-    void* allocate(size_t bytes);
-    void deallocate(void* ptr);
+    static void* allocate(size_t bytes);
+    static void deallocate(void* ptr, size_t bytes);
 
     static alloc_func   get_alloc_func();
     static dealloc_func get_dealloc_func();
@@ -34,17 +34,23 @@ struct lite_allocator
     template <typename U>
     struct rebind { using other = lite_allocator<U>; };
 
+    lite_allocator() = default;
+    lite_allocator(const lite_allocator&) = default;
+    template <typename U>
+    lite_allocator(const lite_allocator<U>&) {};
+    ~lite_allocator() = default;
+
     pointer address(reference x) const { return &x; }
     const_pointer address(const_reference x) const { return &x; }
         
-    pointer allocate(size_type n, lite_allocator<void>::const_pointer /*hint*/ = 0);
+    pointer allocate(size_type n, std::allocator<void>::const_pointer /*hint*/ = 0)
     {
         return reinterpret_cast<pointer>(allocator_helper::allocate(n * sizeof(T)));
     }
 
-    void deallocate(pointer p, size_type /*n*/)
+    void deallocate(pointer p, size_type n)
     {
-        allocator_helper::deallocate(p);
+        allocator_helper::deallocate(p, n * sizeof(T));
     }
 
     size_type max_size() const { return std::numeric_limits<size_type>::max(); }

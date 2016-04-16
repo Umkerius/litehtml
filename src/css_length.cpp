@@ -42,7 +42,7 @@ void litehtml::css_length::fromString( tstring_view str, tstring_view predefs, i
 		}
 		if(!num.empty())
 		{
-			m_value = std::stof(num);
+			m_value = std::stof(std::string(num.c_str(), num.size()));
 			m_units	= (css_units) value_index(un, css_units_strings, css_units_none);
 		} else
 		{

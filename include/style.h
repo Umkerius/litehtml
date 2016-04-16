@@ -16,7 +16,7 @@ namespace litehtml
 		}
 		property_value(tstring_view val, bool imp)
 		{
-            m_value = val.to_string();
+            m_value = to_lite_string(val);
             m_important = imp;
 		}
 		property_value(const property_value& val)
@@ -63,7 +63,7 @@ namespace litehtml
 		{
 			if(!name.empty())
 			{
-				props_map::const_iterator f = m_properties.find(name.to_string());
+				props_map::const_iterator f = m_properties.find(to_lite_string(name));
 				if(f != m_properties.end())
 				{
 					return f->second.m_value;

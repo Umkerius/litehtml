@@ -6,16 +6,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include "allocator.h"
 #include "string_view.h"
 
 namespace litehtml
 {
 	class document;
 	class element;
-
-    // UTODO: need to include real lite_allocator
-	template <typename T>
-	using lite_allocator = std::allocator<T>;
 
     // STL containers aliases with lite_allocator
 	template <typename T>

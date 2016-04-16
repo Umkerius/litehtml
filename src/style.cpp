@@ -622,25 +622,25 @@ void litehtml::style::add_parsed_property( tstring_view name, tstring_view val, 
 
 	if (is_valid)
 	{
-		props_map::iterator prop = m_properties.find(name.to_string());
+		props_map::iterator prop = m_properties.find(to_lite_string(name));
 		if (prop != m_properties.end())
 		{
 			if (!prop->second.m_important || (important && prop->second.m_important))
 			{
-				prop->second.m_value = val.to_string();
+                prop->second.m_value = to_lite_string(val);
 				prop->second.m_important = important;
 			}
 		}
 		else
 		{
-			m_properties[name.to_string()] = property_value(val, important);
+            m_properties[to_lite_string(name)] = property_value(val, important);
 		}
 	}
 }
 
 void litehtml::style::remove_property( tstring_view name, bool important )
 {
-    props_map::iterator prop = m_properties.find(name.to_string());
+    props_map::iterator prop = m_properties.find(to_lite_string(name));
 	if(prop != m_properties.end())
 	{
 		if( !prop->second.m_important || (important && prop->second.m_important) )

@@ -1,8 +1,9 @@
-#pragma once
+﻿#pragma once
 
 #include <cassert>
 #include <numeric>
 #include <string>
+#include "allocator.h"
 
 namespace litehtml
 {
@@ -378,14 +379,16 @@ bool operator==(string_view<CharT> lhs, string_view<CharT> rhs)
     return lhs.compare(rhs) == 0;
 }
 
-template <typename CharT>
-bool operator==(std::basic_string<CharT> lhs, string_view<CharT> rhs)
+template <typename CharT, typename Alloc>
+bool operator==(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& lhs, 
+                string_view<CharT> rhs)
 {
     return string_view<CharT>(lhs) == rhs;
 }
 
-template <typename CharT>
-bool operator==(string_view<CharT> lhs, std::basic_string<CharT> rhs)
+template <typename CharT, typename Alloc>
+bool operator==(string_view<CharT> lhs, 
+                const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& rhs)
 {
     return lhs == string_view<CharT>(rhs);
 }
@@ -409,14 +412,16 @@ bool operator!=(string_view<CharT> lhs, string_view<CharT> rhs)
     return !(lhs == rhs);
 }
 
-template <typename CharT>
-bool operator!=(std::basic_string<CharT> lhs, string_view<CharT> rhs)
+template <typename CharT, typename Alloc>
+bool operator!=(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& lhs, 
+                string_view<CharT> rhs)
 {
     return !(lhs == rhs);
 }
 
-template <typename CharT>
-bool operator!=(string_view<CharT> lhs, std::basic_string<CharT> rhs)
+template <typename CharT, typename Alloc>
+bool operator!=(string_view<CharT> lhs, 
+                const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& rhs)
 {
     return !(lhs == rhs);
 }
@@ -447,9 +452,10 @@ bool operator>(string_view<CharT> lhs, string_view<CharT> rhs)
 }
 
 template <typename CharT>
-std::basic_string<CharT> operator+(string_view<CharT> lhs, string_view<CharT> rhs)
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>> 
+operator+(string_view<CharT> lhs, string_view<CharT> rhs)
 {
-    std::basic_string<CharT> result;
+    std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>> result;
     result.reserve(lhs.size() + rhs.size());
 
     result.append(lhs.data(), lhs.size());
@@ -458,16 +464,45 @@ std::basic_string<CharT> operator+(string_view<CharT> lhs, string_view<CharT> rh
     return result;
 }
 
-template <typename CharT>
-std::basic_string<CharT> operator+(std::basic_string<CharT> lhs, string_view<CharT> rhs)
+template <typename CharT, typename Alloc>
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>
+operator+(const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& lhs, string_view<CharT> rhs)
 {
     return string_view<CharT>(lhs) + rhs;
 }
 
 template <typename CharT>
-std::basic_string<CharT> operator+(string_view<CharT> lhs, const CharT* rhs)
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>
+operator+(string_view<CharT> lhs, const CharT* rhs)
 {
     return lhs + string_view<CharT>(rhs);
+}
+
+template <typename CharT>
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>&
+operator+=(std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>& lhs, 
+           string_view<CharT> rhs)
+{
+    lhs.append(rhs.begin(), rhs.end());
+    return lhs;
+}
+
+template <typename CharT>
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>&
+operator+=(std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>& lhs, 
+           const CharT* rhs)
+{
+    lhs += string_view<CharT>(rhs);
+    return lhs;
+}
+
+template <typename CharT, typename Alloc>
+std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>&
+operator+=(std::basic_string<CharT, std::char_traits<CharT>, lite_allocator<CharT>>& lhs,
+           const std::basic_string<CharT, std::char_traits<CharT>, Alloc>& rhs)
+{
+    lhs.append(rhs.begin(), rhs.end());
+    return lhs;
 }
 
 } // namespace litehtml

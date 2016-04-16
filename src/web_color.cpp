@@ -168,9 +168,9 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 
 	if(str[0] == '#')
 	{
-		tstring red;
-        tstring green;
-        tstring blue;
+		std::string red;
+        std::string green;
+        std::string blue;
 		if(str.size() == 4) // #fff
 		{
 			red		+= str[1];

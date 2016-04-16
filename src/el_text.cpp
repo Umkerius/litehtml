@@ -4,7 +4,7 @@
 
 litehtml::el_text::el_text(tstring_view text, const std::shared_ptr<litehtml::document>& doc) 
     : element(doc)
-    , m_text(text.to_string())
+    , m_text(to_lite_string(text))
 {
 }
 

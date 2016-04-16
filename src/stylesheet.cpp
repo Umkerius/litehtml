@@ -13,7 +13,7 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 
     if (c_start != tstring::npos)
     {
-        stylesheet_commentless = str.to_string();
+        stylesheet_commentless = to_lite_string(str);
         while (c_start != tstring::npos)
         {
             tstring::size_type c_end = stylesheet_commentless.find("*/", c_start + 2);
@@ -92,7 +92,7 @@ void litehtml::css::parse_css_url(tstring_view str, tstring& url)
 	size_t pos2 = str.find(')');
 	if(pos1 != tstring_view::npos && pos2 != tstring_view::npos)
 	{
-		url = str.substr(pos1 + 1, pos2 - pos1 - 1).to_string();
+		url = to_lite_string(str.substr(pos1 + 1, pos2 - pos1 - 1));
 		if(url.length())
 		{
 			if(url[0] == '\'' || url[0] == '"')
@@ -163,7 +163,7 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 			parse_css_url(tokens.front(), url);
 			if(url.empty())
 			{
-				url = tokens.front().to_string();
+				url = to_lite_string(tokens.front());
 			}
 			tokens.erase(tokens.begin());
 			if(doc)
@@ -173,7 +173,7 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 				{
 					tstring css_text;
 					tstring css_baseurl;
-                    css_baseurl = baseurl.to_string();
+                    css_baseurl = to_lite_string(baseurl);
 					doc_cont->import_css(css_text, url, css_baseurl);
 					if(!css_text.empty())
 					{
@@ -187,7 +187,7 @@ void litehtml::css::parse_atrule(tstring_view text, tstring_view baseurl, const 
 								{
 									media_str += " ";
 								}
-								media_str += iter->to_string();
+                                media_str += to_lite_string(*iter);
 							}
 							new_media = media_query_list::create_from_string(media_str, doc);
 							if(!new_media)

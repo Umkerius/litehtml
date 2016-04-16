@@ -169,7 +169,7 @@ litehtml::string_vector litehtml::to_string_vector(const litehtml::string_view_d
 
     for (const auto& x : views)
     {
-        result.emplace_back(x.to_string());
+        result.emplace_back(to_lite_string(x));
     }
 
     return result;

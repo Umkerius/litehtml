@@ -14,7 +14,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 			css_attribute_selector attribute;
 
 			tstring_view::size_type pos = txt.find_first_of(_Q(".#[:"), el_end + 1);
-			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
+			attribute.val		= to_lite_string(txt.substr(el_end + 1, pos - el_end - 1));
 
             string_view_deque class_val;
             split_string(attribute.val, class_val, _Q(" "));
@@ -49,10 +49,10 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 				}
 				if(pos != tstring_view::npos)
 				{
-					attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
+					attribute.val		= to_lite_string(txt.substr(el_end + 1, pos - el_end - 1));
 				} else
 				{
-					attribute.val		= txt.substr(el_end + 1).to_string();
+					attribute.val		= to_lite_string(txt.substr(el_end + 1));
 				}
 				litehtml::lcase(attribute.val);
 				if(attribute.val == _Q("after") || attribute.val == _Q("before"))
@@ -71,7 +71,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 			css_attribute_selector attribute;
 
 			tstring_view::size_type pos = txt.find_first_of(_Q(".#[:"), el_end + 1);
-			attribute.val		= txt.substr(el_end + 1, pos - el_end - 1).to_string();
+			attribute.val		= to_lite_string(txt.substr(el_end + 1, pos - el_end - 1));
 			attribute.condition	= select_equal;
 			attribute.attribute	= "id";
 			m_attrs.push_back(attribute);
@@ -81,7 +81,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 			css_attribute_selector attribute;
 
 			tstring_view::size_type pos = txt.find_first_of(_Q("]~=|$*^"), el_end + 1);
-            tstring attr = trim(txt.substr(el_end + 1, pos - el_end - 1)).to_string();
+            tstring attr = to_lite_string(trim(txt.substr(el_end + 1, pos - el_end - 1)));
 			litehtml::lcase(attr);
 			if(pos != tstring_view::npos)
 			{
@@ -123,7 +123,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 					if(txt[pos] == '"')
 					{
 						tstring_view::size_type pos2 = txt.find_first_of(_Q("\""), pos + 1);
-						attribute.val = txt.substr(pos + 1, pos2 == tstring_view::npos ? pos2 : (pos2 - pos - 1)).to_string();
+                        attribute.val = to_lite_string(txt.substr(pos + 1, pos2 == tstring_view::npos ? pos2 : (pos2 - pos - 1)));
 						pos = pos2 == tstring_view::npos ? pos2 : (pos2 + 1);
 					} else if(txt[pos] == ']')
 					{
@@ -131,7 +131,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 					} else
 					{
 						tstring_view::size_type pos2 = txt.find_first_of(_Q("]"), pos + 1);
-                        attribute.val = trim(txt.substr(pos, pos2 == tstring_view::npos ? pos2 : (pos2 - pos))).to_string();
+                        attribute.val = to_lite_string(trim(txt.substr(pos, pos2 == tstring_view::npos ? pos2 : (pos2 - pos))));
 						pos = pos2 == tstring_view::npos ? pos2 : (pos2 + 1);
 					}
 				}

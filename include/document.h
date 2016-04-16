@@ -18,7 +18,7 @@ namespace litehtml
 		
         css_text() = default;
 		css_text(tstring_view txt, tstring_view url, tstring_view media_str)
-            : text(txt.to_string()), baseurl(url.to_string()), media(media_str.to_string()) {}
+            : text(to_lite_string(txt)), baseurl(to_lite_string(url)), media(to_lite_string(media_str)) {}
 	};
 
 	class html_tag;

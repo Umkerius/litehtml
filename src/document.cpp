@@ -118,7 +118,7 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
     // check if str is not null-terminated
     if (*str.end() != 0)
     {
-        nullterm_str = str.to_string();
+        nullterm_str = to_lite_string(str);
         input_str = nullterm_str;
     }
     else
@@ -203,7 +203,7 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
 litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
 	uint_ptr ret = 0;
-    tstring fontName = name.to_string();
+    tstring fontName = to_lite_string(name);
 
     if (fontName.empty() || (lcase_copy(fontName) == _Q("inherit")))
 	{
@@ -219,11 +219,11 @@ litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tst
 	key += ":";
     key += std::to_string(size);
 	key += ":";
-	key += weight.to_string();
+	key += weight;
 	key += ":";
-    key += style.to_string();
+    key += style;
 	key += ":";
-    key += decoration.to_string();
+    key += decoration;
 
 	if(m_fonts.find(key) == m_fonts.end())
 	{
@@ -295,7 +295,7 @@ litehtml::uint_ptr litehtml::document::add_font(tstring_view name, int size, tst
 
 litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, tstring_view weight, tstring_view style, tstring_view decoration, font_metrics* fm )
 {
-    tstring fontName = name.to_string();
+    tstring fontName = to_lite_string(name);
 
     if (fontName.empty() || (lcase_copy(fontName) == _Q("inherit")))
 	{
@@ -311,11 +311,11 @@ litehtml::uint_ptr litehtml::document::get_font( tstring_view name, int size, ts
 	key += ":";
     key += std::to_string(size);
 	key += ":";
-    key += weight.to_string();
+    key += weight;
 	key += ":";
-    key += style.to_string();
+    key += style;
 	key += ":";
-    key += decoration.to_string();
+    key += decoration;
 
 	fonts_map::iterator el = m_fonts.find(key);
 

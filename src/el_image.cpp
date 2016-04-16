@@ -166,7 +166,7 @@ int litehtml::el_image::render( int x, int y, int max_width, bool second_pass )
 
 void litehtml::el_image::parse_attributes()
 {
-	m_src = get_attr(_Q("src"), _Q("")).to_string();
+	m_src = to_lite_string(get_attr(_Q("src"), _Q("")));
 
 	tstring_view attr_height = get_attr(_Q("height"));
 	if(!attr_height.empty())

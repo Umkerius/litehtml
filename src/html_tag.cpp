@@ -81,13 +81,13 @@ void litehtml::html_tag::set_attr(tstring_view name, tstring_view val)
 {
 	if(!name.empty() && !val.empty())
 	{
-		tstring s_val = name.to_string();
+        tstring s_val = to_lite_string(name);
 		std::locale lc = std::locale::global(std::locale::classic());
 		for(size_t i = 0; i < s_val.length(); i++)
 		{
 			s_val[i] = std::tolower(s_val[i], lc);
 		}
-		m_attrs[s_val] = val.to_string();
+        m_attrs[s_val] = to_lite_string(val);
 
 		if( lcase_copy(name) == _Q("class") )
 		{
@@ -101,7 +101,7 @@ void litehtml::html_tag::set_attr(tstring_view name, tstring_view val)
 
 litehtml::tstring_view litehtml::html_tag::get_attr(tstring_view name, tstring_view def)
 {
-	auto attr = m_attrs.find(name.to_string());
+	auto attr = m_attrs.find(to_lite_string(name));
 	if(attr != m_attrs.end())
 	{
 		return attr->second;
@@ -1619,7 +1619,7 @@ void litehtml::html_tag::parse_background()
 
 	// parse background-image
 	css::parse_css_url(get_style_property(_Q("background-image"), false, _Q("")), m_bg.m_image);
-	m_bg.m_baseurl = get_style_property(_Q("background-image-baseurl"), false, _Q("")).to_string();
+	m_bg.m_baseurl = to_lite_string(get_style_property(_Q("background-image-baseurl"), false, _Q("")));
 
 	if(!m_bg.m_image.empty())
 	{
@@ -2063,7 +2063,7 @@ bool litehtml::html_tag::is_break() const
 
 void litehtml::html_tag::set_tagName( tstring_view tag )
 {
-	tstring s_val = tag.to_string();
+	tstring s_val = to_lite_string(tag);
 	std::locale lc = std::locale::global(std::locale::classic());
 	for(size_t i = 0; i < s_val.length(); i++)
 	{
@@ -2476,7 +2476,7 @@ bool litehtml::html_tag::set_pseudo_class( tstring_view pclass, bool add )
 	{
 		if(std::find(m_pseudo_classes.begin(), m_pseudo_classes.end(), pclass) == m_pseudo_classes.end())
 		{
-			m_pseudo_classes.push_back(pclass.to_string());
+			m_pseudo_classes.push_back(to_lite_string(pclass));
 			ret = true;
 		}
 	} else
@@ -2504,7 +2504,7 @@ bool litehtml::html_tag::set_class( tstring_view pclass, bool add )
 		{
 			if(std::find(m_class_values.begin(), m_class_values.end(), class_val) == m_class_values.end())
 			{
-                m_class_values.emplace_back(class_val.to_string());
+                m_class_values.emplace_back(to_lite_string(class_val));
 				changed = true;
 			}
 		}
@@ -3422,8 +3422,8 @@ void litehtml::html_tag::parse_nth_child_params( tstring_view param, int &num, i
 		}
 		s_off = s_int;
 
-		num = std::stoi(s_num);
-        off = std::stoi(s_off);
+		num = std::stoi(tstring_view(s_num).to_string());
+        off = std::stoi(tstring_view(s_off).to_string());
 	}
 }
 
