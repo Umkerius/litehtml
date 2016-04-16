@@ -11,7 +11,7 @@ struct allocator_helper
     using dealloc_func = void(*)(void*);
 
     static void* allocate(size_t bytes);
-    static void deallocate(void* ptr, size_t bytes);
+    static void deallocate(void* ptr);
 
     static alloc_func   get_alloc_func();
     static dealloc_func get_dealloc_func();
@@ -48,9 +48,9 @@ struct lite_allocator
         return reinterpret_cast<pointer>(allocator_helper::allocate(n * sizeof(T)));
     }
 
-    void deallocate(pointer p, size_type n)
+    void deallocate(pointer p, size_type /*n*/)
     {
-        allocator_helper::deallocate(p, n * sizeof(T));
+        allocator_helper::deallocate(p);
     }
 
     size_type max_size() const { return std::numeric_limits<size_type>::max(); }

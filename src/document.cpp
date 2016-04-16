@@ -89,6 +89,16 @@ void split_text(const char* text, litehtml::lite_deque<litehtml::text_node>& res
     }
 }
 
+void* gumbo_allocator_proxy(void* /*userdata*/, size_t size)
+{
+    return litehtml::allocator_helper::allocate(size);
+}
+
+void gumbo_deallocator_proxy(void* /*userdata*/, void* ptr)
+{
+    litehtml::allocator_helper::deallocate(ptr);
+}
+
 litehtml::document::document(litehtml::document_container* objContainer, litehtml::context* ctx)
 {
 	m_container	= objContainer;
@@ -112,22 +122,19 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
     if (str.empty())
         return nullptr;
 
-    tstring nullterm_str;
-    tstring_view input_str;
+    // set up gumbo with default options and custom allocator & deallocator
+    GumboInternalOptions options;
+    options.allocator = gumbo_allocator_proxy;
+    options.deallocator = gumbo_deallocator_proxy;
+    options.userdata = nullptr;
+    options.tab_stop = 8;
+    options.stop_on_first_error = false;
+    options.max_errors = -1;
+    options.fragment_context = GUMBO_TAG_LAST;
+    options.fragment_namespace = GUMBO_NAMESPACE_HTML;
 
-    // check if str is not null-terminated
-    if (*str.end() != 0)
-    {
-        nullterm_str = to_lite_string(str);
-        input_str = nullterm_str;
-    }
-    else
-    {
-        input_str = str;
-    }
-
-	// parse document into GumboOutput
-    GumboOutput* output = gumbo_parse(input_str.data());
+    // parse document into GumboOutput
+    GumboOutput* output = gumbo_parse_with_options(&options, str.data(), str.size());
 
 	// Create litehtml::document
 	litehtml::document::ptr doc = std::make_shared<litehtml::document>(objPainter, ctx);

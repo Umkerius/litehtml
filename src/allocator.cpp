@@ -4,22 +4,22 @@
  
 namespace litehtml
 {
- 
+
 allocator_helper::alloc_func allocate_function = ::malloc;
 allocator_helper::dealloc_func deallocate_function = ::free;
-std::atomic<size_t> allocated_memory = 0;
+std::atomic<size_t> allocations = 0;
  
 void* allocator_helper::allocate(size_t bytes)
 {
     void* ptr = allocate_function(bytes);
-    allocated_memory += bytes;
+    allocations++;
     return ptr;
 }
  
-void allocator_helper::deallocate(void* ptr, size_t bytes)
+void allocator_helper::deallocate(void* ptr)
 {
     deallocate_function(ptr);
-    allocated_memory -= bytes;
+    allocations--;
 }
  
 allocator_helper::alloc_func allocator_helper::get_alloc_func()
@@ -34,7 +34,7 @@ allocator_helper::dealloc_func allocator_helper::get_dealloc_func()
  
 void allocator_helper::set_functions(alloc_func alloc, dealloc_func dealloc)
 {
-    if (allocated_memory != 0)
+    if (allocations != 0)
     {
         throw std::exception("Not all memory deallocated");
     }
