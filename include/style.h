@@ -35,7 +35,7 @@ namespace litehtml
 
 	using props_map = lite_map<tstring, property_value>;
 
-	class style
+    class style : public lite_allocable
 	{
 	public:
 		using ptr = std::shared_ptr<style>;

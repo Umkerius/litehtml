@@ -10,7 +10,7 @@ namespace litehtml
 		box_line
 	};
 
-	class box
+	class box : public lite_allocable
 	{
 	public:
 		using ptr = std::unique_ptr<litehtml::box>;

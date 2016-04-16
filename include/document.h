@@ -23,7 +23,7 @@ namespace litehtml
 
 	class html_tag;
 
-	class document : public std::enable_shared_from_this<document>
+	class document : public lite_allocable, public std::enable_shared_from_this<document>
 	{
 	public:
 		using ptr = std::shared_ptr<document>;

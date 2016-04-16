@@ -196,7 +196,7 @@ namespace litehtml
 		}
 	};
 
-	class table_grid
+    class table_grid : public lite_allocable
 	{
 	public:
 		using rows = lite_vector<lite_vector<table_cell>>;

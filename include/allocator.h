@@ -5,6 +5,7 @@
 namespace litehtml
 {
 
+// main point for memory allocation and deallocation in the library
 struct allocator_helper
 {
     using alloc_func = void*(*)(size_t);
@@ -20,6 +21,7 @@ struct allocator_helper
     static void set_functions(alloc_func alloc, dealloc_func dealloc);
 };
 
+// allocator for STL
 template <typename T>
 struct lite_allocator
 {
@@ -79,5 +81,26 @@ bool operator!=(const lite_allocator<T1>& lhs, const lite_allocator<T2>& rhs)
 {
     return false;
 }
+
+// handle of allocations and deallocations in objects
+struct lite_allocable
+{
+    void* operator new(std::size_t count)
+    {
+        return allocator_helper::allocate(count);
+    }
+    void* operator new[](std::size_t count)
+    {
+        return allocator_helper::allocate(count);
+    }
+    void operator delete(void* ptr)
+    {
+        allocator_helper::deallocate(ptr);
+    }
+    void operator delete[](void* ptr)
+    {
+        allocator_helper::deallocate(ptr);
+    }
+};
 
 } // namespace litehtml

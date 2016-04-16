@@ -167,7 +167,7 @@ namespace litehtml
 
 	//////////////////////////////////////////////////////////////////////////
 
-	class css_selector
+	class css_selector : public lite_allocable
 	{
 	public:
 		using ptr = std::shared_ptr<css_selector>;
@@ -256,7 +256,7 @@ namespace litehtml
 
 	//////////////////////////////////////////////////////////////////////////
 
-	class used_selector
+	class used_selector : public lite_allocable
 	{
 	public:
 		using ptr = std::unique_ptr<used_selector>;

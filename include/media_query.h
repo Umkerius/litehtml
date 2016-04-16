@@ -21,7 +21,7 @@ namespace litehtml
 		bool check(const media_features& features) const;
 	};
 
-	class media_query
+    class media_query : public lite_allocable
 	{
 	public:
 		using ptr = std::shared_ptr<media_query>;
@@ -38,7 +38,7 @@ namespace litehtml
 		bool check(const media_features& features) const;
 	};
 
-	class media_query_list
+    class media_query_list : public lite_allocable
 	{
 	public:
 		using ptr = std::shared_ptr<media_query_list>;

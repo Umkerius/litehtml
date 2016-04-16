@@ -7,7 +7,7 @@ namespace litehtml
 {
 	class box;
 
-	class element : public std::enable_shared_from_this<element>
+    class element : public lite_allocable, public std::enable_shared_from_this<element>
 	{
 		friend class block_box;
 		friend class line_box;
