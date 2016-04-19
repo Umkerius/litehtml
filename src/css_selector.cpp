@@ -18,7 +18,7 @@ void litehtml::css_element_selector::parse( tstring_view txt )
 
             string_view_deque class_val;
             split_string(attribute.val, class_val, _Q(" "));
-            attribute.class_val = std::move(to_string_vector(class_val));
+            attribute.class_val = to_string_vector(class_val);
 
 			attribute.condition	= select_equal;
 			attribute.attribute	= "class";

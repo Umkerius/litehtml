@@ -1,13 +1,14 @@
 #include <atomic>
-#include <exception>
+#include <cstdlib>
+#include <stdexcept>
 #include "allocator.h"
  
 namespace litehtml
 {
 
-allocator_helper::alloc_func allocate_function = ::malloc;
-allocator_helper::dealloc_func deallocate_function = ::free;
-std::atomic<size_t> allocations = 0;
+allocator_helper::alloc_func allocate_function = std::malloc;
+allocator_helper::dealloc_func deallocate_function = std::free;
+std::atomic<size_t> allocations { 0 };
  
 void* allocator_helper::allocate(size_t bytes)
 {
@@ -36,7 +37,7 @@ void allocator_helper::set_functions(alloc_func alloc, dealloc_func dealloc)
 {
     if (allocations != 0)
     {
-        throw std::exception("Not all memory deallocated");
+        throw std::runtime_error("Not all memory deallocated");
     }
     allocate_function = alloc;
     deallocate_function = dealloc;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <numeric>
+#include <limits>
 
 namespace litehtml
 {
@@ -45,7 +45,7 @@ struct lite_allocator
     pointer address(reference x) const { return &x; }
     const_pointer address(const_reference x) const { return &x; }
         
-    pointer allocate(size_type n, std::allocator<void>::const_pointer /*hint*/ = 0)
+    pointer allocate(size_type n, const void* /*hint*/ = 0)
     {
         return reinterpret_cast<pointer>(allocator_helper::allocate(n * sizeof(T)));
     }
@@ -60,7 +60,7 @@ struct lite_allocator
     template <typename U, typename... Args>
     void construct(U* p, Args&&... args)
     {
-        new (static_cast<void*>(p)) U(std::forward<Args>(args)...);
+        new ((void*)p) U(std::forward<Args>(args)...);
     }
 
     template <typename U>
