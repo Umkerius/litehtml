@@ -123,15 +123,9 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
         return nullptr;
 
     // set up gumbo with default options and custom allocator & deallocator
-    GumboInternalOptions options;
+    GumboInternalOptions options = kGumboDefaultOptions;
     options.allocator = gumbo_allocator_proxy;
     options.deallocator = gumbo_deallocator_proxy;
-    options.userdata = nullptr;
-    options.tab_stop = 8;
-    options.stop_on_first_error = false;
-    options.max_errors = -1;
-    options.fragment_context = GUMBO_TAG_LAST;
-    options.fragment_namespace = GUMBO_NAMESPACE_HTML;
 
     // parse document into GumboOutput
     GumboOutput* output = gumbo_parse_with_options(&options, str.data(), str.size());
@@ -147,7 +141,7 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
 		doc->m_root = root_elements.back();
 	}
 	// Destroy GumboOutput
-	gumbo_destroy_output(&kGumboDefaultOptions, output);
+    gumbo_destroy_output(&options, output);
 
 	// Let's process created elements tree
 	if (doc->m_root)
