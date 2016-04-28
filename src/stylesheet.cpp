@@ -62,7 +62,7 @@ void litehtml::css::parse_stylesheet(tstring_view str, tstring_view baseurl, con
 		tstring_view::size_type style_end	= stylesheet.find(_Q("}"), pos);
 		if(style_start != tstring_view::npos && style_end != tstring_view::npos)
 		{
-			style::ptr st = std::make_shared<style>();
+            style::ptr st = make_lite_shared<style>();
 			st->add(stylesheet.substr(style_start + 1, style_end - style_start - 1), baseurl);
 
 			parse_selectors(stylesheet.substr(pos, style_start - pos), st, media);
@@ -120,7 +120,7 @@ bool litehtml::css::parse_selectors( tstring_view txt, const litehtml::style::pt
 
 	for(auto tok : tokens)
 	{
-		css_selector::ptr selector = std::make_shared<css_selector>(media);
+        css_selector::ptr selector = make_lite_shared<css_selector>(media);
 		selector->m_style = styles;
         if (selector->parse(trim(tok)))
 		{

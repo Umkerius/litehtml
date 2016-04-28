@@ -3630,7 +3630,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_before()
 			return m_children.front();
 		}
 	}
-	element::ptr el = std::make_shared<el_before>(get_document());
+    element::ptr el = make_lite_shared<el_before>(get_document());
 	el->parent(shared_from_this());
 	m_children.insert(m_children.begin(), el);
 	return el;
@@ -3645,7 +3645,7 @@ litehtml::element::ptr litehtml::html_tag::get_element_after()
 			return m_children.back();
 		}
 	}
-	element::ptr el = std::make_shared<el_after>(get_document());
+    element::ptr el = make_lite_shared<el_after>(get_document());
 	appendChild(el);
 	return el;
 }

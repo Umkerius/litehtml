@@ -197,7 +197,7 @@ namespace litehtml
 			m_right			= val.m_right;
 			if(val.m_left)
 			{
-				m_left			= std::make_shared<css_selector>(*val.m_left);
+				m_left			= make_lite_shared<css_selector>(*val.m_left);
 			} else
 			{
 				m_left = 0;

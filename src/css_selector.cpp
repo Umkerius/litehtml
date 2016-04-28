@@ -215,7 +215,7 @@ bool litehtml::css_selector::parse( tstring_view text )
 
 	if(!left.empty())
 	{
-		m_left = std::make_shared<css_selector>(media_query_list::ptr(0));
+        m_left = make_lite_shared<css_selector>(media_query_list::ptr(0));
 		if(!m_left->parse(left))
 		{
 			return false;

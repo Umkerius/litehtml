@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <memory>
 
 namespace litehtml
 {
@@ -102,5 +103,13 @@ struct lite_allocable
         allocator_helper::deallocate(ptr);
     }
 };
+
+// make shared_ptr by using lite_allocator
+template <typename T, class... ArgsT>
+std::shared_ptr<T> make_lite_shared(ArgsT&&... args)
+{
+    lite_allocator<T> alloc;
+    return std::allocate_shared<T>(alloc, std::forward<ArgsT>(args)...);
+}
 
 } // namespace litehtml

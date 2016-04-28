@@ -18,7 +18,7 @@ litehtml::media_query::media_query( const media_query& val )
 
 litehtml::media_query::ptr litehtml::media_query::create_from_string(tstring_view str, const std::shared_ptr<document>& doc)
 {
-	media_query::ptr query = std::make_shared<media_query>();
+    media_query::ptr query = make_lite_shared<media_query>();
 
 	string_view_deque tokens;
 	split_string(str, tokens, _Q(" \t\r\n"), _Q(""), _Q("("));
@@ -124,7 +124,7 @@ bool litehtml::media_query::check( const media_features& features ) const
 
 litehtml::media_query_list::ptr litehtml::media_query_list::create_from_string(tstring_view str, const std::shared_ptr<document>& doc)
 {
-	media_query_list::ptr list = std::make_shared<media_query_list>();
+    media_query_list::ptr list = make_lite_shared<media_query_list>();
 
 	string_view_deque tokens;
 	split_string(str, tokens, _Q(","));

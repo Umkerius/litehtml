@@ -131,7 +131,7 @@ litehtml::document::ptr litehtml::document::createFromString(tstring_view str, l
     GumboOutput* output = gumbo_parse_with_options(&options, str.data(), str.size());
 
 	// Create litehtml::document
-	litehtml::document::ptr doc = std::make_shared<litehtml::document>(objPainter, ctx);
+    litehtml::document::ptr doc = make_lite_shared<litehtml::document>(objPainter, ctx);
 
 	// Create litehtml::elements.
 	elements_vector root_elements;
@@ -586,52 +586,52 @@ litehtml::element::ptr litehtml::document::create_element(tstring_view tag_name,
 	{
 		if(tag_name == _Q("br"))
 		{
-			newTag = std::make_shared<litehtml::el_break>(this_doc);
+            newTag = make_lite_shared<litehtml::el_break>(this_doc);
 		} else if(tag_name == _Q("p"))
 		{
-			newTag = std::make_shared<litehtml::el_para>(this_doc);
+            newTag = make_lite_shared<litehtml::el_para>(this_doc);
 		} else if(tag_name ==_Q("img"))
 		{
-			newTag = std::make_shared<litehtml::el_image>(this_doc);
+            newTag = make_lite_shared<litehtml::el_image>(this_doc);
 		} else if(tag_name == _Q("table"))
 		{
-			newTag = std::make_shared<litehtml::el_table>(this_doc);
+            newTag = make_lite_shared<litehtml::el_table>(this_doc);
 		} else if(tag_name == _Q("td") || tag_name == _Q("th"))
 		{
-			newTag = std::make_shared<litehtml::el_td>(this_doc);
+            newTag = make_lite_shared<litehtml::el_td>(this_doc);
 		} else if(tag_name == _Q("link"))
 		{
-			newTag = std::make_shared<litehtml::el_link>(this_doc);
+            newTag = make_lite_shared<litehtml::el_link>(this_doc);
 		} else if(tag_name == _Q("title"))
 		{
-			newTag = std::make_shared<litehtml::el_title>(this_doc);
+            newTag = make_lite_shared<litehtml::el_title>(this_doc);
 		} else if(tag_name == _Q("a"))
 		{
-			newTag = std::make_shared<litehtml::el_anchor>(this_doc);
+            newTag = make_lite_shared<litehtml::el_anchor>(this_doc);
 		} else if(tag_name == _Q("tr"))
 		{
-			newTag = std::make_shared<litehtml::el_tr>(this_doc);
+            newTag = make_lite_shared<litehtml::el_tr>(this_doc);
 		} else if(tag_name == _Q("style"))
 		{
-			newTag = std::make_shared<litehtml::el_style>(this_doc);
+            newTag = make_lite_shared<litehtml::el_style>(this_doc);
 		} else if(tag_name == _Q("base"))
 		{
-			newTag = std::make_shared<litehtml::el_base>(this_doc);
+            newTag = make_lite_shared<litehtml::el_base>(this_doc);
 		} else if(tag_name == _Q("body"))
 		{
-			newTag = std::make_shared<litehtml::el_body>(this_doc);
+            newTag = make_lite_shared<litehtml::el_body>(this_doc);
 		} else if(tag_name == _Q("div"))
 		{
-			newTag = std::make_shared<litehtml::el_div>(this_doc);
+            newTag = make_lite_shared<litehtml::el_div>(this_doc);
 		} else if(tag_name == _Q("script"))
 		{
-			newTag = std::make_shared<litehtml::el_script>(this_doc);
+            newTag = make_lite_shared<litehtml::el_script>(this_doc);
 		} else if(tag_name == _Q("font"))
 		{
-			newTag = std::make_shared<litehtml::el_font>(this_doc);
+            newTag = make_lite_shared<litehtml::el_font>(this_doc);
 		} else
 		{
-			newTag = std::make_shared<litehtml::html_tag>(this_doc);
+            newTag = make_lite_shared<litehtml::html_tag>(this_doc);
 		}
 	}
 
@@ -778,12 +778,12 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
             {
                 if (node.is_text)
                 {
-                    auto text_elem = std::make_shared<el_text>(std::move(node.str), shared_from_this());
+                    auto text_elem = make_lite_shared<el_text>(std::move(node.str), shared_from_this());
                     elements.emplace_back(std::move(text_elem));
                 }
                 else
                 {
-                    auto space_elem = std::make_shared<el_space>(std::move(node.str), shared_from_this());
+                    auto space_elem = make_lite_shared<el_space>(std::move(node.str), shared_from_this());
                     elements.emplace_back(std::move(space_elem));
                 }
             }
@@ -791,14 +791,14 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 		break;
 	case GUMBO_NODE_CDATA:
 		{
-			element::ptr ret = std::make_shared<el_cdata>(shared_from_this());
+            element::ptr ret = make_lite_shared<el_cdata>(shared_from_this());
 			ret->set_data(node->v.text.text);
 			elements.push_back(ret);
 		}
 		break;
 	case GUMBO_NODE_COMMENT:
 		{
-			element::ptr ret = std::make_shared<el_comment>(shared_from_this());
+            element::ptr ret = make_lite_shared<el_comment>(shared_from_this());
             ret->set_data(node->v.text.text);
 			elements.push_back(ret);
 		}
@@ -808,7 +808,7 @@ void litehtml::document::create_node(GumboNode* node, elements_vector& elements)
 			tstring_view str = node->v.text.text;
 			for (size_t i = 0; i < str.length(); i++)
 			{
-				elements.push_back(std::make_shared<el_space>(str.substr(i, 1), shared_from_this()));
+                elements.push_back(make_lite_shared<el_space>(str.substr(i, 1), shared_from_this()));
 			}
 		}
 		break;
@@ -862,7 +862,7 @@ void litehtml::document::fix_table_children(element::ptr& el_ptr, style_display 
 
 	auto flush_elements = [&]()
 	{
-		element::ptr annon_tag = std::make_shared<html_tag>(shared_from_this());
+        element::ptr annon_tag = make_lite_shared<html_tag>(shared_from_this());
 		style st;
 		st.add_property(_Q("display"), disp_str, 0, false);
 		annon_tag->add_style(st);
@@ -969,7 +969,7 @@ void litehtml::document::fix_table_parent(element::ptr& el_ptr, style_display di
 			}
 
 			// extract elements with the same display and wrap them with anonymous object
-			element::ptr annon_tag = std::make_shared<html_tag>(shared_from_this());
+            element::ptr annon_tag = make_lite_shared<html_tag>(shared_from_this());
 			style st;
 			st.add_property(_Q("display"), disp_str, 0, false);
 			annon_tag->add_style(st);
