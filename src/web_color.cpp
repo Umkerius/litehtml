@@ -158,6 +158,107 @@ def_color g_def_colors[] =
 	{_Q("YellowGreen"),_Q("#9ACD32")}
 };
 
+// parse rgb[a] & hsl[a]
+void parse_color(litehtml::tstring_view str, litehtml::string_view_deque& colors)
+{
+    using namespace litehtml;
+
+    tstring_view::size_type pos = str.find_first_of(_Q("("));
+    if (pos != tstring_view::npos)
+    {
+        str.remove_prefix(pos + 1);
+    }
+    pos = str.find_last_of(_Q(")"));
+    if (pos != tstring_view::npos)
+    {
+        str.remove_suffix(str.size() - pos);
+    }
+
+    string_view_deque tokens;
+    split_string(str, tokens, _Q(","));
+
+    for (tstring_view& token : tokens)
+    {
+        colors.push_back(trim(token));
+    }
+}
+
+double to_double(litehtml::tstring_view view)
+{
+    return std::stod(view.to_string());
+}
+
+double percent_value(litehtml::tstring_view value)
+{
+    assert(value.back() == '%');
+    value.remove_suffix(1);
+    return to_double(value);
+}
+
+// string to value
+double to_abs_value(litehtml::tstring_view value, double max_value)
+{
+    double result;
+
+    if (value.back() == '%')
+    {
+        result = percent_value(value);
+        result = (result / 100.0) * max_value;
+    }
+    else
+    {
+        result = to_double(value);
+    }
+
+    assert(result <= max_value);
+    return result;
+}
+
+double hue_to_color_val(double v1, double v2, double vH)
+{
+    if (vH < 0.0)
+        vH += 1.0;
+
+    if (vH > 1.0)
+        vH -= 1.0;
+
+    if ((6.0 * vH) < 1.0)
+        return (v1 + (v2 - v1) * 6.0 * vH);
+
+    if ((2.0 * vH) < 1.0)
+        return v2;
+
+    if ((3.0 * vH) < 2.0)
+        return (v1 + (v2 - v1) * ((2.0 / 3.0) - vH) * 6.0);
+
+    return v1;
+}
+
+litehtml::web_color hsl_to_rgb(double hue, double saturation, double lightness)
+{
+    using namespace litehtml;
+    web_color rgb;
+
+    if (saturation == 0.0)
+    {
+        rgb.red   = byte(lightness * 255.0);
+        rgb.green = byte(lightness * 255.0);
+        rgb.blue  = byte(lightness * 255.0);
+        return rgb;
+    }
+
+    double v1, v2;
+    double h = hue / 360.0;
+
+    v2 = (lightness < 0.5) ? (lightness * (1 + saturation)) : ((lightness + saturation) - (lightness * saturation));
+    v1 = 2 * lightness - v2;
+
+    rgb.red = byte(hue_to_color_val(v1, v2, hue + (1.0 / 3.0)) * 255.0);
+    rgb.green = byte(hue_to_color_val(v1, v2, hue) * 255.0);
+    rgb.blue = byte(hue_to_color_val(v1, v2, hue - (1.0 / 3.0)) * 255.0);
+
+    return rgb;
+}
 
 litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 {
@@ -194,28 +295,36 @@ litehtml::web_color litehtml::web_color::from_string(tstring_view str)
 		clr.blue	= byte(std::stol(blue,	nullptr, 16));
 		return clr;
 	} 
-    else if(str.substr(0, 3) == _Q("rgb"))
+    else if(starts_with(str, _Q("rgb")) || starts_with(str, _Q("hsl")))
 	{
-        tstring_view::size_type pos = str.find_first_of(_Q("("));
-        if (pos != tstring_view::npos)
-		{
-            str.remove_prefix(pos + 1);
-		}
-        pos = str.find_last_of(_Q(")"));
-        if (pos != tstring_view::npos)
-		{
-            str.remove_suffix(str.size() - pos);
-		}
+        string_view_deque color_tokens;
+        parse_color(str, color_tokens);
 
-		string_view_deque tokens;
-        split_string(str, tokens, _Q(", \t"));
+        if (color_tokens.size() != 3 && color_tokens.size() != 4)
+            return web_color(0, 0, 0);
 
-		web_color clr;
+        web_color clr;
 
-        if (tokens.size() >= 1)	clr.red   = byte(std::stoi(tokens[0].to_string()));
-        if (tokens.size() >= 2)	clr.green = byte(std::stoi(tokens[1].to_string()));
-        if (tokens.size() >= 3)	clr.blue  = byte(std::stoi(tokens[2].to_string()));
-		if(tokens.size() >= 4)	clr.alpha = byte(std::stod(tokens[3].to_string()) * 255.0);
+        // rgb[a](red[%], green[%], blue[%][, alpha])
+        if (starts_with(str, _Q("rgb")))
+        {
+            clr.red   = byte(to_abs_value(color_tokens[0], 255.0));
+            clr.green = byte(to_abs_value(color_tokens[1], 255.0));
+            clr.blue  = byte(to_abs_value(color_tokens[2], 255.0));
+        }
+        // hsl[a](hue, saturate%, lightness%[, alpha])
+        else
+        {
+            double hue = to_double(color_tokens[0]);
+            double saturation = percent_value(color_tokens[1]);
+            double lightness = percent_value(color_tokens[2]);
+
+            clr = hsl_to_rgb(hue, saturation, lightness);
+        }
+
+        // [alpha]
+        if (color_tokens.size() == 4)
+            clr.alpha = byte(std::stod(color_tokens[3].to_string()) * 255.0);
 
 		return clr;
 	} else
