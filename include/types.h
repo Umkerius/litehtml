@@ -75,15 +75,10 @@ namespace litehtml
 
 	struct margins
 	{
-		int	left;
-		int	right;
-		int top;
-		int bottom;
-
-		margins()
-		{
-			left = right = top = bottom = 0;
-		}
+		int	left = 0;
+		int	right = 0;
+		int top = 0;
+		int bottom = 0;
 
 		int width()		const	{ return left + right; } 
 		int height()	const	{ return top + bottom; } 
@@ -91,37 +86,23 @@ namespace litehtml
 
 	struct size
 	{
-		int	width;
-		int height;
+		int	width = 0;
+		int height = 0;
 
-		size()
-		{
-			width	= 0;
-			height	= 0;
-		}
+        size() = default;
+        size(int w, int h) : width(w), height(h) {}
 	};
 
-	struct position
+    struct position : public size
 	{
 		using vector = lite_vector<position>;
 
-		int	x;
-		int	y;
-		int	width;
-		int	height;
+		int	x = 0;
+		int	y = 0;
 
-		position()
-		{
-			x = y = width = height = 0;
-		}
-
-		position(int x, int y, int width, int height)
-		{
-			this->x			= x;
-			this->y			= y;
-			this->width		= width;
-			this->height	= height;
-		}
+        position() = default;
+        position(int x_val, int y_val, int width_val, int height_val)
+            : size(width_val, height_val), x(x_val), y(y_val) {}
 
 		int right()		const		{ return x + width;		}
 		int bottom()	const		{ return y + height;	}
@@ -195,22 +176,27 @@ namespace litehtml
 		}
 	};
 
+    inline bool operator==(const litehtml::position& lhs, const litehtml::position& rhs)
+    {
+        return lhs.x == rhs.x &&
+               lhs.y == rhs.y &&
+               lhs.width == rhs.width &&
+               lhs.height == rhs.height;
+    }
+
+    inline bool operator!=(const litehtml::position& lhs, const litehtml::position& rhs)
+    {
+        return !(lhs == rhs);
+    }
+
 	struct font_metrics
 	{
-		int		height;
-		int		ascent;
-		int		descent;
-		int		x_height;
-		bool	draw_spaces;
+		int		height = 0;
+		int		ascent = 0;
+		int		descent = 0;
+		int		x_height = 0;
+		bool	draw_spaces = true;
 
-		font_metrics()
-		{
-			height			= 0;
-			ascent			= 0;
-			descent			= 0;
-			x_height		= 0;
-			draw_spaces		= true;
-		}
 		int base_line()	{ return descent; }
 	};
 
