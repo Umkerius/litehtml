@@ -182,13 +182,21 @@ void litehtml::el_image::parse_attributes()
 
 void litehtml::el_image::draw( uint_ptr hdc, int x, int y, const position* clip )
 {
-	position pos = m_pos;
+    position pos = m_pos;
 	pos.x += x;
 	pos.y += y;
 
 	position el_pos = pos;
 	el_pos += m_padding;
 	el_pos += m_borders;
+
+    // try to extract url from parent
+    litehtml::tstring_view url;
+    auto tag = std::dynamic_pointer_cast<litehtml::html_tag>(parent());
+    if (tag)
+    {
+        url = tag->get_attr(_Q("href"));
+    }
 
 	// draw standard background here
 	if (el_pos.does_intersect(clip))
@@ -199,7 +207,7 @@ void litehtml::el_image::draw( uint_ptr hdc, int x, int y, const position* clip 
 			background_paint bg_paint;
 			init_background_paint(pos, bg_paint, bg);
 
-			get_document()->container()->draw_background(hdc, bg_paint);
+			get_document()->container()->draw_background(hdc, bg_paint, url);
 		}
 	}
 
@@ -220,7 +228,7 @@ void litehtml::el_image::draw( uint_ptr hdc, int x, int y, const position* clip 
 			bg.border_radius		= m_css_borders.radius.calc_percents(bg.border_box.width, bg.border_box.height);
 			bg.position_x			= pos.x;
 			bg.position_y			= pos.y;
-			get_document()->container()->draw_background(hdc, bg);
+			get_document()->container()->draw_background(hdc, bg, url);
 		}
 	}
 

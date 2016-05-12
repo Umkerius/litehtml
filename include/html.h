@@ -32,14 +32,14 @@ namespace litehtml
 		virtual litehtml::uint_ptr	create_font(litehtml::tstring_view faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm) = 0;
 		virtual void				delete_font(litehtml::uint_ptr hFont) = 0;
 		virtual int					text_width(litehtml::tstring_view text, litehtml::uint_ptr hFont) = 0;
-		virtual void				draw_text(litehtml::uint_ptr hdc, litehtml::tstring_view text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) = 0;
+        virtual void				draw_text(litehtml::uint_ptr hdc, litehtml::tstring_view text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos, litehtml::tstring_view linkTo) = 0;
 		virtual int					pt_to_px(int pt) = 0;
 		virtual int					get_default_font_size() const = 0;
 		virtual litehtml::tstring	get_default_font_name() const = 0;
 		virtual void				draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker) = 0;
 		virtual void				load_image(litehtml::tstring_view src, litehtml::tstring_view baseurl, bool redraw_on_ready) = 0;
 		virtual void				get_image_size(litehtml::tstring_view src, litehtml::tstring_view baseurl, litehtml::size& sz) = 0;
-		virtual void				draw_background(litehtml::uint_ptr hdc, const litehtml::background_paint& bg) = 0;
+        virtual void				draw_background(litehtml::uint_ptr hdc, const litehtml::background_paint& bg, litehtml::tstring_view linkTo) = 0;
 		virtual void				draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root) = 0;
 
 		virtual	void				set_caption(litehtml::tstring_view caption) = 0;

@@ -2092,7 +2092,7 @@ void litehtml::html_tag::draw_background( uint_ptr hdc, int x, int y, const posi
 				background_paint bg_paint;
 				init_background_paint(pos, bg_paint, bg);
 
-				get_document()->container()->draw_background(hdc, bg_paint);
+				get_document()->container()->draw_background(hdc, bg_paint, _Q(""));
 			}
 			position border_box = pos;
 			border_box += m_padding;
@@ -2165,7 +2165,7 @@ void litehtml::html_tag::draw_background( uint_ptr hdc, int x, int y, const posi
 				if(bg)
 				{
 					bg_paint.border_radius = bdr.radius.calc_percents(bg_paint.border_box.width, bg_paint.border_box.width);
-					get_document()->container()->draw_background(hdc, bg_paint);
+                    get_document()->container()->draw_background(hdc, bg_paint, _Q(""));
 				}
 				borders b = bdr;
 				b.radius = bdr.radius.calc_percents(box->width, box->height);

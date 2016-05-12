@@ -105,17 +105,23 @@ void litehtml::el_text::draw( uint_ptr hdc, int x, int y, const position* clip )
 	pos.x	+= x;
 	pos.y	+= y;
 
-	if(pos.does_intersect(clip))
-	{
-		element::ptr el_parent = parent();
-		if (el_parent)
-		{
-			document::ptr doc = get_document();
+    element::ptr el_parent = parent();
 
-			uint_ptr font = el_parent->get_font();
-			litehtml::web_color color = el_parent->get_color(_Q("color"), true, doc->get_def_color());
-			doc->container()->draw_text(hdc, m_use_transformed ? m_transformed_text : m_text, font, color, pos);
-		}
+	if(pos.does_intersect(clip) && el_parent)
+	{
+		document::ptr doc = get_document();
+        litehtml::tstring_view url;
+
+        // try to extract url from parent
+        auto tag = std::dynamic_pointer_cast<litehtml::html_tag>(el_parent);
+        if (tag)
+        {
+            url = tag->get_attr(_Q("href"));
+        }
+
+		uint_ptr font = el_parent->get_font();
+		litehtml::web_color color = el_parent->get_color(_Q("color"), true, doc->get_def_color());
+        doc->container()->draw_text(hdc, m_use_transformed ? m_transformed_text : m_text, font, color, pos, url);
 	}
 }
 
